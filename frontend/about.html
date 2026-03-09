@@ -5,31 +5,36 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Reuse the Navbar -->
-  <header class="navbar">
-  <div class="left-header">
-    <img src="statics/images/logo.jpg" alt="Krishi AI Logo" class="logo" />
-    <div class="title">
+ <header class="main-header">
+
+  <div class="header-left">
+    <img src="statics/images/logo.jpg" alt="Krishi AI Logo" class="header-logo" />
+    <div class="header-title">
       <h1>Krishi AI</h1>
-      <p>Your Smart Agriculture Assistant</p>
+      <span>Your Smart Agriculture Assistant</span>
     </div>
   </div>
 
-  <nav>
+  <!-- ☰ Hamburger -->
+  <button class="menu-toggle" id="menuToggle">☰</button>
+
+  <!-- Navigation -->
+  <nav class="header-nav" id="mobileMenu">
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
     <a href="disease.html">Disease</a>
     <a href="contact.html">Contact</a>
+    
   </nav>
 
-  <video autoplay muted loop class="header-video">
-    <source src="statics/images/krishi ai video.mp4" type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
 </header>
-<!-- 🌍 Language Switcher -->
-  <div id="google_translate_element" style="text-align: right; padding: 10px;"></div>
 
+
+
+<!-- 🌍 LANGUAGE BAR -->
+<div class="language-bar">
+  <div id="google_translate_element"></div>
+</div>
 
   <main>
     <h1>About Krishi AI</h1>
@@ -57,6 +62,8 @@ Because most Indian farmers don’t have access to real-time data, scientific cr
 <script type="text/javascript"
   src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
 </script>
+<script src="header.js"></script>
+
 
 </body>
 </html>

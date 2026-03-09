@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>चेकआउट - Krishi AI Store</title>
+    <link rel="stylesheet" href="store.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Same Header -->
+    <header class="store-header">
+        <!-- Copy header from index.html -->
+    </header>
+
+    <main class="checkout-page">
+        <div class="container">
+            <!-- Progress Steps -->
+            <div class="checkout-progress">
+                <div class="progress-steps">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <div class="step-label">कार्ट</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-label">डिलीवरी</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-label">पेमेंट</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-label">कन्फर्मेशन</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-content">
+                <!-- Left Column - Forms -->
+                <div class="checkout-forms">
+                    <!-- Delivery Address Form -->
+                    <section class="checkout-section" id="delivery-section">
+                        <h2><i class="fas fa-map-marker-alt"></i> डिलीवरी एड्रेस</h2>
+                        
+                        <div class="address-options">
+                            <div class="address-card selected">
+                                <h3>घर का पता</h3>
+                                <p>रमेश कुमार</p>
+                                <p>गाँव: सोनपुर, पोस्ट: बिहार शरीफ</p>
+                                <p>जिला: नालंदा, बिहार - 803101</p>
+                                <p>मोबाइल: 9876543210</p>
+                                <button class="btn-select-address">चुनें</button>
+                            </div>
+                            
+                            <div class="address-card">
+                                <h3>खेत का पता</h3>
+                                <p>रमेश कुमार</p>
+                                <p>खेत नंबर: 45, ब्लॉक: सी</p>
+                                <p>गाँव: सोनपुर, बिहार - 803101</p>
+                                <p>मोबाइल: 9876543210</p>
+                                <button class="btn-select-address">चुनें</button>
+                            </div>
+                            
+                            <button class="btn-add-address">
+                                <i class="fas fa-plus"></i> नया एड्रेस जोड़ें
+                            </button>
+                        </div>
+
+                        <!-- New Address Form (Hidden by default) -->
+                        <div class="new-address-form" id="new-address-form" style="display: none;">
+                            <h3>नया डिलीवरी एड्रेस</h3>
+                            <form id="address-form">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>पूरा नाम *</label>
+                                        <input type="text" id="full-name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>मोबाइल नंबर *</label>
+                                        <input type="tel" id="mobile" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>पिन कोड *</label>
+                                        <input type="text" id="pincode" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>गाँव/शहर *</label>
+                                        <input type="text" id="village" required>
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label>पूरा एड्रेस *</label>
+                                        <textarea id="full-address" rows="3" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>जिला *</label>
+                                        <input type="text" id="district" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>राज्य *</label>
+                                        <select id="state" required>
+                                            <option value="">चुनें</option>
+                                            <option value="UP">उत्तर प्रदेश</option>
+                                            <option value="BH">बिहार</option>
+                                            <option value="MP">मध्य प्रदेश</option>
+                                            <option value="RJ">राजस्थान</option>
+                                            <option value="MH">महाराष्ट्र</option>
+                                            <option value="GJ">गुजरात</option>
+                                            <option value="WB">पश्चिम बंगाल</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>लैंडमार्क</label>
+                                        <input type="text" id="landmark">
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn-secondary" onclick="cancelNewAddress()">रद्द करें</button>
+                                    <button type="submit" class="btn-primary">सेव एड्रेस</button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+
+                    <!-- Payment Method Section -->
+                    <section class="checkout-section" id="payment-section">
+                        <h2><i class="fas fa-credit-card"></i> पेमेंट मेथड</h2>
+                        
+                        <div class="payment-methods-list">
+                            <div class="payment-method selected" data-method="cod">
+                                <div class="payment-radio">
+                                    <input type="radio" name="payment" id="cod" checked>
+                                </div>
+                                <div class="payment-icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div class="payment-info">
+                                    <label for="cod">Cash on Delivery</label>
+                                    <p>ऑर्डर मिलने पर पेमेंट करें</p>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-method" data-method="upi">
+                                <div class="payment-radio">
+                                    <input type="radio" name="payment" id="upi">
+                                </div>
+                                <div class="payment-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="payment-info">
+                                    <label for="upi">UPI</label>
+                                    <p>Google Pay, PhonePe, Paytm</p>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-method" data-method="card">
+                                <div class="payment-radio">
+                                    <input type="radio" name="payment" id="card">
+                                </div>
+                                <div class="payment-icon">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <div class="payment-info">
+                                    <label for="card">Credit/Debit Card</label>
+                                    <p>Visa, Mastercard, RuPay</p>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-method" data-method="netbanking">
+                                <div class="payment-radio">
+                                    <input type="radio" name="payment" id="netbanking">
+                                </div>
+                                <div class="payment-icon">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <div class="payment-info">
+                                    <label for="netbanking">Net Banking</label>
+                                    <p>सभी प्रमुख बैंक</p>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-method" data-method="wallet">
+                                <div class="payment-radio">
+                                    <input type="radio" name="payment" id="wallet">
+                                </div>
+                                <div class="payment-icon">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                                <div class="payment-info">
+                                    <label for="wallet">डिजिटल वॉलेट</label>
+                                    <p>Paytm Wallet, Amazon Pay</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UPI Payment Form -->
+                        <div class="payment-details" id="upi-details" style="display: none;">
+                            <h3>UPI पेमेंट</h3>
+                            <div class="upi-options">
+                                <div class="upi-option">
+                                    <img src="https://logos-download.com/wp-content/uploads/2020/06/Google_Pay_Logo.png" alt="Google Pay">
+                                    <span>Google Pay</span>
+                                </div>
+                                <div class="upi-option">
+                                    <img src="https://logos-download.com/wp-content/uploads/2021/01/PhonePe_Logo.png" alt="PhonePe">
+                                    <span>PhonePe</span>
+                                </div>
+                                <div class="upi-option">
+                                    <img src="https://logos-download.com/wp-content/uploads/2016/10/Paytm_logo.png" alt="Paytm">
+                                    <span>Paytm</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>UPI ID</label>
+                                <input type="text" placeholder="username@upi">
+                            </div>
+                        </div>
+
+                        <!-- Card Payment Form -->
+                        <div class="payment-details" id="card-details" style="display: none;">
+                            <h3>कार्ड डिटेल्स</h3>
+                            <div class="form-group">
+                                <label>कार्ड नंबर</label>
+                                <input type="text" placeholder="1234 5678 9012 3456">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>महीना/साल</label>
+                                    <input type="text" placeholder="MM/YY">
+                                </div>
+                                <div class="form-group">
+                                    <label>CVV</label>
+                                    <input type="text" placeholder="123">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>कार्ड होल्डर नाम</label>
+                                <input type="text" placeholder="आपका नाम">
+                            </div>
+                        </div>
+
+                        <!-- Net Banking Form -->
+                        <div class="payment-details" id="netbanking-details" style="display: none;">
+                            <h3>नेट बैंकिंग</h3>
+                            <select class="bank-select">
+                                <option value="">अपना बैंक चुनें</option>
+                                <option value="sbi">State Bank of India</option>
+                                <option value="pnb">Punjab National Bank</option>
+                                <option value="hdfc">HDFC Bank</option>
+                                <option value="icici">ICICI Bank</option>
+                                <option value="axis">Axis Bank</option>
+                                <option value="bob">Bank of Baroda</option>
+                                <option value="boi">Bank of India</option>
+                                <option value="canara">Canara Bank</option>
+                            </select>
+                        </div>
+
+                        <!-- Wallet Form -->
+                        <div class="payment-details" id="wallet-details" style="display: none;">
+                            <h3>वॉलेट</h3>
+                            <div class="wallet-options">
+                                <div class="wallet-option">
+                                    <img src="https://logos-download.com/wp-content/uploads/2016/10/Paytm_logo.png" alt="Paytm">
+                                    <span>Paytm Wallet</span>
+                                </div>
+                                <div class="wallet-option">
+                                    <img src="https://logos-download.com/wp-content/uploads/2019/01/Amazon_Pay_Logo.png" alt="Amazon Pay">
+                                    <span>Amazon Pay</span>
+                                </div>
+                                <div class="wallet-option">
+                                    <img src="https://logos-download.com/wp-content/uploads/2020/04/MobiKwik_Logo.png" alt="MobiKwik">
+                                    <span>MobiKwik</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column - Order Summary -->
+                <div class="order-summary">
+                    <div class="summary-card">
+                        <h2><i class="fas fa-receipt"></i> ऑर्डर सारांश</h2>
+                        
+                        <div class="order-items">
+                            <div class="order-item">
+                                <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Product">
+                                <div class="item-details">
+                                    <h4>हाइब्रिड टमाटर बीज</h4>
+                                    <p>मात्रा: 2 × ₹199</p>
+                                </div>
+                                <div class="item-price">₹398</div>
+                            </div>
+                            <div class="order-item">
+                                <img src="https://images.unsplash.com/photo-1585336261022-680e295ce3fe?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Product">
+                                <div class="item-details">
+                                    <h4>जैविक वर्मीकम्पोस्ट</h4>
+                                    <p>मात्रा: 1 × ₹399</p>
+                                </div>
+                                <div class="item-price">₹399</div>
+                            </div>
+                        </div>
+                        
+                        <div class="price-breakdown">
+                            <div class="price-row">
+                                <span>सबटोटल</span>
+                                <span>₹797</span>
+                            </div>
+                            <div class="price-row">
+                                <span>शिपिंग</span>
+                                <span class="free">मुफ्त</span>
+                            </div>
+                            <div class="price-row">
+                                <span>टैक्स (18%)</span>
+                                <span>₹143.46</span>
+                            </div>
+                            <div class="price-row discount">
+                                <span>छूट (KRISHI20)</span>
+                                <span>-₹159.40</span>
+                            </div>
+                            <div class="price-row total">
+                                <span><strong>कुल राशि</strong></span>
+                                <span><strong>₹780.96</strong></span>
+                            </div>
+                        </div>
+                        
+                        <div class="coupon-section">
+                            <input type="text" placeholder="कूपन कोड" id="coupon-code">
+                            <button class="btn-secondary" onclick="applyCoupon()">लागू करें</button>
+                        </div>
+                        
+                        <div class="terms-agreement">
+                            <label>
+                                <input type="checkbox" id="terms-agree">
+                                मैं <a href="#">टर्म्स एंड कंडीशन</a> से सहमत हूँ
+                            </label>
+                        </div>
+                        
+                        <button class="btn-primary btn-place-order" onclick="placeOrder()">
+                            <i class="fas fa-lock"></i> ऑर्डर कन्फर्म करें
+                        </button>
+                        
+                        <p class="secure-payment">
+                            <i class="fas fa-shield-alt"></i> 100% सिक्योर पेमेंट
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Same Footer -->
+    <footer class="store-footer">
+        <!-- Copy footer from index.html -->
+    </footer>
+
+    <!-- Razorpay SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="store.js"></script>
+    <script src="checkout.js"></script>
+</body>
+</html>
