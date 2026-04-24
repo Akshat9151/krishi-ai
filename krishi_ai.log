@@ -1,0 +1,40 @@
+2026-03-13 00:08:46,986 - krishi.api - INFO - API Request - GET http://localhost:8000/ - IP: 127.0.0.1 - User: anonymous
+2026-03-13 00:08:46,995 - krishi.api - INFO - API Response - http://localhost:8000/ - Status: 200 - Time: 0.01s
+2026-03-13 00:08:47,037 - krishi.api - INFO - API Request - GET http://localhost:8000/favicon.ico - IP: 127.0.0.1 - User: anonymous
+2026-03-13 00:08:47,038 - krishi.api - INFO - API Response - http://localhost:8000/favicon.ico - Status: 404 - Time: 0.00s
+2026-03-13 00:09:09,703 - krishi.api - INFO - API Request - GET http://localhost:8000/docs - IP: 127.0.0.1 - User: anonymous
+2026-03-13 00:09:09,705 - krishi.api - INFO - API Response - http://localhost:8000/docs - Status: 200 - Time: 0.00s
+2026-03-13 00:09:09,850 - krishi.api - INFO - API Request - GET http://localhost:8000/openapi.json - IP: 127.0.0.1 - User: anonymous
+2026-03-13 00:09:10,041 - krishi.api - INFO - API Response - http://localhost:8000/openapi.json - Status: 200 - Time: 0.19s
+2026-03-13 00:10:34,717 - krishi.api - INFO - API Request - GET http://localhost:8000/docs - IP: 127.0.0.1 - User: anonymous
+2026-03-13 00:10:34,717 - krishi.api - INFO - API Response - http://localhost:8000/docs - Status: 200 - Time: 0.00s
+2026-03-13 00:10:34,781 - krishi.api - INFO - API Request - GET http://localhost:8000/openapi.json - IP: 127.0.0.1 - User: anonymous
+2026-03-13 00:10:34,784 - krishi.api - INFO - API Response - http://localhost:8000/openapi.json - Status: 200 - Time: 0.00s
+2026-03-13 01:15:11,852 - krishi.api - INFO - API Request - OPTIONS http://localhost:8000/auth/login - IP: 127.0.0.1 - User: anonymous
+2026-03-13 01:15:11,862 - krishi.api - INFO - API Response - http://localhost:8000/auth/login - Status: 400 - Time: 0.01s
+2026-03-13 01:15:36,977 - krishi.api - INFO - API Request - OPTIONS http://localhost:8000/auth/login - IP: 127.0.0.1 - User: anonymous
+2026-03-13 01:15:36,978 - krishi.api - INFO - API Response - http://localhost:8000/auth/login - Status: 400 - Time: 0.00s
+2026-03-13 01:17:39,012 - krishi.api - INFO - API Request - POST http://localhost:8000/recommend-products - IP: 127.0.0.1 - User: anonymous
+2026-03-13 01:17:39,012 - krishi.api - INFO - API Response - http://localhost:8000/recommend-products - Status: 404 - Time: 0.00s
+2026-03-13 01:18:05,228 - krishi.api - INFO - API Request - POST http://localhost:8000/api/recommend-products - IP: 127.0.0.1 - User: anonymous
+2026-03-13 01:18:05,249 - krishi.api - INFO - API Response - http://localhost:8000/api/recommend-products - Status: 200 - Time: 0.02s
+2026-03-13 01:19:12,670 - krishi.api - INFO - API Request - OPTIONS http://localhost:8000/auth/login - IP: 127.0.0.1 - User: anonymous
+2026-03-13 01:19:12,670 - krishi.api - INFO - API Response - http://localhost:8000/auth/login - Status: 400 - Time: 0.00s
+2026-03-13 01:21:17,109 - krishi.api - INFO - API Request - POST http://localhost:8000/api/recommend-products - IP: 127.0.0.1 - User: anonymous
+2026-03-13 01:21:17,111 - krishi.api - INFO - API Response - http://localhost:8000/api/recommend-products - Status: 200 - Time: 0.00s
+2026-03-13 01:21:19,152 - krishi.api - INFO - API Request - POST http://localhost:8000/api/predict-disease - IP: 127.0.0.1 - User: anonymous
+2026-03-13 01:21:19,164 - krishi.api - INFO - API Response - http://localhost:8000/api/predict-disease - Status: 200 - Time: 0.01s
+2026-03-13 01:21:21,239 - krishi.api - INFO - API Request - POST http://localhost:8000/api/predict-crop - IP: 127.0.0.1 - User: anonymous
+2026-03-13 01:21:24,175 - krishi.ml - INFO - ML Prediction - Model: crop_recommendation - Inputs: {'location': 'delhi', 'soil_type': 'clay', 'season': 'kharif'} - Prediction: Muskmelon - Confidence: None
+2026-03-13 01:21:24,175 - krishi.api - INFO - API Response - http://localhost:8000/api/predict-crop - Status: 200 - Time: 2.94s
+2026-03-13 01:21:26,260 - krishi.api - INFO - API Request - POST http://localhost:8000/api/weather - IP: 127.0.0.1 - User: anonymous
+2026-03-13 01:21:28,836 - krishi.weather - INFO - Weather API - Location: delhi - Status: SUCCESS - Temperature: 22.5°C
+2026-03-13 01:21:28,837 - krishi.api - INFO - API Response - http://localhost:8000/api/weather - Status: 200 - Time: 2.58s
+2026-03-13 01:22:36,409 - krishi.api - INFO - API Request - OPTIONS http://localhost:8000/auth/login - IP: 127.0.0.1 - User: anonymous
+2026-03-13 01:22:36,409 - krishi.api - INFO - API Response - http://localhost:8000/auth/login - Status: 400 - Time: 0.00s
+2026-03-13 01:22:39,332 - krishi.api - INFO - API Request - OPTIONS http://localhost:8000/auth/login - IP: 127.0.0.1 - User: anonymous
+2026-03-13 01:22:39,332 - krishi.api - INFO - API Response - http://localhost:8000/auth/login - Status: 400 - Time: 0.00s
+2026-03-13 01:22:56,601 - krishi.api - INFO - API Request - OPTIONS http://localhost:8000/auth/login - IP: 127.0.0.1 - User: anonymous
+2026-03-13 01:22:56,601 - krishi.api - INFO - API Response - http://localhost:8000/auth/login - Status: 400 - Time: 0.00s
+2026-03-13 10:54:56,832 - krishi.api - INFO - API Request - OPTIONS http://localhost:8000/auth/login - IP: 127.0.0.1 - User: anonymous
+2026-03-13 10:54:56,833 - krishi.api - INFO - API Response - http://localhost:8000/auth/login - Status: 400 - Time: 0.00s
