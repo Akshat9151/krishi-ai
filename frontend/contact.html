@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Contact – Krishi AI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="main-header">
+
+  <div class="header-left">
+    <img src="statics/images/logo.jpg" alt="Krishi AI Logo" class="header-logo" />
+    <div class="header-title">
+      <h1>Krishi AI</h1>
+      <span>Your Smart Agriculture Assistant</span>
+    </div>
+  </div>
+
+  <!-- ☰ Hamburger -->
+  <button class="menu-toggle" id="menuToggle">☰</button>
+
+  <!-- Navigation -->
+  <nav class="header-nav" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="disease.html">Disease</a>
+    <a href="contact.html">Contact</a>
+    
+  </nav>
+
+</header>
+
+
+<!-- 🌍 LANGUAGE BAR -->
+<div class="language-bar">
+  <div id="google_translate_element"></div>
+</div>
+
+
+
+
+  <main>
+  <h1>Contact Us</h1>
+  <form>
+    <label>Name:</label>
+    <input type="text" name="name" placeholder="Enter your name" required />
+
+    <label>Email:</label>
+    <input type="email" name="email" placeholder="Enter your email" required />
+
+    <label>Your Message:</label>
+    <textarea name="message" placeholder="Write your feedback or query here..." required></textarea>
+
+    <button type="submit">Send</button>
+    <div id="contactStatus"></div>
+  </form>
+</main>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      { pageLanguage: 'en' },
+      'google_translate_element'
+    );
+  }
+</script>
+
+<script type="text/javascript"
+  src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+<script src="header.js"></script>
+
+
+</body>
+</html>

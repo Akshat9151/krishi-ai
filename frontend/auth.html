@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Krishi AI – Farmer Login</title>
+  <link rel="stylesheet" href="auth.css" />
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <!-- HEADER -->
+      <div class="auth-header">
+        <div class="auth-logo">🌱</div>
+        <h1 id="formTitle">Farmer Login</h1>
+        <p>Access smart farming tools with Krishi AI</p>
+      </div>
+
+      <!-- FORM -->
+      <form id="authForm">
+
+        <div class="auth-group">
+          <label>Username</label>
+          <input type="text" id="username" class="auth-input" placeholder="Enter your username" required />
+        </div>
+
+        <div class="auth-group">
+          <label>Password</label>
+          <input type="password" id="password" class="auth-input" placeholder="Enter your password" required />
+        </div>
+
+        <button type="submit" class="auth-btn" id="authBtn">
+          Login
+        </button>
+      </form>
+
+      <!-- TOGGLE -->
+      <div class="auth-footer" id="toggleText">
+        New to Krishi AI?
+        <a href="#" onclick="toggleForm()">Create an account</a>
+      </div>
+
+      <!-- MESSAGE -->
+      <div id="authMessage" class="auth-status"></div>
+
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    let isLogin = true;
+
+    const toggleForm = () => {
+      isLogin = !isLogin;
+
+      document.getElementById("formTitle").innerText =
+        isLogin ? "Farmer Login" : "Register as Farmer";
+
+      document.getElementById("authBtn").innerText =
+        isLogin ? "Login" : "Register";
+
+      document.getElementById("toggleText").innerHTML = isLogin
+        ? `New to Krishi AI? <a href="#" onclick="toggleForm()">Create an account</a>`
+        : `Already have an account? <a href="#" onclick="toggleForm()">Login</a>`;
+
+      document.getElementById("authMessage").innerHTML = "";
+    };
+
+    document.getElementById("authForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      const url = isLogin ? "/auth/login" : "/auth/register";
+
+      try {
+        const res = await fetch(getApiUrl(url), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+        const msgDiv = document.getElementById("authMessage");
+
+        if (res.ok) {
+          msgDiv.className = "auth-status success";
+          msgDiv.innerText = `✅ ${data.message}`;
+
+          if (isLogin) {
+            setTimeout(() => {
+              localStorage.setItem("loggedInUser", username);
+              window.location.href = "index.html";
+            }, 800);
+          }
+        } else {
+          msgDiv.className = "auth-status error";
+          msgDiv.innerText = `❌ ${data.detail}`;
+        }
+      } catch {
+        document.getElementById("authMessage").innerText = "⚠️ Server not reachable";
+      }
+    });
+  </script>
+
+</body>
+</html>
