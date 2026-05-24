@@ -15,3 +15,11 @@ sqlalchemy
 python-dotenv
 gunicorn
 redis
+psutil
+prometheus-client
+pydantic
+pydantic-settings
+aiofiles
+httpx
+python-dateutil
+streamlit
