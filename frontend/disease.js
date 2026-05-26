@@ -144,3 +144,65 @@ document.getElementById("fertilizerForm").addEventListener("submit", function (e
     ? `🧪 <strong>Recommended Fertilizer:</strong> ${fertilizer}`
     : `❌ No fertilizer data found for "${crop}".`;
 });
+
+/* =========================
+   🤖 AI ASSISTANT
+=========================== */
+
+const assistantForm = document.getElementById("assistantForm");
+if (assistantForm) {
+  const assistantMessage = document.getElementById("assistantMessage");
+  const assistantChat = document.getElementById("assistantChat");
+  const assistantStatus = document.getElementById("assistantStatus");
+
+  const addAssistantMessage = (text, sender) => {
+    const bubble = document.createElement("div");
+    bubble.className = sender === "assistant" ? "chat bot" : "chat user";
+    bubble.innerText = text;
+    assistantChat.appendChild(bubble);
+    assistantChat.scrollTop = assistantChat.scrollHeight;
+  };
+
+  const setAssistantStatus = (text, isError = false) => {
+    assistantStatus.innerText = text;
+    assistantStatus.style.color = isError ? "#c0392b" : "#2e7d32";
+  };
+
+  assistantForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const message = assistantMessage.value.trim();
+    if (!message) {
+      setAssistantStatus("Kripya sawal likhe.", true);
+      return;
+    }
+
+    addAssistantMessage(message, "user");
+    assistantMessage.value = "";
+    setAssistantStatus("Krishi AI se jawab aa raha hai...", false);
+
+    try {
+      const response = await fetch(getApiUrl("/api/ai-assistant"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+      });
+
+      if (!response.ok) {
+        let errorData = {};
+        try {
+          errorData = await response.json();
+        } catch (_err) {}
+        throw new Error(errorData.detail || "Server abhi thoda busy hai.");
+      }
+
+      const data = await response.json();
+      addAssistantMessage(data.reply || "Krishi AI abhi jawab nahi de pa raha hai.", "assistant");
+      setAssistantStatus("Jawab mil gaya. Neeche dekhein.", false);
+    } catch (err) {
+      console.error(err);
+      setAssistantStatus(err.message || "AI assistant service unavailable.", true);
+      addAssistantMessage("Krishi AI se abhi jawab nahin mila. Kuch der baad phir koshish karein.", "assistant");
+    }
+  });
+}

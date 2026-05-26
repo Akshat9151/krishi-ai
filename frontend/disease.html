@@ -102,6 +102,23 @@
       </form>
       <div id="fertilizerResult"></div>
     </section>
+
+    <!-- 🤖 AI Assistant -->
+    <section class="feature-section" style="margin-top: 40px; background: #e8f5e9; border-radius: 18px; padding: 24px;">
+      <h3>🤖 AI Assistant</h3>
+      <p>Ask Krishi AI about crop disease, soil, irrigation, or fertilizers in Hindi/Hinglish.</p>
+      <div class="assistant-panel">
+        <div id="assistantChat" class="chat-box"></div>
+
+        <form id="assistantForm" class="assistant-form">
+          <label for="assistantMessage">Apna sawal likhiye:</label>
+          <textarea id="assistantMessage" rows="4" placeholder="Gehu ke patton par peele daag aa rahe hain. Kya karun?" required></textarea>
+          <button type="submit">Poochein</button>
+        </form>
+
+        <div id="assistantStatus" class="assistant-status"></div>
+      </div>
+    </section>
   </main>
 
   <!-- 🔁 JS Logic -->

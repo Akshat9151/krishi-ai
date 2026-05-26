@@ -1,1 +1,75 @@
-h
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Assistant | Krishi AI</title>
+  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+ <header class="main-header">
+  <div class="header-left">
+    <img src="statics/images/logo.jpg" alt="Krishi AI Logo" class="header-logo" />
+    <div class="header-title">
+      <h1>Krishi AI</h1>
+      <span>Your Smart Agriculture Assistant</span>
+    </div>
+  </div>
+
+  <button class="menu-toggle" id="menuToggle">☰</button>
+
+  <nav class="header-nav" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="disease.html">Disease</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<div class="language-bar">
+  <div id="google_translate_element"></div>
+</div>
+
+<main>
+  <h2>🤖 AI Assistant</h2>
+  <p>Ask Krishi AI for crop, disease, fertilizer, irrigation, or weather advice in Hindi / Hinglish.</p>
+
+  <section class="feature-section">
+    <div class="assistant-panel">
+      <div id="assistantChat" class="chat-box"></div>
+
+      <form id="assistantForm" class="assistant-form">
+        <label for="assistantMessage">Apna sawal likhiye:</label>
+        <textarea id="assistantMessage" rows="4" placeholder="Mere gehu ke patte pe peele daag aa rahe hain..." required></textarea>
+        <button type="submit">Ask Krishi</button>
+      </form>
+
+      <div id="assistantStatus" class="assistant-status"></div>
+    </div>
+
+    <div class="assistant-help">
+      <h3>Sample questions</h3>
+      <ul>
+        <li>Gehu me peele daag aa rahe hain, kya karun?</li>
+        <li>Mitti me paani kaise maintain karu?</li>
+        <li>Rice ke liye best fertilizer kya hai?</li>
+        <li>Mausam kaise dekhun aur fasal kaise bachau?</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<script type="module" src="assistant.config.js"></script>
+<script src="assistant.js"></script>
+
+<script>
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      { pageLanguage: 'en' },
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
