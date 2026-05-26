@@ -147,10 +147,4 @@ def is_development() -> bool:
 
 def get_database_url() -> str:
     """Get complete database URL."""
-    if settings.DATABASE_URL:
-        return settings.DATABASE_URL
-    
-    return (
-        f"postgresql://{settings.DB_USER}:{settings.DB_PASSWORD}"
-        f"@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
-    )
+    return settings.DATABASE_URL
