@@ -1,7 +1,3 @@
-// API Configuration
-const API_BASE_URL = 'https://krishi-ai-2-4j3k.onrender.com';
-const getApiUrl = (endpoint) => `${API_BASE_URL}${endpoint}`;
-
 document.addEventListener("DOMContentLoaded", () => {
 
   const form = document.getElementById("weatherForm");

@@ -1,7 +1,3 @@
-// API Configuration
-const API_BASE_URL = 'https://krishi-ai-2-4j3k.onrender.com';
-const getApiUrl = (endpoint) => `${API_BASE_URL}${endpoint}`;
-
 /* =========================
    🦠 DISEASE PREDICTION
 =========================== */
@@ -122,3 +118,29 @@ async function loadProducts(crop) {
   }
 
 }
+
+document.getElementById("fertilizerForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const crop = document.getElementById("fertilizerCrop").value.trim().toLowerCase();
+  const resultDiv = document.getElementById("fertilizerResult");
+
+  if (!crop) {
+    resultDiv.innerHTML = "⚠️ Please enter crop name";
+    return;
+  }
+
+  const fertilizerMap = {
+    wheat: "Urea + DAP (Di-Ammonium Phosphate)",
+    rice: "Urea + Potash",
+    cotton: "Nitrogen + Potassium",
+    maize: "NPK (10:26:26)",
+    sugarcane: "Urea + SSP + Potash"
+  };
+
+  const fertilizer = fertilizerMap[crop];
+
+  resultDiv.innerHTML = fertilizer
+    ? `🧪 <strong>Recommended Fertilizer:</strong> ${fertilizer}`
+    : `❌ No fertilizer data found for "${crop}".`;
+});
