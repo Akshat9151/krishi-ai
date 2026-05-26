@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Request
 from pydantic import BaseModel, validator
+from typing import Optional
 
 from services.weather import get_weather, get_farming_recommendations
 from services.crop_ml_model import predict_crop_ml
@@ -26,6 +27,11 @@ class CropRequest(BaseModel):
     location: str
     soil_type: str
     season: str
+    # optional soil nutrient inputs (if provided by frontend)
+    N: Optional[float] = None
+    P: Optional[float] = None
+    K: Optional[float] = None
+    ph: Optional[float] = None
 
     @validator('location')
     def validate_location(cls, v):
@@ -125,25 +131,31 @@ def predict_crop(request: Request, data: CropRequest):
         weather = get_weather(data.location)
 
         # TEMP soil params (future: sensor / image ML)
-        N = 90
-        P = 42
-        K = 43
-        ph = 6.5
+        # soil params: prefer user-provided values; otherwise use defaults
+        N = data.N if data.N is not None else 90
+        P = data.P if data.P is not None else 42
+        K = data.K if data.K is not None else 43
+        ph = data.ph if data.ph is not None else 6.5
 
-        crop = predict_crop_ml(
+        # get top-3 recommendations
+        preds = predict_crop_ml(
             N=N,
             P=P,
             K=K,
             temperature=weather["temperature"],
             humidity=weather["humidity"],
             ph=ph,
-            rainfall=weather["rainfall"]
+            rainfall=weather["rainfall"],
+            top_n=3
         )
+
+        # preds is list of {crop, confidence}
+        recommended = preds
 
         logger.log_ml_prediction(
             "crop_recommendation",
             {"location": data.location, "soil_type": data.soil_type, "season": data.season},
-            crop
+            recommended
         )
 
         return {
@@ -151,7 +163,7 @@ def predict_crop(request: Request, data: CropRequest):
             "temperature": weather["temperature"],
             "humidity": weather["humidity"],
             "rainfall": weather["rainfall"],
-            "recommended_crop": crop
+            "recommended_crops": recommended
         }
     except Exception as e:
         logger.log_error(e, "Crop Prediction API")

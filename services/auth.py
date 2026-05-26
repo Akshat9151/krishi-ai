@@ -13,6 +13,7 @@ from services.auth_utils import (
     get_current_user_token,
     ACCESS_TOKEN_EXPIRE_MINUTES
 )
+from services.logger import logger
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 security = HTTPBearer()
@@ -86,6 +87,8 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_user)
 
+        logger.log_auth_event("register", new_user.username, True)
+
         return UserResponse(
             id=new_user.id,
             username=new_user.username,
@@ -95,6 +98,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         raise
     except Exception as e:
         db.rollback()
+        logger.log_auth_event("register", user.username if user else "unknown", False)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
             detail=f"Registration failed: {str(e)}"
@@ -119,6 +123,7 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
 
         # Verify password
         if not verify_password(user.password, db_user.password):
+            logger.log_auth_event("login", user.username, False)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, 
                 detail="Invalid username or password ❌"
@@ -130,10 +135,13 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
             data={"sub": db_user.username}, expires_delta=access_token_expires
         )
 
+        logger.log_auth_event("login", db_user.username, True)
+
         return Token(access_token=access_token, token_type="bearer")
     except HTTPException:
         raise
     except Exception as e:
+        logger.log_auth_event("login", user.username if user else "unknown", False)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
             detail=f"Login failed: {str(e)}"

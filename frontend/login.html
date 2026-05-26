@@ -90,9 +90,14 @@
                 if(res.status === 200){
                     loginStatus.textContent = "Login successful! Redirecting...";
                     loginStatus.className = "success";
-                    
+
+                    // store token for authenticated requests
+                    if(data && data.access_token){
+                        localStorage.setItem("accessToken", data.access_token);
+                    }
+
                     localStorage.setItem("loggedInUser", username);
-                    
+
                     // Redirect after a brief delay
                     setTimeout(() => {
                         window.location.href = "index.html";

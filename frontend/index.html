@@ -136,6 +136,26 @@
       </div>
 
       <div class="input-group">
+        <label>Nitrogen (N):</label>
+        <input type="number" id="nitrogen" placeholder="e.g., 90" />
+      </div>
+
+      <div class="input-group">
+        <label>Phosphorus (P):</label>
+        <input type="number" id="phosphorus" placeholder="e.g., 42" />
+      </div>
+
+      <div class="input-group">
+        <label>Potassium (K):</label>
+        <input type="number" id="potassium" placeholder="e.g., 43" />
+      </div>
+
+      <div class="input-group">
+        <label>Soil pH:</label>
+        <input type="number" id="soilPh" step="0.1" placeholder="e.g., 6.5" />
+      </div>
+
+      <div class="input-group">
         <label>City:</label>
         <input type="text" id="city" required placeholder="e.g., Jaipur" />
       </div>
@@ -208,6 +228,7 @@
   // 🚪 Logout
   function logout() {
     localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("accessToken");
     localStorage.removeItem("darkMode");
     window.location.href = "login.html";
   }

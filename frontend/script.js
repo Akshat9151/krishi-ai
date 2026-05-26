@@ -10,6 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const soilType = document.getElementById("soilType").value.trim();
     const city = document.getElementById("city").value.trim();
     const season = document.getElementById("season").value;
+    const nitrogen = document.getElementById("nitrogen").value.trim();
+    const phosphorus = document.getElementById("phosphorus").value.trim();
+    const potassium = document.getElementById("potassium").value.trim();
+    const soilPh = document.getElementById("soilPh").value.trim();
 
     if (!soilType || !city || !season) {
 
@@ -25,6 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
       location: city
 
     };
+
+    // attach optional numeric inputs if provided
+    if (nitrogen) payload.N = Number(nitrogen);
+    if (phosphorus) payload.P = Number(phosphorus);
+    if (potassium) payload.K = Number(potassium);
+    if (soilPh) payload.ph = Number(soilPh);
 
     resultDiv.innerHTML = "⏳ Predicting best crop...";
 
@@ -42,8 +52,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
 
-      resultDiv.innerHTML = `
+      // render weather
+      let cropsHtml = '';
+      if (data.recommended_crops && Array.isArray(data.recommended_crops)) {
+        cropsHtml = '<ul>' + data.recommended_crops.map(c => `<li>${c.crop} — ${(c.confidence*100).toFixed(1)}%</li>`).join('') + '</ul>';
+      } else if (data.recommended_crop) {
+        cropsHtml = `<b>${data.recommended_crop}</b>`;
+      }
 
+      resultDiv.innerHTML = `
         <div class="weather-box">
           🌍 Location: ${data.location} <br>
           🌡 Temperature: ${data.temperature} °C <br>
@@ -51,10 +68,9 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
 
         <div class="crop-box">
-          🌾 Recommended Crop:
-          <b>${data.recommended_crop}</b>
+          🌾 Top Recommendations:
+          ${cropsHtml}
         </div>
-
       `;
 
       // Save to prediction history
