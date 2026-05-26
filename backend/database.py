@@ -1,9 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "postgresql://postgres:root@localhost:5432/krishi_ai"
+DATABASE_URL = "sqlite:///./krishi_ai.db"
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False}
+)
 
 SessionLocal = sessionmaker(
     autocommit=False,

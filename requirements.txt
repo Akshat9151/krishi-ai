@@ -10,7 +10,6 @@ python-jose[cryptography]
 python-multipart
 passlib[bcrypt]
 slowapi
-psycopg2-binary
 sqlalchemy
 python-dotenv
 gunicorn

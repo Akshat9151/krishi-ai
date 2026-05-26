@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     
     # Database
-    DATABASE_URL: str = "postgresql://postgres:root@localhost:5432/krishi_ai"
+    DATABASE_URL: str = "sqlite:///./krishi_ai.db"
     DB_HOST: str = "localhost"
     DB_PORT: int = 5432
     DB_NAME: str = "krishi_ai"
