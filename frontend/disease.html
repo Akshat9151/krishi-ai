@@ -77,6 +77,21 @@
 </section>
 
 
+    <!-- 📸 Image Upload Preview -->
+    <section class="feature-section">
+      <h3>📸 Upload Crop Image</h3>
+      <form id="imageForm">
+        <div class="input-group">
+          <label>Select Crop Image:</label>
+          <input type="file" id="cropImage" accept="image/*" />
+        </div>
+        <div id="imagePreview" style="display: none; margin-top: 20px; text-align: center;">
+          <img id="previewImg" style="max-width: 300px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
+          <p id="imageName" style="margin-top: 12px; color: #2d5016; font-weight: 600;"></p>
+        </div>
+      </form>
+    </section>
+
     <!-- 🦠 Crop Disease Prediction -->
     <section class="feature-section">
       <h3>🔬 Disease Prediction</h3>

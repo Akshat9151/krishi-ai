@@ -31,11 +31,16 @@ try:
 except Exception as e:
     print(f"❌ Error creating database tables: {e}")
 
-# CORS middleware - Allow only the deployed frontend origin
+# CORS middleware - Allow deployed frontend origins and local development
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://krishi-ai-sable-sigma.vercel.app"
+        "https://krishi-ai-sable-sigma.vercel.app",
+        "https://krishi-ai-2-4j3k.onrender.com",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
     ],
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods

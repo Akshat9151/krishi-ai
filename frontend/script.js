@@ -51,11 +51,34 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
 
         <div class="crop-box">
-          🌾 Recommended Crop: 
+          🌾 Recommended Crop:
           <b>${data.recommended_crop}</b>
         </div>
 
       `;
+
+      // Save to prediction history
+      const predictionHistory = JSON.parse(localStorage.getItem('krishi_prediction_history')) || [];
+      predictionHistory.push({
+        crop: data.recommended_crop,
+        location: data.location,
+        temperature: data.temperature,
+        humidity: data.humidity,
+        soil_type: soilType,
+        season: season,
+        timestamp: Date.now()
+      });
+      localStorage.setItem('krishi_prediction_history', JSON.stringify(predictionHistory));
+
+      // Update stats
+      const stats = JSON.parse(localStorage.getItem('krishi_stats')) || {};
+      stats.predictions = (stats.predictions || 0) + 1;
+      localStorage.setItem('krishi_stats', JSON.stringify(stats));
+
+      // Set first use if not set
+      if (!localStorage.getItem('krishi_first_use')) {
+        localStorage.setItem('krishi_first_use', Date.now().toString());
+      }
 
     } catch (error) {
 

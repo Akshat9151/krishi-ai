@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard – Krishi AI</title>
+  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin: 20px auto;
+      max-width: 1200px;
+      padding: 20px;
+    }
+
+    .dashboard-card {
+      background: linear-gradient(135deg, #e8f5e9 0%, #f1f8ed 100%);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(46, 125, 50, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-header {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2d5016;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1b5e20;
+      margin: 12px 0;
+    }
+
+    .card-detail {
+      font-size: 14px;
+      color: #558b2f;
+      line-height: 1.5;
+    }
+
+    .activity-log {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #f1f8ed;
+      border-radius: 18px;
+      border: 1px solid #c8e6c9;
+    }
+
+    .activity-item {
+      padding: 12px 16px;
+      background: white;
+      border-radius: 12px;
+      margin: 10px 0;
+      border-left: 4px solid #2e7d32;
+      font-size: 14px;
+    }
+
+    .activity-time {
+      color: #999;
+      font-size: 12px;
+    }
+
+    .history-section {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #e8f5e9 0%, #f1f8ed 100%);
+      border-radius: 18px;
+      border: 1px solid rgba(46, 125, 50, 0.2);
+    }
+
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .history-card {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      border-left: 4px solid #2e7d32;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .history-card h4 {
+      color: #2d5016;
+      margin: 0 0 8px 0;
+      font-size: 14px;
+    }
+
+    .history-card p {
+      margin: 4px 0;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .history-card .timestamp {
+      color: #999;
+      font-size: 11px;
+      margin-top: 8px;
+    }
+
+    .weather-insights {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff3e0;
+      border-radius: 18px;
+      border-left: 5px solid #e65100;
+    }
+
+    .weather-insights h3 {
+      color: #e65100;
+      margin-top: 0;
+    }
+
+    .weather-insights p {
+      line-height: 1.6;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+ <header class="main-header">
+  <div class="header-left">
+    <img src="statics/images/logo.jpg" alt="Krishi AI Logo" class="header-logo" />
+    <div class="header-title">
+      <h1>Krishi AI</h1>
+      <span>Your Smart Agriculture Assistant</span>
+    </div>
+  </div>
+
+  <button class="menu-toggle" id="menuToggle">☰</button>
+
+  <nav class="header-nav" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="disease.html">Disease</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<main style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+  <h2 style="text-align: center; color: #2d5016; margin-bottom: 30px;">🏡 Your Farming Dashboard</h2>
+
+  <div class="dashboard-grid">
+    <div class="dashboard-card">
+      <div class="card-header">📊 Total Predictions</div>
+      <div class="card-value" id="totalPredictions">0</div>
+      <div class="card-detail">Crop predictions made</div>
+    </div>
+
+    <div class="dashboard-card">
+      <div class="card-header">🦠 Disease Detections</div>
+      <div class="card-value" id="totalDiseases">0</div>
+      <div class="card-detail">Diseases identified</div>
+    </div>
+
+    <div class="dashboard-card">
+      <div class="card-header">💬 AI Conversations</div>
+      <div class="card-value" id="totalChats">0</div>
+      <div class="card-detail">Questions asked</div>
+    </div>
+
+    <div class="dashboard-card">
+      <div class="card-header">📅 Days Active</div>
+      <div class="card-value" id="daysActive">0</div>
+      <div class="card-detail">Using Krishi AI</div>
+    </div>
+  </div>
+
+  <!-- Weather Insights -->
+  <div class="weather-insights">
+    <h3>🌤️ Weather Insights</h3>
+    <p id="weatherInsights">Loading weather insights...</p>
+  </div>
+
+  <!-- Prediction History -->
+  <div class="history-section">
+    <h3 style="color: #2d5016; margin-top: 0;">📊 Prediction History</h3>
+    <div id="predictionHistory" class="history-grid">
+      <p style="color: #777;">No predictions yet. Start using crop prediction!</p>
+    </div>
+  </div>
+
+  <!-- Disease History -->
+  <div class="history-section">
+    <h3 style="color: #2d5016; margin-top: 0;">🦠 Disease Detection History</h3>
+    <div id="diseaseHistory" class="history-grid">
+      <p style="color: #777;">No disease detections yet. Start using disease detection!</p>
+    </div>
+  </div>
+
+  <div class="activity-log">
+    <h3 style="color: #2d5016; margin-top: 0;">📝 Recent Activity</h3>
+    <div id="activityList" style="max-height: 400px; overflow-y: auto;">
+      <div class="activity-item">
+        Welcome! Start using Krishi AI for farming assistance.
+        <div class="activity-time">Just now</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="config.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const stats = JSON.parse(localStorage.getItem('krishi_stats')) || {};
+    document.getElementById('totalPredictions').innerText = stats.predictions || 0;
+    document.getElementById('totalDiseases').innerText = stats.diseases || 0;
+    document.getElementById('totalChats').innerText = stats.chats || 0;
+    
+    const firstUse = localStorage.getItem('krishi_first_use');
+    if (firstUse) {
+      const daysActive = Math.floor((Date.now() - parseInt(firstUse)) / (1000 * 60 * 60 * 24)) || 1;
+      document.getElementById('daysActive').innerText = daysActive;
+    }
+
+    // Load prediction history
+    const predictionHistory = JSON.parse(localStorage.getItem('krishi_prediction_history')) || [];
+    const predictionContainer = document.getElementById('predictionHistory');
+    if (predictionHistory.length > 0) {
+      predictionContainer.innerHTML = predictionHistory.slice(-6).reverse().map(item => `
+        <div class="history-card">
+          <h4>🌾 ${item.crop}</h4>
+          <p>📍 ${item.location}</p>
+          <p>🌡️ ${item.temperature}°C | 💧 ${item.humidity}%</p>
+          <div class="timestamp">${new Date(item.timestamp).toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+
+    // Load disease history
+    const diseaseHistory = JSON.parse(localStorage.getItem('krishi_disease_history')) || [];
+    const diseaseContainer = document.getElementById('diseaseHistory');
+    if (diseaseHistory.length > 0) {
+      diseaseContainer.innerHTML = diseaseHistory.slice(-6).reverse().map(item => `
+        <div class="history-card">
+          <h4>🦠 ${item.crop}</h4>
+          <p>🔬 ${item.disease}</p>
+          <p>💊 ${item.solution}</p>
+          <div class="timestamp">${new Date(item.timestamp).toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+
+    // Load weather insights
+    const lastWeather = JSON.parse(localStorage.getItem('krishi_last_weather'));
+    if (lastWeather) {
+      document.getElementById('weatherInsights').innerHTML = `
+        <strong>📍 ${lastWeather.location}</strong><br>
+        🌡️ Temperature: ${lastWeather.temperature}°C<br>
+        💧 Humidity: ${lastWeather.humidity}%<br>
+        🌧️ Rainfall: ${lastWeather.rainfall}mm<br>
+        💨 Wind Speed: ${lastWeather.wind_speed}km/h<br>
+        <em>Last updated: ${new Date(lastWeather.timestamp).toLocaleString()}</em>
+      `;
+    } else {
+      document.getElementById('weatherInsights').innerHTML = 'Check weather on the Weather page to see insights here.';
+    }
+  });
+</script>
+</body>
+</html>

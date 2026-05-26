@@ -20,14 +20,19 @@
 
   <nav class="header-nav" id="mobileMenu">
     <a href="index.html">Home</a>
-    <a href="about.html">About</a>
+    <a href="dashboard.html">Dashboard</a>
     <a href="disease.html">Disease</a>
     <a href="contact.html">Contact</a>
   </nav>
 </header>
 
 <div class="language-bar">
-  <div id="google_translate_element"></div>
+  <select id="languageSelect" style="padding: 8px 12px; border-radius: 8px; border: 2px solid #43a047; cursor: pointer;">
+    <option value="en">English</option>
+    <option value="hi">हिंदी</option>
+    <option value="hinglish">Hinglish</option>
+  </select>
+  <div id="google_translate_element" style="margin-left: auto;"></div>
 </div>
 
 <main>
@@ -39,28 +44,37 @@
       <div id="assistantChat" class="chat-box"></div>
 
       <form id="assistantForm" class="assistant-form">
-        <label for="assistantMessage">Apna sawal likhiye:</label>
-        <textarea id="assistantMessage" rows="4" placeholder="Mere gehu ke patte pe peele daag aa rahe hain..." required></textarea>
-        <button type="submit">Ask Krishi</button>
+        <div style="display: flex; gap: 12px; align-items: flex-start;">
+          <textarea id="assistantMessage" rows="3" placeholder="Mere gehu ke patte pe peele daag aa rahe hain..." required style="flex: 1;"></textarea>
+          <button type="button" id="voiceBtn" class="voice-btn" title="Speak your question">
+            🎤 Speak
+          </button>
+        </div>
+        <button type="submit" style="width: 100%;">Send</button>
       </form>
 
       <div id="assistantStatus" class="assistant-status"></div>
     </div>
 
     <div class="assistant-help">
-      <h3>Sample questions</h3>
-      <ul>
-        <li>Gehu me peele daag aa rahe hain, kya karun?</li>
-        <li>Mitti me paani kaise maintain karu?</li>
-        <li>Rice ke liye best fertilizer kya hai?</li>
-        <li>Mausam kaise dekhun aur fasal kaise bachau?</li>
-      </ul>
+      <h3>🎯 Suggested Prompts</h3>
+      <div class="suggested-prompts">
+        <button class="prompt-btn" data-prompt="Gehu me peele daag aa rahe hain, kya karun?">🌾 Gehu me peele daag aa rahe hain</button>
+        <button class="prompt-btn" data-prompt="Mitti me paani kaise maintain karu?">💧 Mitti me paani kaise maintain karu?</button>
+        <button class="prompt-btn" data-prompt="Rice ke liye best fertilizer kya hai?">🌱 Rice ke liye best fertilizer kya hai?</button>
+        <button class="prompt-btn" data-prompt="Mausam kaise dekhun aur fasal kaise bachau?">🌤️ Mausam kaise dekhun aur fasal kaise bachau?</button>
+        <button class="prompt-btn" data-prompt="Cotton ke liye best crop cycle kya hai?">🌿 Cotton ke liye best crop cycle kya hai?</button>
+        <button class="prompt-btn" data-prompt="Sukhe mausam me irrigation kaise karein?">☀️ Sukhe mausam me irrigation kaise karein?</button>
+      </div>
     </div>
   </section>
 </main>
 
 <script type="module" src="assistant.config.js"></script>
-<script src="assistant.js"></script>
+<script src="voice.js"></script>
+<script src="i18n.js"></script>
+<script src="weather-service.js"></script>
+<script src="assistant-enhanced.js"></script>
 
 <script>
   function googleTranslateElementInit() {

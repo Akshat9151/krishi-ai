@@ -67,36 +67,96 @@
 
 <!-- ================= MAIN ================= -->
 <main>
-  <form id="cropForm">
-
-    <div class="input-group">
-      <label>Soil Type:</label>
-      <input type="text" id="soilType" required placeholder="e.g., loamy, sandy" />
+  <!-- 🎯 HERO SECTION -->
+  <section class="hero-section" style="animation: fadeInDown 0.8s ease;">
+    <div class="hero-content">
+      <h1 style="font-size: 42px; color: #1b5e20; margin-bottom: 16px; animation: slideInUp 0.8s ease;">
+        🌾 Empower Your Farming with AI
+      </h1>
+      <p style="font-size: 18px; color: #558b2f; margin-bottom: 24px; animation: slideInUp 0.8s ease 0.1s backwards;">
+        Smart crop predictions, disease detection, and AI-powered farming guidance for Indian farmers
+      </p>
+      <div style="display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; animation: slideInUp 0.8s ease 0.2s backwards;">
+        <a href="#predict" class="cta-btn primary">Get Started</a>
+        <a href="dashboard.html" class="cta-btn secondary">View Dashboard</a>
+      </div>
     </div>
+  </section>
 
-    <div class="input-group">
-      <label>City:</label>
-      <input type="text" id="city" required placeholder="e.g., Jaipur" />
+  <!-- 📊 FEATURE CARDS -->
+  <section class="features-section">
+    <h2 style="text-align: center; color: #2d5016; margin-bottom: 32px; font-size: 28px;">🚀 What Krishi AI Offers</h2>
+    <div class="features-grid">
+      <div class="feature-box">
+        <div class="feature-icon">🌾</div>
+        <h3>Crop Prediction</h3>
+        <p>AI-powered recommendations for best crops based on soil, location, and season</p>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon">🦠</div>
+        <h3>Disease Detection</h3>
+        <p>Identify crop diseases early and get treatment recommendations instantly</p>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon">🌤️</div>
+        <h3>Live Weather</h3>
+        <p>Real-time weather data and farming tips tailored to your location</p>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon">🤖</div>
+        <h3>AI Assistant</h3>
+        <p>Chat with Krishi AI in Hindi/Hinglish for instant farming advice</p>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon">🎤</div>
+        <h3>Voice Support</h3>
+        <p>Speak in Hindi/Hinglish and get AI responses via text and voice</p>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon">📊</div>
+        <h3>Dashboard</h3>
+        <p>Track your farming history, predictions, and activity all in one place</p>
+      </div>
     </div>
+  </section>
 
-    <div class="input-group">
-      <label>Season:</label>
-      <select id="season" required>
-        <option value="">Select</option>
-        <option value="rabi">Rabi</option>
-        <option value="kharif">Kharif</option>
-        <option value="zaid">Zaid</option>
-      </select>
-    </div>
+  <!-- 🌾 CROP PREDICTION FORM -->
+  <section id="predict" class="prediction-section">
+    <h2 style="text-align: center; color: #2d5016; margin-bottom: 24px;">Get Your Crop Prediction</h2>
+    <form id="cropForm" style="max-width: 600px; margin: auto;">
 
-    <button type="submit" class="predict-btn">
-      🌾 Predict Best Crop for Your Land
-    </button>
+      <div class="input-group">
+        <label>Soil Type:</label>
+        <input type="text" id="soilType" required placeholder="e.g., loamy, sandy" />
+      </div>
 
-    <button type="button" onclick="toggleDarkMode()">🌙</button>
-  </form>
+      <div class="input-group">
+        <label>City:</label>
+        <input type="text" id="city" required placeholder="e.g., Jaipur" />
+      </div>
 
-  <div id="result"></div>
+      <div class="input-group">
+        <label>Season:</label>
+        <select id="season" required>
+          <option value="">Select Season</option>
+          <option value="rabi">Rabi</option>
+          <option value="kharif">Kharif</option>
+          <option value="zaid">Zaid</option>
+        </select>
+      </div>
+
+      <button type="submit" class="predict-btn">
+        🌾 Predict Best Crop for Your Land
+      </button>
+    </form>
+
+    <div id="result" style="margin-top: 24px;"></div>
+  </section>
 </main>
 <!-- ================= MAIN END ================= -->
 

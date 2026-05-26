@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Request
 from pydantic import BaseModel, validator
 
-from services.weather import get_weather
+from services.weather import get_weather, get_farming_recommendations
 from services.crop_ml_model import predict_crop_ml
 from services.disease_logic import predict_disease
 from services.product_data import PRODUCTS
@@ -96,12 +96,15 @@ def ai_assistant_api(request: Request, data: AssistantRequest):
 def weather_api(request: Request, data: WeatherRequest):
     try:
         weather = get_weather(data.location)
+        recommendations = get_farming_recommendations(weather)
         logger.log_weather_api_call(data.location, True, weather["temperature"])
         return {
             "location": data.location,
             "temperature": weather["temperature"],
             "humidity": weather["humidity"],
-            "rainfall": weather["rainfall"]
+            "rainfall": weather["rainfall"],
+            "wind_speed": weather["wind_speed"],
+            "recommendations": recommendations
         }
     except Exception as e:
         logger.log_weather_api_call(data.location, False, error=str(e))
