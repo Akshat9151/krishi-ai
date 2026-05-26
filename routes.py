@@ -130,26 +130,15 @@ def predict_crop(request: Request, data: CropRequest):
     try:
         weather = get_weather(data.location)
 
-        # TEMP soil params (future: sensor / image ML)
-        # soil params: prefer user-provided values; otherwise use defaults
-        N = data.N if data.N is not None else 90
-        P = data.P if data.P is not None else 42
-        K = data.K if data.K is not None else 43
-        ph = data.ph if data.ph is not None else 6.5
-
-        # get top-3 recommendations
+        # derive recommendations from selected soil, season, location and weather
         preds = predict_crop_ml(
-            N=N,
-            P=P,
-            K=K,
-            temperature=weather["temperature"],
-            humidity=weather["humidity"],
-            ph=ph,
-            rainfall=weather["rainfall"],
+            soil_type=data.soil_type,
+            season=data.season,
+            location=data.location,
+            weather=weather,
             top_n=3
         )
 
-        # preds is list of {crop, confidence}
         recommended = preds
 
         logger.log_ml_prediction(
