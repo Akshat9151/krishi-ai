@@ -3,194 +3,184 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Krishi AI – Farmer Dashboard & Workspace</title>
+  <title>Krishi AI – Farmer Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    /* ==============================================
-       APP-LEVEL DASHBOARD & SIDEBAR LAYOUT
-    ============================================== */
-    body {
+    /* ===================================================
+       VOTEVICTORY-STYLE SIDEBAR & WORKSPACE ARCHITECTURE
+    =================================================== */
+    :root {
+      --sidebar-width: 260px;
+      --primary-color: #2e7d32;
+      --primary-dark: #1b5e20;
+      --primary-light: #e8f5e9;
+      --accent-pill: #2e7d32;
+      --sidebar-bg: #143818;
+      --sidebar-card: #1c4721;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --bg-workspace: #f8faf8;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      background: #f4f7f4;
-      color: #2c3e50;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+      background: var(--bg-workspace);
+      color: var(--text-main);
       overflow-x: hidden;
     }
 
-    .app-shell {
+    .app-layout {
       display: flex;
       height: 100vh;
       width: 100vw;
       overflow: hidden;
     }
 
-    /* Persistent Sidebar */
+    /* 1. Left Vertical Persistent Sidebar */
     .app-sidebar {
-      width: 270px;
-      min-width: 270px;
-      background: #1b431e;
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      background: var(--sidebar-bg);
       color: #ffffff;
       display: flex;
       flex-direction: column;
-      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.12);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      height: 100%;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
       z-index: 1000;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* Brand / Header */
     .sidebar-brand {
-      padding: 20px 18px;
+      padding: 24px 20px 18px 20px;
       display: flex;
       align-items: center;
       gap: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .sidebar-brand img {
-      width: 42px;
-      height: 42px;
+      width: 38px;
+      height: 38px;
       border-radius: 10px;
-      background: #fff;
+      background: #ffffff;
       padding: 3px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     }
 
     .sidebar-brand-text h2 {
       margin: 0;
-      font-size: 20px;
-      font-weight: 700;
-      color: #e8f5e9;
-      letter-spacing: 0.5px;
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.3px;
     }
 
     .sidebar-brand-text span {
       font-size: 11px;
-      color: #a5d6a7;
+      color: #81c784;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 600;
+      letter-spacing: 0.8px;
     }
 
-    /* ⚡ FLIPKART MINUTES STYLE QUICK STORE SHORTCUT */
-    .quick-store-banner {
-      margin: 14px 16px 8px 16px;
-      padding: 12px 14px;
+    /* Quick Express Store Button (Prominent Shortcut) */
+    .store-shortcut-pill {
+      margin: 14px 16px 6px 16px;
+      padding: 10px 14px;
       background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-      border-radius: 12px;
+      border-radius: 10px;
       color: #ffffff;
       text-decoration: none;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 4px 15px rgba(245, 124, 0, 0.35);
-      position: relative;
-      overflow: hidden;
-      transition: all 0.25s ease;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 4px 12px rgba(245, 124, 0, 0.3);
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
-    .quick-store-banner:hover {
+    .store-shortcut-pill:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(245, 124, 0, 0.5);
+      box-shadow: 0 6px 16px rgba(245, 124, 0, 0.45);
     }
 
-    .quick-store-banner::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(60deg, transparent, rgba(255,255,255,0.25), transparent);
-      transform: rotate(30deg);
-      animation: storeShine 3.5s infinite;
-    }
-
-    @keyframes storeShine {
-      0% { transform: translateX(-100%) rotate(30deg); }
-      30%, 100% { transform: translateX(100%) rotate(30deg); }
-    }
-
-    .store-banner-left {
+    .store-shortcut-pill span {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .store-banner-icon {
-      font-size: 20px;
-      background: #ffffff;
-      color: #e65100;
-      width: 34px;
-      height: 34px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-
-    .store-banner-text h4 {
-      margin: 0;
-      font-size: 14px;
-      font-weight: 700;
-      color: #ffffff;
-    }
-
-    .store-banner-text p {
-      margin: 2px 0 0 0;
+    .store-shortcut-pill .badge {
+      background: rgba(0,0,0,0.25);
       font-size: 10px;
-      color: #fff3e0;
-      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 12px;
     }
 
-    .store-banner-badge {
-      font-size: 10px;
-      background: rgba(0, 0, 0, 0.25);
-      padding: 4px 8px;
-      border-radius: 20px;
-      font-weight: 700;
-    }
-
-    /* Sidebar Navigation Links */
-    .sidebar-menu {
+    /* Navigation List */
+    .sidebar-nav-container {
       flex: 1;
-      padding: 10px 12px;
+      padding: 14px 12px;
       overflow-y: auto;
-      list-style: none;
-      margin: 0;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.2) transparent;
     }
 
-    .menu-header {
+    .sidebar-nav-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sidebar-nav-container::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+    }
+
+    .nav-section-title {
       font-size: 11px;
-      text-transform: uppercase;
+      font-weight: 800;
       color: #81c784;
-      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       padding: 10px 14px 6px 14px;
-      letter-spacing: 0.8px;
     }
 
-    .menu-item {
+    .nav-group {
+      list-style: none;
+      margin: 0 0 12px 0;
+      padding: 0;
+    }
+
+    .nav-item {
       margin-bottom: 4px;
     }
 
-    .menu-link {
+    /* VoteVictory Match: Solid colored pill highlight for active item */
+    .nav-link {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       padding: 11px 16px;
       color: #c8e6c9;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
       border-radius: 10px;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       cursor: pointer;
     }
 
-    .menu-link i {
+    .nav-link i {
       font-size: 17px;
       width: 22px;
       text-align: center;
@@ -198,87 +188,109 @@
       transition: transform 0.2s ease;
     }
 
-    .menu-link:hover {
+    .nav-link:hover {
       background: rgba(255, 255, 255, 0.08);
       color: #ffffff;
     }
 
-    .menu-link:hover i {
-      transform: scale(1.15);
+    .nav-link:hover i {
+      color: #ffffff;
+      transform: scale(1.1);
+    }
+
+    .nav-link.active {
+      background: var(--accent-pill);
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(46, 125, 50, 0.35);
+    }
+
+    .nav-link.active i {
       color: #ffffff;
     }
 
-    .menu-link.active {
-      background: #2e7d32;
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
-    }
-
-    .menu-link.active i {
-      color: #ffffff;
-    }
-
-    /* Sidebar Footer / User Card */
-    .sidebar-user {
+    /* Bottom User Profile Card & Sign Out Button */
+    .sidebar-footer {
       padding: 16px;
-      background: rgba(0, 0, 0, 0.18);
+      background: rgba(0, 0, 0, 0.2);
       border-top: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
     }
 
-    .user-info {
+    .user-profile-card {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      padding: 10px 12px;
+      background: var(--sidebar-card);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      margin-bottom: 12px;
     }
 
     .user-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #4caf50;
-      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-      border: 2px solid #81c784;
+      font-weight: 800;
+      font-size: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
-    .user-meta h5 {
+    .user-details {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .user-name-display {
       margin: 0;
-      font-size: 13px;
+      font-size: 13.5px;
+      font-weight: 700;
       color: #ffffff;
-      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
-    .user-meta p {
+    .user-role-label {
       margin: 2px 0 0 0;
       font-size: 11px;
       color: #81c784;
+      font-weight: 600;
     }
 
-    .logout-btn-icon {
-      background: none;
-      border: none;
-      color: #ef9a9a;
+    .btn-signout-full {
+      width: 100%;
+      background: rgba(239, 68, 68, 0.12);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       cursor: pointer;
-      font-size: 16px;
-      padding: 6px;
-      border-radius: 6px;
       transition: all 0.2s ease;
     }
 
-    .logout-btn-icon:hover {
-      background: rgba(244, 67, 54, 0.15);
-      color: #ff5252;
+    .btn-signout-full:hover {
+      background: #ef4444;
+      color: #ffffff;
+      border-color: #ef4444;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 
-    /* Main Content Area */
-    .app-main {
+    /* 2. Main Right Content Area */
+    .app-content-area {
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -287,202 +299,210 @@
       background: #f8faf8;
     }
 
-    /* Top Navigation Bar */
-    .app-topbar {
+    /* Content Header Topbar */
+    .workspace-topbar {
       height: 64px;
       min-height: 64px;
       background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 28px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+      padding: 0 32px;
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 40;
     }
 
-    .topbar-left {
+    .topbar-title-wrap {
       display: flex;
       align-items: center;
       gap: 16px;
     }
 
-    .menu-toggle-btn {
+    .mobile-menu-trigger {
       display: none;
-      background: none;
-      border: none;
-      font-size: 22px;
-      color: #1b5e20;
-      cursor: pointer;
-      padding: 6px 10px;
+      background: #f1f8ed;
+      border: 1px solid #c8e6c9;
+      color: var(--primary-color);
+      width: 38px;
+      height: 38px;
       border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
     }
 
-    .topbar-title h1 {
+    .workspace-topbar h1 {
       margin: 0;
       font-size: 20px;
-      font-weight: 700;
-      color: #1b5e20;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.2px;
     }
 
-    .topbar-right {
+    .topbar-actions-wrap {
       display: flex;
       align-items: center;
       gap: 14px;
     }
 
-    .topbar-store-pill {
+    .topbar-badge-store {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       background: #fff3e0;
       color: #e65100;
       border: 1px solid #ffe0b2;
-      padding: 7px 14px;
+      padding: 7px 16px;
       border-radius: 20px;
       font-size: 13px;
       font-weight: 700;
       text-decoration: none;
-      transition: all 0.2s ease;
+      transition: transform 0.2s;
     }
-
-    .topbar-store-pill:hover {
-      background: #ffe0b2;
+    .topbar-badge-store:hover {
       transform: translateY(-1px);
     }
 
-    .home-link-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #e8f5e9;
-      color: #2e7d32;
-      padding: 7px 14px;
-      border-radius: 20px;
+    .topbar-badge-landing {
+      color: #4b5563;
       font-size: 13px;
       font-weight: 600;
       text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    /* View Container */
-    .view-container {
-      padding: 28px;
-      max-width: 1200px;
+    /* Workspace Content Container */
+    .workspace-body {
+      padding: 32px;
+      max-width: 1240px;
       width: 100%;
       margin: 0 auto;
       box-sizing: border-box;
     }
 
-    .dashboard-view {
+    .content-view {
       display: none;
-      animation: viewSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: viewSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    .dashboard-view.active-view {
+    .content-view.active-view {
       display: block;
     }
 
     @keyframes viewSlideIn {
-      from { opacity: 0; transform: translateY(14px); }
+      from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Organic Agro UI Cards */
-    .agro-card {
+    /* Standard Card Structure for Views */
+    .clean-card {
       background: #ffffff;
+      border: 1px solid #e5e7eb;
       border-radius: 16px;
       padding: 24px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-      border: 1px solid #e8f0e8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
       margin-bottom: 24px;
     }
 
-    .agro-card-header {
+    .card-header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 18px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #f1f8ed;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f3f4f6;
     }
 
-    .agro-card-title {
+    .card-header-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #111827;
       display: flex;
       align-items: center;
       gap: 10px;
-      color: #1b5e20;
-      font-size: 18px;
-      font-weight: 700;
     }
 
-    /* Overview Stats Grid */
-    .stats-row {
+    .card-header-badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--primary-light);
+      color: var(--primary-color);
+    }
+
+    /* Overview Stats Row */
+    .stats-card-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 18px;
       margin-bottom: 24px;
     }
 
-    .stat-pill-card {
+    .stat-box {
       background: #ffffff;
+      border: 1px solid #e5e7eb;
       border-radius: 14px;
       padding: 20px;
       display: flex;
       align-items: center;
       gap: 16px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
-      border: 1px solid #e8f5e9;
-      transition: all 0.25s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      transition: all 0.2s ease;
     }
 
-    .stat-pill-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 22px rgba(46, 125, 50, 0.1);
+    .stat-box:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
       border-color: #c8e6c9;
     }
 
-    .stat-icon-wrap {
-      width: 52px;
-      height: 52px;
+    .stat-icon-square {
+      width: 50px;
+      height: 50px;
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 22px;
     }
 
-    .icon-green { background: #e8f5e9; color: #2e7d32; }
-    .icon-amber { background: #fff3e0; color: #e65100; }
-    .icon-blue  { background: #e3f2fd; color: #1565c0; }
-    .icon-purple{ background: #f3e5f5; color: #7b1fa2; }
+    .sq-green { background: #e8f5e9; color: #2e7d32; }
+    .sq-amber { background: #fff3e0; color: #e65100; }
+    .sq-blue  { background: #e3f2fd; color: #1565c0; }
+    .sq-purple{ background: #f3e5f5; color: #7b1fa2; }
 
-    .stat-text h3 {
+    .stat-content-val h3 {
       margin: 0;
       font-size: 26px;
       font-weight: 800;
-      color: #1b5e20;
+      color: #111827;
     }
 
-    .stat-text p {
+    .stat-content-val p {
       margin: 4px 0 0 0;
       font-size: 13px;
-      color: #666;
-      font-weight: 500;
+      color: #6b7280;
+      font-weight: 600;
     }
 
-    /* Quick Launch Bar */
-    .quick-launch-grid {
+    /* Fast Quick-Action Launchpad */
+    .launchpad-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 16px;
     }
 
-    .quick-launch-item {
-      background: #f9fbf9;
-      border: 1px solid #c8e6c9;
+    .launchpad-tile {
+      background: #f9fafb;
+      border: 1.5px solid #e5e7eb;
       border-radius: 14px;
-      padding: 18px;
+      padding: 20px;
       text-align: center;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -491,55 +511,60 @@
       display: block;
     }
 
-    .quick-launch-item:hover {
-      background: #e8f5e9;
-      transform: translateY(-3px);
-      border-color: #81c784;
+    .launchpad-tile:hover {
+      background: #ffffff;
+      border-color: var(--primary-color);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(46, 125, 50, 0.1);
     }
 
-    .quick-launch-item span {
+    .launchpad-tile .tile-icon {
       font-size: 32px;
       display: block;
       margin-bottom: 8px;
     }
 
-    .quick-launch-item h4 {
+    .launchpad-tile h4 {
       margin: 0 0 4px 0;
-      color: #1b5e20;
       font-size: 15px;
+      font-weight: 700;
+      color: #111827;
     }
 
-    .quick-launch-item p {
+    .launchpad-tile p {
       margin: 0;
       font-size: 12px;
-      color: #666;
+      color: #6b7280;
     }
 
-    /* Mobile Drawer */
+    /* Responsive Mobile Collapse */
     @media (max-width: 900px) {
       .app-sidebar {
         position: fixed;
-        left: -270px;
+        left: calc(-1 * var(--sidebar-width));
         top: 0;
         bottom: 0;
       }
-      .app-sidebar.open {
-        left: 0;
+      .app-sidebar.sidebar-open {
+        transform: translateX(var(--sidebar-width));
       }
-      .menu-toggle-btn {
-        display: block;
+      .mobile-menu-trigger {
+        display: flex;
       }
-      .sidebar-backdrop {
+      .mobile-overlay {
         display: none;
         position: fixed;
         inset: 0;
         background: rgba(0,0,0,0.5);
         z-index: 999;
       }
-      .sidebar-backdrop.active {
+      .mobile-overlay.active {
         display: block;
       }
-      .view-container {
+      .workspace-topbar {
+        padding: 0 16px;
+      }
+      .workspace-body {
         padding: 16px;
       }
     }
@@ -547,261 +572,263 @@
 </head>
 <body>
 
-<!-- Mobile Backdrop -->
-<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+<!-- Mobile Drawer Backdrop -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
 
-<div class="app-shell">
+<div class="app-layout">
 
-  <!-- ================= PERSISTENT SIDEBAR ================= -->
+  <!-- ==============================================
+       VOTEVICTORY-STYLE PERSISTENT LEFT SIDEBAR
+  ============================================== -->
   <aside class="app-sidebar" id="appSidebar">
-    
-    <!-- Brand Header with Modern SVG Logo -->
+
+    <!-- Brand Header -->
     <div class="sidebar-brand">
       <img src="statics/images/krishi-logo.svg" alt="Krishi AI Logo" />
       <div class="sidebar-brand-text">
         <h2>Krishi AI</h2>
-        <span>Smart Agri-Tech Suite</span>
+        <span>FARM MANAGEMENT</span>
       </div>
     </div>
 
-    <!-- ⚡ FLIPKART MINUTES STYLE QUICK ACCESS STORE SHORTCUT -->
-    <a href="store/index.html" class="quick-store-banner" title="Click to open AgriStore directly">
-      <div class="store-banner-left">
-        <div class="store-banner-icon">🛒</div>
-        <div class="store-banner-text">
-          <h4>AgriStore Express</h4>
-          <p>Instant Seeds & Fertilizers</p>
-        </div>
-      </div>
-      <span class="store-banner-badge">SHOP ⚡</span>
+    <!-- Quick Access Store Shortcut (Flipkart Minutes Style) -->
+    <a href="store/index.html" class="store-shortcut-pill" title="Click to open AgriStore directly">
+      <span><i class="fa-solid fa-bolt"></i> AgriStore Express</span>
+      <span class="badge">10 MIN</span>
     </a>
 
-    <!-- Navigation List -->
-    <ul class="sidebar-menu">
-      <li class="menu-header">Farmer Suite</li>
+    <!-- Navigation List with VoteVictory Category Headers -->
+    <div class="sidebar-nav-container">
       
-      <li class="menu-item">
-        <a class="menu-link active" data-view="view-overview">
-          <i class="fa-solid fa-house"></i>
-          <span>Dashboard Overview</span>
-        </a>
-      </li>
+      <!-- Section 1: FARM TOOLS -->
+      <div class="nav-section-title">FARM TOOLS</div>
+      <ul class="nav-group">
+        <li class="nav-item">
+          <a class="nav-link active" data-view="view-dashboard">
+            <i class="fa-solid fa-table-cells-large"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-view="view-crop">
+            <i class="fa-solid fa-seedling"></i>
+            <span>Crop Recommendation</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-view="view-disease">
+            <i class="fa-solid fa-virus-covid"></i>
+            <span>Disease Detection</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-view="view-assistant">
+            <i class="fa-solid fa-robot"></i>
+            <span>AI Assistant</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-view="view-weather">
+            <i class="fa-solid fa-cloud-sun-rain"></i>
+            <span>Weather</span>
+          </a>
+        </li>
+      </ul>
 
-      <li class="menu-item">
-        <a class="menu-link" data-view="view-crop">
-          <i class="fa-solid fa-seedling"></i>
-          <span>Crop Predictor</span>
-        </a>
-      </li>
+      <!-- Section 2: COMMERCE & ACCOUNT -->
+      <div class="nav-section-title">COMMERCE & ACCOUNT</div>
+      <ul class="nav-group">
+        <li class="nav-item">
+          <a href="store/index.html" class="nav-link">
+            <i class="fa-solid fa-store"></i>
+            <span>AgriStore</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-view="view-orders">
+            <i class="fa-solid fa-box-open"></i>
+            <span>My Orders</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-view="view-profile">
+            <i class="fa-solid fa-circle-user"></i>
+            <span>Profile</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-view="view-settings">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+      </ul>
 
-      <li class="menu-item">
-        <a class="menu-link" data-view="view-disease">
-          <i class="fa-solid fa-virus-covid"></i>
-          <span>Disease Detection</span>
-        </a>
-      </li>
+    </div>
 
-      <li class="menu-item">
-        <a class="menu-link" data-view="view-assistant">
-          <i class="fa-solid fa-robot"></i>
-          <span>AI Assistant (Chat)</span>
-        </a>
-      </li>
-
-      <li class="menu-item">
-        <a class="menu-link" data-view="view-weather">
-          <i class="fa-solid fa-cloud-sun-rain"></i>
-          <span>Weather Insights</span>
-        </a>
-      </li>
-
-      <li class="menu-header">Commerce & Account</li>
-
-      <li class="menu-item">
-        <a href="store/index.html" class="menu-link">
-          <i class="fa-solid fa-store"></i>
-          <span>Visit AgriStore</span>
-        </a>
-      </li>
-
-      <li class="menu-item">
-        <a class="menu-link" data-view="view-orders">
-          <i class="fa-solid fa-box-open"></i>
-          <span>My Orders</span>
-        </a>
-      </li>
-
-      <li class="menu-item">
-        <a class="menu-link" data-view="view-profile">
-          <i class="fa-solid fa-user-gear"></i>
-          <span>My Profile</span>
-        </a>
-      </li>
-    </ul>
-
-    <!-- User Profile Footer -->
-    <div class="sidebar-user">
-      <div class="user-info">
-        <div class="user-avatar" id="sidebarAvatar">U</div>
-        <div class="user-meta">
-          <h5 id="sidebarUserName">Farmer</h5>
-          <p>Online ✔</p>
+    <!-- Bottom User Profile Card & Sign Out Button (VoteVictory pattern) -->
+    <div class="sidebar-footer">
+      <div class="user-profile-card">
+        <div class="user-avatar" id="sidebarAvatarLetter">A</div>
+        <div class="user-details">
+          <h5 class="user-name-display" id="sidebarUserNameDisplay">FARMER</h5>
+          <p class="user-role-label">Kisan / Farm Lead</p>
         </div>
       </div>
-      <button class="logout-btn-icon" onclick="logoutSession()" title="Logout">
+
+      <button class="btn-signout-full" onclick="handleSignOut()">
         <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        <span>Sign Out</span>
       </button>
     </div>
 
   </aside>
 
-  <!-- ================= MAIN CONTENT WORKSPACE ================= -->
-  <main class="app-main">
+  <!-- ==============================================
+       MAIN WORKSPACE AREA (Right of Sidebar)
+  ============================================== -->
+  <main class="app-content-area">
 
-    <!-- Top Navigation Bar -->
-    <header class="app-topbar">
-      <div class="topbar-left">
-        <button class="menu-toggle-btn" id="sidebarToggle" title="Open Sidebar">
+    <!-- Workspace Topbar Header -->
+    <header class="workspace-topbar">
+      <div class="topbar-title-wrap">
+        <button class="mobile-menu-trigger" onclick="toggleSidebar()" title="Toggle Navigation">
           <i class="fa-solid fa-bars"></i>
         </button>
-        <div class="topbar-title">
-          <h1 id="topbarViewTitle">Dashboard Overview</h1>
-        </div>
+        <h1 id="workspaceCurrentTitle">Dashboard Overview</h1>
       </div>
 
-      <div class="topbar-right">
-        <a href="index.html" class="home-link-pill">
+      <div class="topbar-actions-wrap">
+        <a href="index.html" class="topbar-badge-landing">
           <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          <span>Landing Page</span>
+          <span>Public Landing</span>
         </a>
-        <a href="store/index.html" class="topbar-store-pill">
-          <span>⚡ AgriStore</span>
+        <a href="store/index.html" class="topbar-badge-store">
+          <i class="fa-solid fa-bolt"></i>
+          <span>AgriStore</span>
         </a>
       </div>
     </header>
 
-    <!-- Dynamic Views Container -->
-    <div class="view-container">
+    <!-- Workspace Body Views -->
+    <div class="workspace-body">
 
-      <!-- ================= 1. DASHBOARD OVERVIEW VIEW ================= -->
-      <section id="view-overview" class="dashboard-view active-view">
-        
+      <!-- ================= 1. DASHBOARD VIEW ================= -->
+      <section id="view-dashboard" class="content-view active-view">
         <!-- Stats Row -->
-        <div class="stats-row">
-          <div class="stat-pill-card">
-            <div class="stat-icon-wrap icon-green">🌾</div>
-            <div class="stat-text">
-              <h3 id="statPredictions">0</h3>
+        <div class="stats-card-grid">
+          <div class="stat-box">
+            <div class="stat-icon-square sq-green"><i class="fa-solid fa-wheat-awn"></i></div>
+            <div class="stat-content-val">
+              <h3 id="statPredictionsCount">0</h3>
               <p>Crops Recommended</p>
             </div>
           </div>
 
-          <div class="stat-pill-card">
-            <div class="stat-icon-wrap icon-amber">🦠</div>
-            <div class="stat-text">
-              <h3 id="statDiseases">0</h3>
-              <p>Diseases Checked</p>
+          <div class="stat-box">
+            <div class="stat-icon-square sq-amber"><i class="fa-solid fa-shield-virus"></i></div>
+            <div class="stat-content-val">
+              <h3 id="statDiseasesCount">0</h3>
+              <p>Diseases Identified</p>
             </div>
           </div>
 
-          <div class="stat-pill-card">
-            <div class="stat-icon-wrap icon-blue">🌤️</div>
-            <div class="stat-text">
-              <h3 id="statWeatherLocation">Live</h3>
-              <p>Local Weather Connected</p>
+          <div class="stat-box">
+            <div class="stat-icon-square sq-blue"><i class="fa-solid fa-cloud-sun"></i></div>
+            <div class="stat-content-val">
+              <h3 id="statWeatherSnapshot">Live</h3>
+              <p>Weather Connected</p>
             </div>
           </div>
 
-          <div class="stat-pill-card">
-            <div class="stat-icon-wrap icon-purple">📅</div>
-            <div class="stat-text">
-              <h3 id="statDaysActive">1</h3>
+          <div class="stat-box">
+            <div class="stat-icon-square sq-purple"><i class="fa-solid fa-calendar-check"></i></div>
+            <div class="stat-content-val">
+              <h3 id="statDaysUsing">1</h3>
               <p>Days with Krishi AI</p>
             </div>
           </div>
         </div>
 
-        <!-- Quick Launch Pad -->
-        <div class="agro-card">
-          <div class="agro-card-header">
-            <div class="agro-card-title">
-              <i class="fa-solid fa-wand-magic-sparkles"></i>
-              <span>Quick Actions</span>
+        <!-- Quick Farm Tools Launchpad -->
+        <div class="clean-card">
+          <div class="card-header-row">
+            <div class="card-header-title">
+              <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-color);"></i>
+              <span>Quick Farm Tools</span>
             </div>
+            <span class="card-header-badge">One-Click</span>
           </div>
 
-          <div class="quick-launch-grid">
-            <div class="quick-launch-item" onclick="switchDashboardTab('view-crop', 'Crop Predictor')">
-              <span>🌾</span>
-              <h4>Predict Crop</h4>
-              <p>Soil & Season Analysis</p>
+          <div class="launchpad-grid">
+            <div class="launchpad-tile" onclick="navigateToSection('view-crop', 'Crop Recommendation')">
+              <span class="tile-icon">🌾</span>
+              <h4>Crop Recommendation</h4>
+              <p>Soil & live weather prediction</p>
             </div>
 
-            <div class="quick-launch-item" onclick="switchDashboardTab('view-disease', 'Disease Detection')">
-              <span>🦠</span>
-              <h4>Check Disease</h4>
-              <p>Symptoms & Remedies</p>
+            <div class="launchpad-tile" onclick="navigateToSection('view-disease', 'Disease Detection')">
+              <span class="tile-icon">🦠</span>
+              <h4>Disease Diagnosis</h4>
+              <p>Check symptoms & remedies</p>
             </div>
 
-            <div class="quick-launch-item" onclick="switchDashboardTab('view-assistant', 'AI Assistant')">
-              <span>🤖</span>
-              <h4>Ask AI Assistant</h4>
-              <p>Voice & Chat Guidance</p>
+            <div class="launchpad-tile" onclick="navigateToSection('view-assistant', 'AI Assistant')">
+              <span class="tile-icon">🤖</span>
+              <h4>AI Assistant</h4>
+              <p>Ask in Hindi or Hinglish</p>
             </div>
 
-            <a href="store/index.html" class="quick-launch-item" style="border-color: #ff9800; background: #fffde7;">
-              <span>🛒</span>
-              <h4 style="color: #e65100;">AgriStore Shop</h4>
-              <p>Fertilizers & Seeds Direct</p>
+            <a href="store/index.html" class="launchpad-tile" style="border-color: #ff9800; background: #fffde7;">
+              <span class="tile-icon">⚡</span>
+              <h4 style="color: #e65100;">AgriStore Direct</h4>
+              <p>Order seeds & fertilizers</p>
             </a>
           </div>
         </div>
 
-        <!-- Live Weather Snapshot & Recent Activity -->
+        <!-- Feeds: Weather Snapshot & Recent Predictions -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-          
-          <div class="agro-card">
-            <div class="agro-card-header">
-              <div class="agro-card-title">
-                <i class="fa-solid fa-cloud-sun"></i>
+          <div class="clean-card">
+            <div class="card-header-row">
+              <div class="card-header-title">
+                <i class="fa-solid fa-cloud-sun" style="color: #1565c0;"></i>
                 <span>Weather Snapshot</span>
               </div>
             </div>
-            <div id="overviewWeatherCard" style="line-height: 1.7; color: #444;">
+            <div id="dashboardWeatherSnippet" style="line-height: 1.7; color: #4b5563;">
               <p>Connecting to regional weather station...</p>
             </div>
           </div>
 
-          <div class="agro-card">
-            <div class="agro-card-header">
-              <div class="agro-card-title">
-                <i class="fa-solid fa-clock-rotate-left"></i>
+          <div class="clean-card">
+            <div class="card-header-row">
+              <div class="card-header-title">
+                <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-color);"></i>
                 <span>Recent Predictions</span>
               </div>
             </div>
-            <div id="overviewRecentCrops" style="line-height: 1.6; color: #555;">
-              <p>No recent crops yet. Try running a prediction!</p>
+            <div id="dashboardRecentList" style="line-height: 1.6; color: #4b5563;">
+              <p>No recent predictions yet.</p>
             </div>
           </div>
-
         </div>
-
       </section>
 
-      <!-- ================= 2. CROP PREDICTOR VIEW ================= -->
-      <section id="view-crop" class="dashboard-view">
-        <div class="agro-card">
-          <div class="agro-card-header">
-            <div class="agro-card-title">
-              <i class="fa-solid fa-seedling"></i>
+      <!-- ================= 2. CROP RECOMMENDATION VIEW ================= -->
+      <section id="view-crop" class="content-view">
+        <div class="clean-card">
+          <div class="card-header-row">
+            <div class="card-header-title">
+              <i class="fa-solid fa-seedling" style="color: var(--primary-color);"></i>
               <span>AI Crop Recommendation Engine</span>
             </div>
-            <span style="font-size: 12px; background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 12px; font-weight: 700;">Live Weather Scoring</span>
+            <span class="card-header-badge">Live Weather Scoring</span>
           </div>
 
-          <p style="color: #555; margin-top: 0;">Select your farm's soil profile, city location, and growing season to get tailored crop suggestions backed by real-time meteorological data.</p>
+          <p style="color: #4b5563; margin-bottom: 20px;">Input your field soil type, city location, and growing season. Our engine pairs your data with real-time weather metrics to identify top yielding crops and matching fertilizers.</p>
 
-          <form id="cropForm" style="max-width: 650px; margin: 20px 0;">
+          <form id="cropForm" style="max-width: 650px; margin-bottom: 24px;">
             <div class="input-group">
               <label>Soil Type:</label>
               <select id="soilType" required>
@@ -816,8 +843,8 @@
             </div>
 
             <div class="input-group">
-              <label>City / Farming Region:</label>
-              <input type="text" id="city" required placeholder="e.g., Indore, Jaipur, Nashik, Patna" />
+              <label>City / Farming Location:</label>
+              <input type="text" id="city" required placeholder="e.g. Indore, Jaipur, Nashik, Patna" />
             </div>
 
             <div class="input-group">
@@ -843,35 +870,35 @@
       </section>
 
       <!-- ================= 3. DISEASE DETECTION VIEW ================= -->
-      <section id="view-disease" class="dashboard-view">
-        <div class="agro-card">
-          <div class="agro-card-header">
-            <div class="agro-card-title">
-              <i class="fa-solid fa-virus-covid"></i>
-              <span>Crop Disease & Treatment Center</span>
+      <section id="view-disease" class="content-view">
+        <div class="clean-card">
+          <div class="card-header-row">
+            <div class="card-header-title">
+              <i class="fa-solid fa-virus-covid" style="color: #dc2626;"></i>
+              <span>Crop Disease Detection & Remedies</span>
             </div>
-            <span style="font-size: 12px; background: #fff3e0; color: #e65100; padding: 4px 10px; border-radius: 12px; font-weight: 700;">Database Verified Remedies</span>
+            <span class="card-header-badge" style="background: #fef2f2; color: #dc2626;">Database Verified</span>
           </div>
 
-          <!-- Image Upload Preview -->
-          <div style="background: #fafafa; border: 2px dashed #c8e6c9; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 24px;">
+          <!-- Photo Upload Preview Box -->
+          <div style="background: #f9fafb; border: 2px dashed #d1d5db; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 24px;">
             <label style="cursor: pointer; display: block;">
               <span style="font-size: 32px; display: block; margin-bottom: 8px;">📷</span>
-              <strong style="color: #2e7d32;">Upload Crop / Leaf Photo</strong>
-              <p style="margin: 4px 0 12px 0; font-size: 12px; color: #777;">Click to select an image from your device</p>
+              <strong style="color: #111827;">Upload Crop or Leaf Image</strong>
+              <p style="margin: 4px 0 10px 0; font-size: 12px; color: #6b7280;">Upload photo for disease inspection preview</p>
               <input type="file" id="cropImage" accept="image/*" style="display: none;" />
             </label>
             <div id="imagePreview" style="display: none; margin-top: 14px;">
               <img id="previewImg" style="max-width: 260px; max-height: 200px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
-              <p id="imageName" style="margin-top: 8px; color: #2e7d32; font-weight: bold; font-size: 13px;"></p>
+              <p id="imageName" style="margin-top: 8px; color: var(--primary-color); font-weight: bold; font-size: 13px;"></p>
             </div>
           </div>
 
           <!-- Disease Form -->
           <form id="diseaseForm" style="max-width: 600px; margin-bottom: 24px;">
             <div class="input-group">
-              <label>Enter Crop Name for Diagnosis:</label>
-              <input type="text" id="diseaseCrop" required placeholder="e.g., wheat, rice, cotton, maize, potato" />
+              <label>Enter Crop Name for Diagnostic Search:</label>
+              <input type="text" id="diseaseCrop" required placeholder="e.g. wheat, rice, cotton, maize, potato" />
             </div>
             <button type="submit" class="predict-btn" style="background: #2e7d32;">
               🔬 Diagnose Disease & Remedies
@@ -884,62 +911,62 @@
       </section>
 
       <!-- ================= 4. AI ASSISTANT VIEW ================= -->
-      <section id="view-assistant" class="dashboard-view">
-        <div class="agro-card">
-          <div class="agro-card-header">
-            <div class="agro-card-title">
-              <i class="fa-solid fa-robot"></i>
-              <span>Krishi AI Conversational Assistant</span>
+      <section id="view-assistant" class="content-view">
+        <div class="clean-card">
+          <div class="card-header-row">
+            <div class="card-header-title">
+              <i class="fa-solid fa-robot" style="color: var(--primary-color);"></i>
+              <span>Krishi AI Farming Assistant</span>
             </div>
-            <span style="font-size: 12px; background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 12px; font-weight: 700;">Hindi & Hinglish Supported</span>
+            <span class="card-header-badge">Hindi & Hinglish</span>
           </div>
 
-          <p style="color: #555;">Ask questions about plant care, irrigation schedules, pest management, or government schemes.</p>
-
-          <!-- Chat Box -->
-          <div id="assistantChat" class="chat-box" style="height: 380px; overflow-y: auto; background: #fdfdfd; border: 1px solid #e0e0e0; border-radius: 14px; padding: 16px; margin-bottom: 16px;">
+          <!-- Chat History -->
+          <div id="assistantChat" class="chat-box" style="height: 380px; overflow-y: auto; background: #fafafa; border: 1px solid #e5e7eb; border-radius: 14px; padding: 16px; margin-bottom: 16px;">
             <div class="chat bot">
-              Namaste! Main Krishi AI hoon. Aap apni fasal, mitti ya kheti se jude koi bhi sawal pooch sakte hain.
+              Namaste! Main Krishi AI hoon. Fasal, mitti, keet prabandhan ya fertilizer se juda koi bhi sawal poochiye.
             </div>
           </div>
 
           <form id="assistantForm" class="assistant-form">
             <div style="display: flex; gap: 10px;">
-              <textarea id="assistantMessage" rows="2" placeholder="Apna sawal likhiye (e.g., Gehu me paani kab dein?)" required style="flex: 1; border-radius: 10px; padding: 10px; border: 1px solid #c8e6c9; font-size: 14px;"></textarea>
+              <textarea id="assistantMessage" rows="2" placeholder="Apna sawal likhiye (e.g. Gehu me peele daag aa rahe hain, kya karun?)" required style="flex: 1; border-radius: 10px; padding: 10px; border: 1px solid #d1d5db; font-size: 14px;"></textarea>
               <button type="submit" class="predict-btn" style="padding: 10px 24px; height: fit-content; align-self: center;">
-                Poochein 🚀
+                Send 🚀
               </button>
             </div>
           </form>
 
           <div id="assistantStatus" style="margin-top: 8px; font-size: 13px; font-weight: 600;"></div>
 
-          <!-- Suggested Prompts -->
-          <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #eee;">
-            <strong style="font-size: 13px; color: #555;">💡 Suggested Questions:</strong>
+          <!-- Suggested Chips -->
+          <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #f3f4f6;">
+            <strong style="font-size: 13px; color: #4b5563;">💡 Suggested Questions:</strong>
             <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
-              <button class="prompt-chip" onclick="askQuickPrompt('Gehu me peele daag aa rahe hain, kya karun?')">🌾 Gehu me peele daag</button>
-              <button class="prompt-chip" onclick="askQuickPrompt('Rice ke liye best fertilizer kya hai?')">🍚 Rice ke liye fertilizer</button>
-              <button class="prompt-chip" onclick="askQuickPrompt('Mitti me paani kaise maintain karu?')">💧 Irrigation tips</button>
-              <button class="prompt-chip" onclick="askQuickPrompt('Cotton ki fasal me keede lage hain')">🌿 Cotton pest control</button>
+              <button class="prompt-chip" onclick="fillPrompt('Gehu me peele daag aa rahe hain, kya karun?')">🌾 Gehu me peele daag</button>
+              <button class="prompt-chip" onclick="fillPrompt('Rice ke liye best fertilizer kya hai?')">🍚 Rice ke liye fertilizer</button>
+              <button class="prompt-chip" onclick="fillPrompt('Mitti me paani kaise maintain karu?')">💧 Irrigation schedule</button>
+              <button class="prompt-chip" onclick="fillPrompt('Cotton ki fasal me keede lage hain')">🌿 Cotton pest control</button>
             </div>
           </div>
         </div>
       </section>
 
       <!-- ================= 5. WEATHER VIEW ================= -->
-      <section id="view-weather" class="dashboard-view">
-        <div class="agro-card">
-          <div class="agro-card-header">
-            <div class="agro-card-title">
-              <i class="fa-solid fa-cloud-sun-rain"></i>
+      <section id="view-weather" class="content-view">
+        <div class="clean-card">
+          <div class="card-header-row">
+            <div class="card-header-title">
+              <i class="fa-solid fa-cloud-sun-rain" style="color: #0284c7;"></i>
               <span>Live Meteorological Insights</span>
             </div>
           </div>
 
+          <p style="color: #4b5563; margin-bottom: 20px;">Get real-time weather metrics including temperature, relative humidity, precipitation, and agricultural farming advice for any district.</p>
+
           <form id="dashboardWeatherForm" style="display: flex; gap: 10px; max-width: 500px; margin-bottom: 24px;">
-            <input type="text" id="weatherSearchCity" placeholder="Enter City (e.g. Bhopal, Jaipur, Pune)" required style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid #c8e6c9;" />
-            <button type="submit" class="predict-btn" style="padding: 10px 20px;">Check 🌦️</button>
+            <input type="text" id="weatherSearchCity" placeholder="Enter City (e.g. Bhopal, Jaipur, Pune, Indore)" required style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #d1d5db;" />
+            <button type="submit" class="predict-btn" style="padding: 10px 20px;">Get Weather 🌦️</button>
           </form>
 
           <div id="dashboardWeatherResult"></div>
@@ -947,20 +974,20 @@
       </section>
 
       <!-- ================= 6. MY ORDERS VIEW ================= -->
-      <section id="view-orders" class="dashboard-view">
-        <div class="agro-card">
-          <div class="agro-card-header">
-            <div class="agro-card-title">
-              <i class="fa-solid fa-boxes-packing"></i>
+      <section id="view-orders" class="content-view">
+        <div class="clean-card">
+          <div class="card-header-row">
+            <div class="card-header-title">
+              <i class="fa-solid fa-box-open" style="color: #e65100;"></i>
               <span>Track & Manage Store Orders</span>
             </div>
-            <a href="store/index.html" style="font-size: 12px; color: #2e7d32; font-weight: bold; text-decoration: none;">Explore Store ➔</a>
+            <a href="store/index.html" style="font-size: 13px; color: var(--primary-color); font-weight: 700; text-decoration: none;">Visit AgriStore ➔</a>
           </div>
 
-          <p style="color: #555;">Enter your Order Confirmation Number to fetch real-time dispatch status directly from the AgriStore database.</p>
+          <p style="color: #4b5563; margin-bottom: 20px;">Enter your order tracking number (received on checkout confirmation) to check real-time order status directly in the database.</p>
 
-          <div style="display: flex; gap: 10px; max-width: 480px; margin: 20px 0;">
-            <input type="text" id="trackOrderNumber" placeholder="e.g. ORD1788808054300" style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid #ccc;" />
+          <div style="display: flex; gap: 10px; max-width: 480px; margin-bottom: 24px;">
+            <input type="text" id="trackOrderNumber" placeholder="e.g. ORD1788811991840" style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #d1d5db;" />
             <button onclick="trackOrderDirectly()" class="predict-btn" style="padding: 10px 20px;">Track Order</button>
           </div>
 
@@ -969,37 +996,71 @@
       </section>
 
       <!-- ================= 7. PROFILE VIEW ================= -->
-      <section id="view-profile" class="dashboard-view">
-        <div class="agro-card" style="max-width: 600px;">
-          <div class="agro-card-header">
-            <div class="agro-card-title">
-              <i class="fa-solid fa-user-check"></i>
-              <span>Account & Security</span>
+      <section id="view-profile" class="content-view">
+        <div class="clean-card" style="max-width: 650px;">
+          <div class="card-header-row">
+            <div class="card-header-title">
+              <i class="fa-solid fa-circle-user" style="color: var(--primary-color);"></i>
+              <span>Farmer Account Profile</span>
             </div>
+            <span class="card-header-badge">Verified Account ✔</span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 18px; margin-bottom: 24px;">
-            <div style="width: 64px; height: 64px; border-radius: 50%; background: #2e7d32; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;" id="profileAvatarBig">U</div>
+            <div style="width: 64px; height: 64px; border-radius: 12px; background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800;" id="profileAvatarLarge">A</div>
             <div>
-              <h3 style="margin: 0; color: #1b5e20;" id="profileFullUser">User</h3>
-              <span style="font-size: 12px; background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 10px; font-weight: 700;">Verified Farmer Account ✔</span>
+              <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: #111827;" id="profileUsernameFull">FARMER</h3>
+              <p style="margin: 4px 0 0 0; font-size: 13px; color: #6b7280;">Farmer / Agricultural Lead • Krishi AI Member</p>
             </div>
           </div>
 
-          <div style="background: #f9fbf9; border-radius: 10px; padding: 16px; border: 1px solid #e0e0e0; margin-bottom: 20px; line-height: 1.8;">
-            <p style="margin: 0;"><strong>Authentication:</strong> JWT Bearer Secured</p>
+          <div style="background: #f9fafb; border-radius: 12px; padding: 18px; border: 1px solid #e5e7eb; margin-bottom: 24px; line-height: 1.9; font-size: 13.5px;">
+            <p style="margin: 0;"><strong>User ID / Username:</strong> <span id="profileUsernameField">Loading...</span></p>
+            <p style="margin: 0;"><strong>Security Auth:</strong> JWT Bearer Authentication Active</p>
             <p style="margin: 0;"><strong>Database:</strong> SQLite Engine Connected</p>
-            <p style="margin: 0;"><strong>Session Status:</strong> <span style="color: #2e7d32; font-weight: bold;">Active</span></p>
+            <p style="margin: 0;"><strong>Session State:</strong> <span style="color: var(--primary-color); font-weight: 700;">Active & Verified</span></p>
           </div>
 
-          <button onclick="logoutSession()" style="padding: 10px 20px; background: #d32f2f; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out of Session
+          <button onclick="handleSignOut()" style="padding: 10px 22px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+          </button>
+        </div>
+      </section>
+
+      <!-- ================= 8. SETTINGS VIEW ================= -->
+      <section id="view-settings" class="content-view">
+        <div class="clean-card" style="max-width: 650px;">
+          <div class="card-header-row">
+            <div class="card-header-title">
+              <i class="fa-solid fa-gear" style="color: #4b5563;"></i>
+              <span>System & App Settings</span>
+            </div>
+          </div>
+
+          <div class="input-group" style="margin-bottom: 20px;">
+            <label>Interface Language (भाषा):</label>
+            <select id="settingsLanguageSelect" style="padding: 10px; border-radius: 8px; border: 1.5px solid #d1d5db; width: 100%;">
+              <option value="en">English (default)</option>
+              <option value="hi">हिंदी (Hindi)</option>
+              <option value="hinglish">Hinglish</option>
+            </select>
+          </div>
+
+          <div style="background: #f9fafb; border-radius: 12px; padding: 18px; border: 1px solid #e5e7eb; margin-bottom: 24px;">
+            <h4 style="margin: 0 0 8px 0; color: #111827;">System Connectivity</h4>
+            <p style="margin: 0; font-size: 13px; color: #6b7280;">Backend API: FastAPI (Python 3.11)</p>
+            <p style="margin: 4px 0 0 0; font-size: 13px; color: #6b7280;">Database: SQLite (krishi_ai.db)</p>
+          </div>
+
+          <button onclick="saveAppSettings()" class="predict-btn" style="padding: 10px 24px;">
+            💾 Save Preferences
           </button>
         </div>
       </section>
 
     </div>
   </main>
+
 </div>
 
 <style>
@@ -1007,10 +1068,10 @@
     background: #f1f8ed;
     border: 1px solid #c8e6c9;
     color: #2e7d32;
-    padding: 6px 12px;
+    padding: 6px 14px;
     border-radius: 16px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -1020,131 +1081,140 @@
   }
 </style>
 
-<!-- Scripts -->
+<!-- Standard App Scripts -->
 <script src="config.js"></script>
 <script src="script.js"></script>
 <script src="disease.js"></script>
 
 <script>
-  // ===================================
-  // DASHBOARD SESSION & VIEW SWITCHER
-  // ===================================
+  // ===================================================
+  // VOTEVICTORY SIDEBAR ROUTER & PROFILE LOGIC
+  // ===================================================
 
   const loggedUser = localStorage.getItem("loggedInUser") || "Farmer";
-  document.getElementById("sidebarUserName").textContent = loggedUser;
-  document.getElementById("profileFullUser").textContent = loggedUser;
-  document.getElementById("sidebarAvatar").textContent = loggedUser.charAt(0).toUpperCase();
-  document.getElementById("profileAvatarBig").textContent = loggedUser.charAt(0).toUpperCase();
+  
+  // Set User Details
+  const formattedUser = loggedUser.toUpperCase();
+  document.getElementById("sidebarUserNameDisplay").textContent = formattedUser;
+  document.getElementById("profileUsernameFull").textContent = formattedUser;
+  document.getElementById("profileUsernameField").textContent = loggedUser;
+  
+  const initial = loggedUser.charAt(0).toUpperCase();
+  document.getElementById("sidebarAvatarLetter").textContent = initial;
+  document.getElementById("profileAvatarLarge").textContent = initial;
 
-  // Sidebar link clicks
-  document.querySelectorAll(".menu-link[data-view]").forEach(link => {
+  // Sidebar Link Navigation
+  document.querySelectorAll(".nav-link[data-view]").forEach(link => {
     link.addEventListener("click", function(e) {
       e.preventDefault();
       const targetView = this.getAttribute("data-view");
       const title = this.querySelector("span").textContent;
-      switchDashboardTab(targetView, title);
+      navigateToSection(targetView, title);
     });
   });
 
-  function switchDashboardTab(viewId, viewTitle) {
-    // Update active nav link
-    document.querySelectorAll(".menu-link").forEach(l => l.classList.remove("active"));
-    const activeLink = document.querySelector(`.menu-link[data-view="${viewId}"]`);
-    if (activeLink) activeLink.classList.add("active");
+  function navigateToSection(viewId, viewTitle) {
+    // 1. Highlight Active Nav Link with VoteVictory style pill
+    document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+    const targetLink = document.querySelector(`.nav-link[data-view="${viewId}"]`);
+    if (targetLink) targetLink.classList.add("active");
 
-    // Hide all views, activate target
-    document.querySelectorAll(".dashboard-view").forEach(v => v.classList.remove("active-view"));
-    const target = document.getElementById(viewId);
-    if (target) {
-      target.classList.add("active-view");
+    // 2. Switch Right Content Area View
+    document.querySelectorAll(".content-view").forEach(v => v.classList.remove("active-view"));
+    const targetViewEl = document.getElementById(viewId);
+    if (targetViewEl) {
+      targetViewEl.classList.add("active-view");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
+    // 3. Update Header Title
     if (viewTitle) {
-      document.getElementById("topbarViewTitle").textContent = viewTitle;
+      document.getElementById("workspaceCurrentTitle").textContent = viewTitle;
     }
 
-    // Close mobile drawer if open
-    closeMobileSidebar();
+    // 4. Close mobile drawer if opened
+    closeSidebar();
   }
 
-  // Mobile drawer handlers
+  // Mobile Drawer Controls
   const sidebar = document.getElementById("appSidebar");
-  const backdrop = document.getElementById("sidebarBackdrop");
-  const toggleBtn = document.getElementById("sidebarToggle");
+  const overlay = document.getElementById("mobileOverlay");
 
-  toggleBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("open");
-    backdrop.classList.toggle("active");
-  });
-
-  backdrop.addEventListener("click", closeMobileSidebar);
-
-  function closeMobileSidebar() {
-    sidebar.classList.remove("open");
-    backdrop.classList.remove("active");
+  function toggleSidebar() {
+    sidebar.classList.toggle("sidebar-open");
+    overlay.classList.toggle("active");
   }
 
-  // Quick Prompt Filler for AI Chat
-  function askQuickPrompt(text) {
-    const input = document.getElementById("assistantMessage");
-    if (input) {
-      input.value = text;
-      document.getElementById("assistantForm").dispatchEvent(new Event("submit"));
-    }
+  function closeSidebar() {
+    sidebar.classList.remove("sidebar-open");
+    overlay.classList.remove("active");
   }
 
-  // Logout session
-  function logoutSession() {
+  // Sign Out Handler
+  function handleSignOut() {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("loggedInUser");
     window.location.href = "login.html";
   }
 
-  // Track Order Directly in Orders View
+  // Suggested Prompt Helper
+  function fillPrompt(txt) {
+    const box = document.getElementById("assistantMessage");
+    if (box) {
+      box.value = txt;
+      document.getElementById("assistantForm").dispatchEvent(new Event("submit"));
+    }
+  }
+
+  // Settings Save
+  function saveAppSettings() {
+    const lang = document.getElementById("settingsLanguageSelect").value;
+    localStorage.setItem("krishi_lang", lang);
+    alert("Preferences saved successfully!");
+  }
+
+  // Order Tracking Directly in View
   async function trackOrderDirectly() {
     const orderNum = document.getElementById("trackOrderNumber").value.trim();
     const resultDiv = document.getElementById("trackOrderResult");
     if (!orderNum) {
-      resultDiv.innerHTML = "<p style='color:#c0392b;'>Please enter an Order Number.</p>";
+      resultDiv.innerHTML = "<p style='color:#dc2626;'>Please enter an Order Number.</p>";
       return;
     }
 
-    resultDiv.innerHTML = "<div class='loading-text'><span class='spinner'></span> Querying database...</div>";
+    resultDiv.innerHTML = "<div class='loading-text'><span class='spinner'></span> Searching database...</div>";
 
     try {
       const res = await fetch(getApiUrl(`/api/store/orders/${encodeURIComponent(orderNum)}`));
-      if (!res.ok) {
-        throw new Error("Order not found in database.");
-      }
+      if (!res.ok) throw new Error("Order not found in database.");
       const order = await res.json();
 
       let itemsHtml = order.items.map(it => `
-        <li style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #eee;">
+        <li style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e5e7eb;">
           <span>${it.name || "Product"} × ${it.quantity}</span>
           <strong>₹${it.price * it.quantity}</strong>
         </li>
       `).join("");
 
       resultDiv.innerHTML = `
-        <div style="background: #ffffff; border: 1px solid #c8e6c9; border-radius: 12px; padding: 18px; margin-top: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <div style="background: #ffffff; border: 1.5px solid #c8e6c9; border-radius: 12px; padding: 20px; box-shadow: 0 4px 14px rgba(0,0,0,0.05);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <h4 style="margin: 0; color: #1b5e20;">Order #${order.order_number}</h4>
-            <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 12px;">
+            <h4 style="margin: 0; color: var(--primary-color);">Order #${order.order_number}</h4>
+            <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 12px; border-radius: 20px; font-weight: 800; font-size: 12px;">
               ${order.status.toUpperCase()}
             </span>
           </div>
           <p style="margin: 4px 0; font-size: 13px;"><strong>Customer:</strong> ${order.customer_name} (${order.phone})</p>
-          <p style="margin: 4px 0; font-size: 13px;"><strong>Address:</strong> ${order.address}</p>
-          <p style="margin: 4px 0; font-size: 13px;"><strong>Payment:</strong> ${order.payment_method.toUpperCase()}</p>
-          <ul style="list-style: none; padding: 0; margin: 12px 0;">${itemsHtml}</ul>
-          <div style="text-align: right; font-size: 16px; color: #2e7d32; font-weight: bold; padding-top: 8px; border-top: 2px solid #e8f5e9;">
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Shipping Address:</strong> ${order.address}</p>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Payment Method:</strong> ${order.payment_method.toUpperCase()}</p>
+          <ul style="list-style: none; padding: 0; margin: 14px 0;">${itemsHtml}</ul>
+          <div style="text-align: right; font-size: 16px; color: var(--primary-color); font-weight: 800; padding-top: 10px; border-top: 2px solid #e8f5e9;">
             Total: ₹${order.total_amount}
           </div>
         </div>
       `;
     } catch (err) {
-      resultDiv.innerHTML = `<p style="color: #c0392b; font-weight: bold;">⚠️ ${err.message}</p>`;
+      resultDiv.innerHTML = `<p style='color: #dc2626; font-weight: bold;'>⚠️ ${err.message}</p>`;
     }
   }
 
@@ -1161,26 +1231,25 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ location: city })
       });
-      if (!res.ok) throw new Error("Could not fetch weather");
+      if (!res.ok) throw new Error("Could not fetch weather data");
       const data = await res.json();
 
       resDiv.innerHTML = `
-        <div style="background: #f1f8ed; border-left: 4px solid #2e7d32; padding: 18px; border-radius: 12px;">
-          <h3 style="margin: 0 0 10px 0; color: #1b5e20;">🌍 Live Weather in ${city}</h3>
+        <div style="background: #f1f8ed; border-left: 4px solid var(--primary-color); padding: 18px; border-radius: 12px;">
+          <h3 style="margin: 0 0 10px 0; color: var(--primary-color);">🌍 Weather for ${city}</h3>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 14px;">
-            <div>🌡️ <strong>Temp:</strong> ${data.temperature} °C</div>
+            <div>🌡️ <strong>Temperature:</strong> ${data.temperature} °C</div>
             <div>💧 <strong>Humidity:</strong> ${data.humidity} %</div>
             <div>🌧️ <strong>Rainfall:</strong> ${data.rainfall} mm</div>
-            <div>💨 <strong>Wind:</strong> ${data.wind_speed} km/h</div>
+            <div>💨 <strong>Wind Speed:</strong> ${data.wind_speed} km/h</div>
           </div>
-          <div style="background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #c8e6c9;">
-            <strong>🌾 Farming Recommendation:</strong>
-            <p style="white-space: pre-line; margin: 6px 0 0 0; color: #444;">${data.recommendations}</p>
+          <div style="background: #ffffff; padding: 14px; border-radius: 8px; border: 1px solid #c8e6c9;">
+            <strong style="color: #1b5e20;">🌾 Agronomic Recommendation:</strong>
+            <p style="white-space: pre-line; margin: 6px 0 0 0; color: #374151; font-size: 13.5px;">${data.recommendations}</p>
           </div>
         </div>
       `;
 
-      // Cache for overview
       localStorage.setItem("krishi_last_weather", JSON.stringify({
         location: city,
         temperature: data.temperature,
@@ -1191,51 +1260,50 @@
         timestamp: Date.now()
       }));
 
-      loadDashboardOverviewStats();
-    } catch(err) {
-      resDiv.innerHTML = `<p style="color: #c0392b;">⚠️ Weather lookup failed for ${city}.</p>`;
+      loadDashboardStats();
+    } catch (err) {
+      resDiv.innerHTML = `<p style="color: #dc2626;">⚠️ Weather search failed for ${city}.</p>`;
     }
   });
 
-  // Load Overview Data on Launch
-  function loadDashboardOverviewStats() {
+  // Overview Stats Loader
+  function loadDashboardStats() {
     const stats = JSON.parse(localStorage.getItem('krishi_stats')) || {};
-    document.getElementById('statPredictions').innerText = stats.predictions || 0;
-    document.getElementById('statDiseases').innerText = stats.diseases || 0;
+    document.getElementById('statPredictionsCount').innerText = stats.predictions || 0;
+    document.getElementById('statDiseasesCount').innerText = stats.diseases || 0;
 
     const firstUse = localStorage.getItem('krishi_first_use');
     if (firstUse) {
       const days = Math.floor((Date.now() - parseInt(firstUse)) / (1000 * 60 * 60 * 24)) || 1;
-      document.getElementById('statDaysActive').innerText = days;
+      document.getElementById('statDaysUsing').innerText = days;
     }
 
-    const lastWeather = JSON.parse(localStorage.getItem('krishi_last_weather'));
-    const wCard = document.getElementById("overviewWeatherCard");
-    if (lastWeather) {
-      document.getElementById("statWeatherLocation").innerText = lastWeather.location;
-      wCard.innerHTML = `
-        <h4 style="margin: 0 0 6px 0; color: #1b5e20;">📍 ${lastWeather.location}</h4>
-        <div>🌡️ <b>${lastWeather.temperature} °C</b> | 💧 <b>${lastWeather.humidity}%</b> humidity | 🌧️ <b>${lastWeather.rainfall} mm</b> rain</div>
-        <p style="margin: 8px 0 0 0; font-size: 13px; color: #666;">${lastWeather.recommendations.split('
-')[0]}</p>
+    const lastW = JSON.parse(localStorage.getItem('krishi_last_weather'));
+    const wSnippet = document.getElementById("dashboardWeatherSnippet");
+    if (lastW) {
+      document.getElementById("statWeatherSnapshot").innerText = lastW.location;
+      wSnippet.innerHTML = `
+        <h4 style="margin: 0 0 4px 0; color: var(--primary-color);">📍 ${lastW.location}</h4>
+        <div>🌡️ <b>${lastW.temperature}°C</b> • 💧 <b>${lastW.humidity}%</b> • 🌧️ <b>${lastW.rainfall} mm</b></div>
+        <p style="margin: 6px 0 0 0; font-size: 13px; color: #4b5563;">${lastW.recommendations.split('\n')[0]}</p>
       `;
     } else {
-      wCard.innerHTML = "<p style='color:#777;'>No weather data yet. <a href='#' onclick="switchDashboardTab('view-weather', 'Weather Insights')">Check weather here</a>.</p>";
+      wSnippet.innerHTML = "<p style='color:#6b7280;'>No weather checked yet. <a href='#' onclick="navigateToSection('view-weather', 'Weather')">Check live weather</a>.</p>";
     }
 
-    const recHistory = JSON.parse(localStorage.getItem('krishi_prediction_history')) || [];
-    const rDiv = document.getElementById("overviewRecentCrops");
-    if (recHistory.length > 0) {
-      rDiv.innerHTML = recHistory.slice(-3).reverse().map(h => `
-        <div style="padding: 8px 0; border-bottom: 1px dashed #e0e0e0;">
-          <strong>🌾 ${h.crop}</strong> (${h.location}) — ${h.season} season
-          <div style="font-size: 11px; color: #999;">${new Date(h.timestamp).toLocaleDateString()}</div>
+    const history = JSON.parse(localStorage.getItem('krishi_prediction_history')) || [];
+    const rList = document.getElementById("dashboardRecentList");
+    if (history.length > 0) {
+      rList.innerHTML = history.slice(-3).reverse().map(h => `
+        <div style="padding: 8px 0; border-bottom: 1px dashed #e5e7eb;">
+          <strong>🌾 ${h.crop}</strong> (${h.location}) • ${h.season}
+          <div style="font-size: 11px; color: #9ca3af;">${new Date(h.timestamp).toLocaleDateString()}</div>
         </div>
       `).join("");
     }
   }
 
-  document.addEventListener("DOMContentLoaded", loadDashboardOverviewStats);
+  document.addEventListener("DOMContentLoaded", loadDashboardStats);
 </script>
 
 </body>
