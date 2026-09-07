@@ -3,299 +3,1245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Krishi AI Store - किसानों की डिजिटल दुकान</title>
+    <title>Krishi AgriStore Express - 10 मिनट किसान डिलीवरी</title>
     
-    <!-- SEO Meta Tags (NEW IMPROVEMENT) -->
-    <meta name="description" content="किसानों के लिए डिजिटल मार्केटप्लेस। शुद्ध बीज, आधुनिक कृषि उपकरण, जैविक खाद और विशेषज्ञ मार्गदर्शन।">
-    <meta name="keywords" content="कृषि बीज, किसान, खेती, कृषि उपकरण, जैविक खाद, कृषि स्टोर">
-    
-    <!-- CSS Links -->
-    <link rel="stylesheet" href="store.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="store.css">
     
-    <!-- Favicon (NEW IMPROVEMENT) -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        :root {
+            --qc-green: #0c831f;
+            --qc-green-dark: #096317;
+            --qc-green-light: #e8f5e9;
+            --qc-yellow: #ffc107;
+            --qc-amber: #ff9800;
+            --qc-dark: #1f2937;
+            --qc-muted: #6b7280;
+            --qc-border: #e5e7eb;
+            --qc-bg: #f8faf8;
+            --qc-card-bg: #ffffff;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
+            background-color: var(--qc-bg);
+            color: var(--qc-dark);
+            margin: 0;
+            padding-bottom: 90px;
+            overflow-x: hidden;
+        }
+
+        /* Top Sticky Quick-Commerce Header */
+        .qc-header {
+            position: sticky;
+            top: 0;
+            z-index: 500;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            border-bottom: 1px solid var(--qc-border);
+        }
+
+        .qc-top-strip {
+            background: #125417;
+            color: #ffffff;
+            padding: 6px 16px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+
+        .qc-top-strip span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .qc-nav {
+            padding: 12px 20px;
+            max-width: 1240px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .qc-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .qc-brand img {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: var(--qc-green-light);
+            padding: 2px;
+        }
+
+        .qc-brand-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .qc-brand-title h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--qc-green);
+            line-height: 1.1;
+        }
+
+        .qc-brand-title span {
+            font-size: 11px;
+            color: var(--qc-amber);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .qc-delivery-pill {
+            background: #f1f8ed;
+            border: 1px solid #c8e6c9;
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--qc-green);
+        }
+
+        .qc-delivery-pill .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4caf50;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
+        .qc-search-wrap {
+            flex: 1;
+            max-width: 550px;
+            position: relative;
+        }
+
+        .qc-search-wrap input {
+            width: 100%;
+            padding: 11px 16px 11px 44px;
+            border-radius: var(--radius-full);
+            border: 1.5px solid #d1d5db;
+            background: #f9fafb;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .qc-search-wrap input:focus {
+            background: #ffffff;
+            border-color: var(--qc-green);
+            box-shadow: 0 0 0 3px rgba(12, 131, 31, 0.15);
+        }
+
+        .qc-search-wrap i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--qc-muted);
+            font-size: 15px;
+        }
+
+        .qc-nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .qc-header-btn {
+            background: #f3f4f6;
+            color: var(--qc-dark);
+            border: none;
+            padding: 9px 16px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .qc-header-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .qc-header-cart-btn {
+            background: var(--qc-green);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(12, 131, 31, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .qc-header-cart-btn:hover {
+            background: var(--qc-green-dark);
+            transform: translateY(-1px);
+        }
+
+        /* Express Banner */
+        .qc-hero-express {
+            max-width: 1240px;
+            margin: 16px auto;
+            padding: 0 20px;
+        }
+
+        .qc-banner-card {
+            background: linear-gradient(135deg, #1b4d20 0%, #0d3013 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px 32px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .qc-banner-card::after {
+            content: '⚡';
+            position: absolute;
+            right: 40px;
+            font-size: 120px;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .qc-banner-text h2 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .qc-banner-text p {
+            margin: 6px 0 16px 0;
+            font-size: 14px;
+            color: #a5d6a7;
+            max-width: 550px;
+        }
+
+        .qc-perks-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .qc-perk {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(4px);
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        /* Category Filter Chips/Pills */
+        .qc-category-bar {
+            max-width: 1240px;
+            margin: 0 auto 16px auto;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .qc-category-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-pill {
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            color: #4b5563;
+            padding: 8px 18px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+
+        .category-pill:hover {
+            border-color: var(--qc-green);
+            color: var(--qc-green);
+            background: #f1f8ed;
+        }
+
+        .category-pill.active {
+            background: var(--qc-green);
+            border-color: var(--qc-green);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(12, 131, 31, 0.25);
+            transform: scale(1.03);
+        }
+
+        /* Product Grid */
+        .qc-main-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .qc-section-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--qc-dark);
+            margin: 16px 0 14px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .qc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 16px;
+        }
+
+        /* Modern Quick-Commerce Product Card */
+        .qc-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--radius-lg);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .qc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.09);
+            border-color: #c8e6c9;
+        }
+
+        .qc-card-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #e8f5e9;
+            color: var(--qc-green);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            z-index: 2;
+            border: 1px solid #c8e6c9;
+        }
+
+        .qc-card-img-wrap {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            background: #f9fafb;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .qc-card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.35s ease;
+        }
+
+        .qc-card:hover .qc-card-img {
+            transform: scale(1.08);
+        }
+
+        .qc-card-weight {
+            font-size: 11px;
+            color: var(--qc-muted);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .qc-card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--qc-dark);
+            margin: 0 0 6px 0;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 38px;
+        }
+
+        .qc-card-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #f59e0b;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .qc-card-rating span {
+            color: var(--qc-muted);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .qc-card-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 8px;
+            border-top: 1px dashed #f3f4f6;
+        }
+
+        .qc-price-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .qc-current-price {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--qc-dark);
+        }
+
+        .qc-strike-price {
+            font-size: 11px;
+            color: #9ca3af;
+            text-decoration: line-through;
+        }
+
+        /* Interactive Add Button & Morphing Stepper */
+        .qc-btn-add {
+            background: #ffffff;
+            border: 1.5px solid var(--qc-green);
+            color: var(--qc-green);
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(12, 131, 31, 0.1);
+        }
+
+        .qc-btn-add:hover {
+            background: var(--qc-green);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(12, 131, 31, 0.3);
+        }
+
+        .qc-stepper {
+            display: inline-flex;
+            align-items: center;
+            background: var(--qc-green);
+            border-radius: 8px;
+            padding: 3px;
+            box-shadow: 0 4px 10px rgba(12, 131, 31, 0.25);
+            animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .qc-stepper-btn {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 900;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+
+        .qc-stepper-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .qc-stepper-val {
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 13px;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        /* Sliding Cart Drawer (Blinkit Style) */
+        .cart-drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            display: none;
+            animation: fadeIn 0.25s ease forwards;
+        }
+
+        .cart-drawer-overlay.open {
+            display: block;
+        }
+
+        .cart-drawer {
+            position: fixed;
+            right: -420px;
+            top: 0;
+            bottom: 0;
+            width: 400px;
+            max-width: 90vw;
+            background: #ffffff;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -6px 0 30px rgba(0,0,0,0.18);
+            transition: right 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .cart-drawer.open {
+            right: 0;
+        }
+
+        .cart-drawer-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--qc-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fafafa;
+        }
+
+        .cart-drawer-header h3 {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--qc-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cart-drawer-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--qc-muted);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .cart-drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+        }
+
+        .drawer-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+            gap: 12px;
+        }
+
+        .drawer-item-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #e5e7eb;
+        }
+
+        .drawer-item-info {
+            flex: 1;
+        }
+
+        .drawer-item-title {
+            margin: 0 0 4px 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--qc-dark);
+            line-height: 1.2;
+        }
+
+        .drawer-item-price {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--qc-green);
+        }
+
+        .cart-drawer-footer {
+            padding: 18px 20px;
+            background: #ffffff;
+            border-top: 1px solid var(--qc-border);
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+        }
+
+        .drawer-summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--qc-muted);
+        }
+
+        .drawer-summary-row.total {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--qc-dark);
+            margin: 12px 0;
+            padding-top: 8px;
+            border-top: 1px dashed #e5e7eb;
+        }
+
+        .drawer-checkout-btn {
+            width: 100%;
+            background: var(--qc-green);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 16px rgba(12, 131, 31, 0.35);
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: background 0.2s;
+        }
+
+        .drawer-checkout-btn:hover {
+            background: var(--qc-green-dark);
+        }
+
+        /* Floating / Sticky Cart Bar for Mobile & Desktop */
+        .sticky-cart-bar {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120%);
+            width: calc(100% - 32px);
+            max-width: 600px;
+            background: #111827;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            z-index: 450;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+        }
+
+        .sticky-cart-bar.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .sticky-cart-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sticky-cart-count {
+            background: var(--qc-green);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .sticky-cart-price {
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .sticky-cart-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4ade80;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        /* Skeleton Loading States */
+        .skeleton-card {
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .skeleton-img {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: var(--radius-md);
+            margin-bottom: 10px;
+        }
+
+        .skeleton-text {
+            height: 14px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Notification Toast */
+        .qc-toast {
+            position: fixed;
+            top: 74px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: #1f2937;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 2000;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .qc-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .qc-nav {
+                flex-wrap: wrap;
+                gap: 10px;
+                padding: 10px 14px;
+            }
+            .qc-search-wrap {
+                order: 3;
+                max-width: 100%;
+                width: 100%;
+            }
+            .qc-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .qc-card {
+                padding: 10px;
+            }
+            .qc-card-img-wrap {
+                height: 110px;
+            }
+            .qc-banner-card {
+                padding: 18px;
+            }
+            .qc-banner-card h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Skip to Main Content Link (Accessibility Improvement) -->
-    <a href="#main-content" class="skip-link">मुख्य सामग्री पर जाएं</a>
 
-    <!-- Header Section -->
-    <header class="store-header">
-        <div class="top-bar">
-            <div class="container">
-                <div class="top-bar-content">
-                    <span><i class="fas fa-phone" aria-hidden="true"></i> किसान हेल्पलाइन: 1800-123-4567</span>
-                    <span><i class="fas fa-truck" aria-hidden="true"></i> निःशुल्क डिलीवरी 500₹+ ऑर्डर पर</span>
-                    <span><i class="fas fa-seedling" aria-hidden="true"></i> 100% शुद्ध बीज गारंटी</span>
-                </div>
+<!-- Notification Toast -->
+<div id="qcToast" class="qc-toast">
+    <i class="fa-solid fa-circle-check" style="color: #4ade80;"></i>
+    <span id="qcToastMsg">Item updated</span>
+</div>
+
+<!-- Header -->
+<header class="qc-header">
+    <div class="qc-top-strip">
+        <span>⚡ 10 मिनट में कृषि उत्पाद आपके खेत / घर तक</span>
+        <span>📞 हेल्पलाइन: 1800-123-4567 (टोल फ्री)</span>
+    </div>
+
+    <div class="qc-nav">
+        <a href="../dashboard.html" class="qc-brand">
+            <img src="../statics/images/krishi-logo.svg" alt="Krishi AI Logo" />
+            <div class="qc-brand-title">
+                <h1>AgriStore</h1>
+                <span>Minutes ⚡ Fast</span>
             </div>
+        </a>
+
+        <div class="qc-delivery-pill">
+            <span class="dot"></span>
+            <span>डिलीवरी: 10-15 मिनट</span>
         </div>
 
-        <nav class="main-nav" aria-label="Main Navigation">
-            <div class="container">
-                <div class="nav-content">
-                    <div class="logo" style="display: flex; align-items: center; gap: 12px;">
-                        <a href="../dashboard.html" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
-                            <img src="../statics/images/krishi-logo.svg" alt="Krishi AI Logo" style="width: 38px; height: 38px; border-radius: 8px; background: #fff; padding: 2px;" />
-                            <h1 style="font-size: 20px; margin: 0; color: #1b5e20;">Krishi <span style="color: #ff9800;">AgriStore</span></h1>
-                        </a>
-                    </div>
-                    
-                    <div class="search-bar">
-                        <input type="text" placeholder="बीज, उर्वरक, यंत्र खोजें..." aria-label="Search products">
-                        <button aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></button>
-                    </div>
-                    
-                    <div class="nav-icons">
-                        <a href="../dashboard.html" class="nav-icon" style="background: #e8f5e9; padding: 6px 12px; border-radius: 8px; color: #2e7d32; font-weight: bold; text-decoration: none;">
-                            <i class="fas fa-gauge-high" aria-hidden="true"></i>
-                            <span>डैशबोर्ड</span>
-                        </a>
-                        <a href="wishlist.html" class="nav-icon">
-                            <i class="fas fa-heart" aria-hidden="true"></i>
-                            <span>पसंदीदा</span>
-                        </a>
-                        <a href="cart.html" class="nav-icon cart-icon">
-                            <i class="fas fa-shopping-cart" aria-hidden="true"></i>
-                            <span>कार्ट</span>
-                            <span class="cart-count">0</span>
-                        </a>
-                    </div>
-                    
-                    <!-- Mobile Menu Toggle (NEW IMPROVEMENT) -->
-                    <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
-                
-                <div class="category-nav">
-                    <a href="#" class="all-categories">
-                        <i class="fas fa-bars" aria-hidden="true"></i> सभी श्रेणियाँ
-                    </a>
-                    <a href="category.html?type=seeds">बीज</a>
-                    <a href="category.html?type=fertilizers">उर्वरक</a>
-                    <a href="category.html?type=tools">कृषि यंत्र</a>
-                    <a href="category.html?type=irrigation">सिंचाई</a>
-                    <a href="category.html?type=organic">जैविक</a>
-                    <a href="category.html?type=protection">फसल संरक्षण</a>
-                    <a href="offers.html" class="offer-link">विशेष ऑफर</a>
-                </div>
-            </div>
-        </nav>
-    </header>
+        <div class="qc-search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="qcSearchInput" placeholder="सर्च करें 'NPK खाद', 'गेहूं बीज', 'स्प्रेयर'..." />
+        </div>
 
-    <main id="main-content">
-        <!-- Hero Slider -->
-        <section class="hero-slider" aria-label="Product Slideshow">
-            <div class="slider-container">
-                <div class="slide active">
-                    <div class="slide-content">
-                        <h2>खरीदें शुद्ध कृषि बीज</h2>
-                        <p>90%+ अंकुरण दर गारंटी के साथ</p>
-                        <a href="category.html?type=seeds" class="btn-primary">अभी खरीदें</a>
-                    </div>
-                    <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="कृषि बीज - विभिन्न प्रकार के बीज" loading="lazy">
-                </div>
-                <div class="slide">
-                    <div class="slide-content">
-                        <h2>आधुनिक कृषि यंत्र</h2>
-                        <p>कम मेहनत, ज्यादा उत्पादन</p>
-                        <a href="category.html?type=tools" class="btn-primary">ब्राउज़ करें</a>
-                    </div>
-                    <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129fc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="आधुनिक कृषि यंत्र" loading="lazy">
-                </div>
-            </div>
-            <button class="slider-btn prev-btn" aria-label="Previous slide"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
-            <button class="slider-btn next-btn" aria-label="Next slide"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
-            
-            <!-- Slider Dots (NEW IMPROVEMENT) -->
-            <div class="slider-dots">
-                <button class="dot active" aria-label="Go to slide 1"></button>
-                <button class="dot" aria-label="Go to slide 2"></button>
-            </div>
-        </section>
+        <div class="qc-nav-actions">
+            <a href="../dashboard.html" class="qc-header-btn">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>डैशबोर्ड</span>
+            </a>
 
-        <!-- Categories Section -->
-        <section class="categories-section" aria-labelledby="categories-heading">
-            <div class="container">
-                <h2 id="categories-heading" class="section-title">श्रेणियाँ ब्राउज़ करें</h2>
-                <div class="categories-grid">
-                    <a href="category.html?type=vegetable-seeds" class="category-card">
-                        <div class="category-icon" aria-hidden="true">
-                            <i class="fas fa-carrot"></i>
-                        </div>
-                        <h3>सब्जी बीज</h3>
-                        <p>टमाटर, मिर्च, बैंगन</p>
-                    </a>
-                    <a href="category.html?type=fruit-seeds" class="category-card">
-                        <div class="category-icon" aria-hidden="true">
-                            <i class="fas fa-apple-alt"></i>
-                        </div>
-                        <h3>फल बीज</h3>
-                        <p>आम, केला, संतरा</p>
-                    </a>
-                    <a href="category.html?type=organic-fertilizers" class="category-card">
-                        <div class="category-icon" aria-hidden="true">
-                            <i class="fas fa-leaf"></i>
-                        </div>
-                        <h3>जैविक खाद</h3>
-                        <p>कम्पोस्ट, वर्मीकम्पोस्ट</p>
-                    </a>
-                    <a href="category.html?type=farming-tools" class="category-card">
-                        <div class="category-icon" aria-hidden="true">
-                            <i class="fas fa-tools"></i>
-                        </div>
-                        <h3>कृषि उपकरण</h3>
-                        <p>खुरपी, कुदाल, स्प्रेयर</p>
-                    </a>
-                    <a href="category.html?type=irrigation" class="category-card">
-                        <div class="category-icon" aria-hidden="true">
-                            <i class="fas fa-tint"></i>
-                        </div>
-                        <h3>सिंचाई</h3>
-                        <p>ड्रिप, स्प्रिंकलर</p>
-                    </a>
-                    <a href="category.html?type=crop-protection" class="category-card">
-                        <div class="category-icon" aria-hidden="true">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <h3>फसल संरक्षण</h3>
-                        <p>कीटनाशक, फफूंदनाशक</p>
-                    </a>
-                </div>
-            </div>
-        </section>
+            <button class="qc-header-cart-btn" onclick="openCartDrawer()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="qcHeaderCartText">कार्ट (0)</span>
+            </button>
+        </div>
+    </div>
+</header>
 
-        <!-- Featured Products -->
-        <section class="products-section" aria-labelledby="featured-products-heading">
-            <div class="container">
-                <div class="section-header">
-                    <h2 id="featured-products-heading" class="section-title">बेस्ट सेलिंग प्रोडक्ट्स</h2>
-                    <a href="products.html" class="view-all">सभी देखें <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
-                </div>
-                
-                <div class="products-grid" id="featured-products">
-                    <!-- Products will be loaded via JavaScript -->
-                    <div class="loading-products">
-                        <p>प्रोडक्ट्स लोड हो रहे हैं...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Offers Banner -->
-        <section class="offers-section">
-            <div class="container">
-                <div class="offer-banner">
-                    <div class="offer-content">
-                        <h2>पहली खरीद पर 20% छूट</h2>
-                        <p>कोड: <strong>KRISHI20</strong></p>
-                        <button class="btn-secondary" onclick="applyCoupon('KRISHI20')">कोड उपयोग करें</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Why Choose Us -->
-        <section class="features-section" aria-labelledby="features-heading">
-            <div class="container">
-                <h2 id="features-heading" class="section-title">क्यों चुनें Krishi AI Store?</h2>
-                <div class="features-grid">
-                    <div class="feature">
-                        <i class="fas fa-award" aria-hidden="true"></i>
-                        <h3>गुणवत्ता गारंटी</h3>
-                        <p>100% शुद्ध और प्रमाणित बीज</p>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-shipping-fast" aria-hidden="true"></i>
-                        <h3>मुफ्त डिलीवरी</h3>
-                        <p>500₹+ ऑर्डर पर फ्री शिपिंग</p>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-headset" aria-hidden="true"></i>
-                        <h3>किसान सहायता</h3>
-                        <p>24/7 विशेषज्ञ मार्गदर्शन</p>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-undo" aria-hidden="true"></i>
-                        <h3>आसान रिटर्न</h3>
-                        <p>7 दिनों में उत्पाद वापसी</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="store-footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h3><i class="fas fa-tractor" aria-hidden="true"></i> Krishi AI Store</h3>
-                    <p>किसानों के लिए डिजिटल मार्केटप्लेस। शुद्ध बीज, आधुनिक उपकरण और विशेषज्ञ मार्गदर्शन।</p>
-                    <div class="social-links">
-                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-col">
-                    <h3>त्वरित लिंक</h3>
-                    <ul>
-                        <li><a href="about.html">हमारे बारे में</a></li>
-                        <li><a href="contact.html">संपर्क करें</a></li>
-                        <li><a href="shipping.html">शिपिंग पॉलिसी</a></li>
-                        <li><a href="return.html">रिटर्न पॉलिसी</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-col">
-                    <h3>ग्राहक सेवा</h3>
-                    <ul>
-                        <li><a href="account.html">मेरा खाता</a></li>
-                        <li><a href="orders.html">मेरे ऑर्डर</a></li>
-                        <li><a href="faq.html">FAQ</a></li>
-                        <li><a href="complaint.html">शिकायत दर्ज करें</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-col">
-                    <h3>संपर्क करें</h3>
-                    <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i> कृषि भवन, नई दिल्ली</p>
-                    <p><i class="fas fa-phone" aria-hidden="true"></i> 1800-123-4567</p>
-                    <p><i class="fas fa-envelope" aria-hidden="true"></i> support@krishiai.com</p>
-                    <div class="newsletter">
-                        <h4>न्यूज़लेटर सब्सक्राइब करें</h4>
-                        <input type="email" placeholder="आपका ईमेल">
-                        <button class="btn-primary">सब्सक्राइब</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>© 2024 Krishi AI Store. सभी अधिकार सुरक्षित।</p>
-                <div class="payment-methods">
-                    <i class="fab fa-cc-visa" aria-label="Visa" title="Visa"></i>
-                    <i class="fab fa-cc-mastercard" aria-label="Mastercard" title="Mastercard"></i>
-                    <i class="fab fa-cc-paypal" aria-label="PayPal" title="PayPal"></i>
-                    <i class="fas fa-university" aria-label="Net Banking" title="Net Banking"></i>
-                    <i class="fas fa-rupee-sign" aria-label="Cash on Delivery" title="Cash on Delivery"></i>
-                </div>
+<!-- Express Banner -->
+<section class="qc-hero-express">
+    <div class="qc-banner-card">
+        <div class="qc-banner-text">
+            <h2>🌾 कृषि सुपर-फास्ट डिलीवरी एक्सप्रेस</h2>
+            <p>सत्यापित खाद, हाइब्रिड बीज और स्प्रेयर अब तुरंत उपलब्ध। कैश ऑन डिलीवरी (COD) उपलब्ध।</p>
+            <div class="qc-perks-row">
+                <div class="qc-perk">⚡ 10-Min Dispatch</div>
+                <div class="qc-perk">🌱 100% शुद्ध प्रमाणित बीज</div>
+                <div class="qc-perk">💵 Pay on Delivery</div>
             </div>
         </div>
-    </footer>
+    </div>
+</section>
 
-    <!-- Back to Top Button (NEW IMPROVEMENT) -->
-    <button class="back-to-top" aria-label="Back to top">
-        <i class="fas fa-chevron-up"></i>
+<!-- Category Filtering Pills -->
+<div class="qc-category-bar" id="categoryPillBar">
+    <button class="category-pill active" data-cat="all">
+        <i class="fa-solid fa-layer-group"></i> सब कुछ (All)
     </button>
+    <button class="category-pill" data-cat="seeds">
+        🌱 बीज (Seeds)
+    </button>
+    <button class="category-pill" data-cat="fertilizers">
+        🧪 उर्वरक (Fertilizers)
+    </button>
+    <button class="category-pill" data-cat="tools">
+        🛠️ कृषि उपकरण (Tools)
+    </button>
+    <button class="category-pill" data-cat="bio">
+        🍃 जैविक खाद (Organic)
+    </button>
+</div>
 
-    <!-- JavaScript Files -->
-    <script src="../config.js"></script>
-    <script src="store.js"></script>
+<!-- Main Product Catalog -->
+<main class="qc-main-container">
+    <div class="qc-section-title">
+        <span id="catalogHeading">🔥 लोकप्रिय कृषि उत्पाद (Featured)</span>
+        <span id="productCountBadge" style="font-size: 13px; color: var(--qc-muted); font-weight: 600;">12 उत्पाद</span>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="qc-grid" id="qcProductGrid">
+        <!-- Skeleton Loaders initially -->
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text" style="width: 60%;"></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text" style="width: 60%;"></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text" style="width: 60%;"></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div><div class="skeleton-text" style="width: 60%;"></div></div>
+    </div>
+</main>
+
+<!-- Slide-in Cart Drawer (Quick Commerce Style) -->
+<div class="cart-drawer-overlay" id="cartDrawerOverlay" onclick="closeCartDrawer()"></div>
+
+<aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-header">
+        <h3><i class="fa-solid fa-basket-shopping" style="color: var(--qc-green);"></i> आपकी कार्ट</h3>
+        <button class="cart-drawer-close" onclick="closeCartDrawer()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="cart-drawer-body" id="drawerItemsList">
+        <!-- Dynamic items populated by JS -->
+    </div>
+
+    <div class="cart-drawer-footer" id="drawerFooter">
+        <div class="drawer-summary-row">
+            <span>आइटम कुल</span>
+            <span id="drawerSubtotal">₹0</span>
+        </div>
+        <div class="drawer-summary-row">
+            <span>डिलीवरी शुल्क</span>
+            <span style="color: var(--qc-green); font-weight: 700;">मुफ्त (FREE)</span>
+        </div>
+        <div class="drawer-summary-row total">
+            <span>कुल राशि (To Pay)</span>
+            <span id="drawerTotal" style="color: var(--qc-green);">₹0</span>
+        </div>
+        
+        <a href="checkout.html" class="drawer-checkout-btn">
+            <span>Proceed to Checkout</span>
+            <span id="drawerCheckoutTotal">₹0 ➔</span>
+        </a>
+    </div>
+</aside>
+
+<!-- Sticky Floating Cart Bar -->
+<div class="sticky-cart-bar" id="stickyCartBar" onclick="openCartDrawer()">
+    <div class="sticky-cart-left">
+        <span class="sticky-cart-count" id="stickyCartCount">0 ITEMS</span>
+        <span class="sticky-cart-price" id="stickyCartPrice">₹0</span>
+    </div>
+    <div class="sticky-cart-action">
+        <span>कार्ट देखें (View Cart)</span>
+        <i class="fa-solid fa-arrow-right"></i>
+    </div>
+</div>
+
+<script src="../config.js"></script>
+<script>
+    // ==========================================
+    // QUICK-COMMERCE STORE ENGINE (ZEPTO / BLINKIT STYLE)
+    // ==========================================
+
+    let allProducts = [];
+    let currentFilter = 'all';
+    let searchQuery = '';
+    let cart = JSON.parse(localStorage.getItem('krishiCart')) || [];
+
+    // Fallback products if offline
+    const fallbackProducts = [
+        { id: 1, name: "हाइब्रिड गेहूं बीज (HD-2967)", category: "seeds", price: 450, original_price: 550, badge: "बेस्टसेलर", rating: 4.8, reviews_count: 128, image_url: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500&q=80", weight: "10 किग्रा" },
+        { id: 2, name: "डीएपी खाद (DAP Fertilizer 50kg)", category: "fertilizers", price: 1350, original_price: 1500, badge: "आवश्यक", rating: 4.9, reviews_count: 310, image_url: "https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?w=500&q=80", weight: "50 किग्रा" },
+        { id: 3, name: "प्रीमियम नीम तेल कीटनाशक (1L)", category: "bio", price: 299, original_price: 399, badge: "जैविक", rating: 4.6, reviews_count: 85, image_url: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&q=80", weight: "1 लीटर" },
+        { id: 4, name: "बैटरी पावर्ड स्प्रे पंप (16L)", category: "tools", price: 1899, original_price: 2499, badge: "छूट", rating: 4.7, reviews_count: 94, image_url: "https://images.unsplash.com/photo-1589652043056-ba1a2c4830a7?w=500&q=80", weight: "16 लीटर" }
+    ];
+
+    async function initStore() {
+        try {
+            const baseUrl = window.API_BASE_URL || "https://krishi-ai-2-4j3k.onrender.com";
+            const res = await fetch(`${baseUrl}/api/store/products`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.length > 0) {
+                    allProducts = data;
+                } else {
+                    allProducts = fallbackProducts;
+                }
+            } else {
+                allProducts = fallbackProducts;
+            }
+        } catch (e) {
+            console.warn("Using fallback products:", e);
+            allProducts = fallbackProducts;
+        }
+
+        renderProducts();
+        updateCartUI();
+        initCategoryFilters();
+        initSearch();
+    }
+
+    function renderProducts() {
+        const grid = document.getElementById("qcProductGrid");
+        let filtered = allProducts;
+
+        // Apply category filter
+        if (currentFilter !== 'all') {
+            filtered = filtered.filter(p => {
+                const cat = (p.category || '').toLowerCase();
+                if (currentFilter === 'seeds') return cat.includes('seed') || cat.includes('बीज');
+                if (currentFilter === 'fertilizers') return cat.includes('fertilizer') || cat.includes('खाद') || cat.includes('उर्वरक');
+                if (currentFilter === 'tools') return cat.includes('tool') || cat.includes('उपकरण') || cat.includes('यंत्र');
+                if (currentFilter === 'bio') return cat.includes('bio') || cat.includes('organic') || cat.includes('जैविक');
+                return true;
+            });
+        }
+
+        // Apply search query
+        if (searchQuery.trim()) {
+            const q = searchQuery.toLowerCase();
+            filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q));
+        }
+
+        document.getElementById("productCountBadge").innerText = `${filtered.length} उत्पाद`;
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #6b7280;">
+                    <i class="fa-solid fa-box-open" style="font-size: 40px; color: #d1d5db; margin-bottom: 12px; display: block;"></i>
+                    <p style="font-size: 15px; font-weight: 600;">कोई उत्पाद नहीं मिला। कृपया दूसरा शब्द सर्च करें।</p>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = filtered.map(p => {
+            const inCartItem = cart.find(c => c.id === p.id);
+            const qty = inCartItem ? inCartItem.quantity : 0;
+            const img = p.image_url || p.image || "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500&q=80";
+
+            return `
+                <div class="qc-card" id="product-card-${p.id}">
+                    ${p.badge ? `<div class="qc-card-badge">${p.badge}</div>` : ''}
+                    
+                    <a href="product.html?id=${p.id}" style="text-decoration: none; color: inherit;">
+                        <div class="qc-card-img-wrap">
+                            <img src="${img}" alt="${p.name}" class="qc-card-img" loading="lazy" />
+                        </div>
+                        <div class="qc-card-weight">${p.weight || p.unit || '1 Pack'}</div>
+                        <h3 class="qc-card-title">${p.name}</h3>
+                        <div class="qc-card-rating">
+                            <i class="fa-solid fa-star"></i>
+                            <span>${p.rating || 4.8} (${p.reviews_count || 45})</span>
+                        </div>
+                    </a>
+
+                    <div class="qc-card-bottom">
+                        <div class="qc-price-box">
+                            <span class="qc-current-price">₹${p.price}</span>
+                            ${p.original_price ? `<span class="qc-strike-price">₹${p.original_price}</span>` : ''}
+                        </div>
+
+                        <div class="qc-action-box" id="action-box-${p.id}">
+                            ${renderButtonOrStepper(p.id, qty)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderButtonOrStepper(id, qty) {
+        if (qty > 0) {
+            return `
+                <div class="qc-stepper">
+                    <button class="qc-stepper-btn" onclick="updateItemQuantity(${id}, -1)">-</button>
+                    <span class="qc-stepper-val">${qty}</span>
+                    <button class="qc-stepper-btn" onclick="updateItemQuantity(${id}, 1)">+</button>
+                </div>
+            `;
+        } else {
+            return `
+                <button class="qc-btn-add" onclick="updateItemQuantity(${id}, 1)">
+                    + जोड़ें
+                </button>
+            `;
+        }
+    }
+
+    function updateItemQuantity(productId, delta) {
+        const product = allProducts.find(p => p.id === productId);
+        if (!product) return;
+
+        let cartItem = cart.find(i => i.id === productId);
+
+        if (!cartItem && delta > 0) {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image_url || product.image,
+                quantity: 1
+            });
+            showToast(`✅ ${product.name.substring(0, 20)}... कार्ट में जोड़ा`);
+        } else if (cartItem) {
+            cartItem.quantity += delta;
+            if (cartItem.quantity <= 0) {
+                cart = cart.filter(i => i.id !== productId);
+                showToast(`🗑️ कार्ट से हटाया गया`);
+            }
+        }
+
+        saveCart();
+        updateCartUI();
+
+        // Update card button/stepper without full re-render
+        const actionBox = document.getElementById(`action-box-${productId}`);
+        const currentItem = cart.find(i => i.id === productId);
+        const qty = currentItem ? currentItem.quantity : 0;
+        if (actionBox) {
+            actionBox.innerHTML = renderButtonOrStepper(productId, qty);
+        }
+    }
+
+    function saveCart() {
+        localStorage.setItem('krishiCart', JSON.stringify(cart));
+    }
+
+    function updateCartUI() {
+        const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+        const totalPrice = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+
+        // Header cart button
+        document.getElementById("qcHeaderCartText").innerText = `कार्ट (${totalItems})`;
+
+        // Sticky cart bar
+        const stickyBar = document.getElementById("stickyCartBar");
+        if (totalItems > 0) {
+            document.getElementById("stickyCartCount").innerText = `${totalItems} ITEMS`;
+            document.getElementById("stickyCartPrice").innerText = `₹${totalPrice}`;
+            stickyBar.classList.add("visible");
+        } else {
+            stickyBar.classList.remove("visible");
+        }
+
+        // Cart Drawer
+        renderDrawerItems(totalPrice);
+    }
+
+    function renderDrawerItems(totalPrice) {
+        const drawerList = document.getElementById("drawerItemsList");
+        const drawerSub = document.getElementById("drawerSubtotal");
+        const drawerTot = document.getElementById("drawerTotal");
+        const drawerBtnTot = document.getElementById("drawerCheckoutTotal");
+
+        if (cart.length === 0) {
+            drawerList.innerHTML = `
+                <div style="text-align: center; padding: 50px 20px; color: #9ca3af;">
+                    <i class="fa-solid fa-basket-shopping" style="font-size: 50px; color: #e5e7eb; margin-bottom: 14px; display: block;"></i>
+                    <h4 style="margin: 0 0 6px 0; color: #374151;">आपकी कार्ट खाली है</h4>
+                    <p style="font-size: 13px;">अपने खेत के लिए खाद व बीज जोड़ें</p>
+                </div>
+            `;
+            drawerSub.innerText = "₹0";
+            drawerTot.innerText = "₹0";
+            drawerBtnTot.innerText = "₹0 ➔";
+            return;
+        }
+
+        drawerList.innerHTML = cart.map(item => `
+            <div class="drawer-item">
+                <img src="${item.image || 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=100'}" class="drawer-item-img" />
+                <div class="drawer-item-info">
+                    <h4 class="drawer-item-title">${item.name}</h4>
+                    <span class="drawer-item-price">₹${item.price}</span>
+                </div>
+                <div class="qc-stepper">
+                    <button class="qc-stepper-btn" onclick="updateItemQuantity(${item.id}, -1)">-</button>
+                    <span class="qc-stepper-val">${item.quantity}</span>
+                    <button class="qc-stepper-btn" onclick="updateItemQuantity(${item.id}, 1)">+</button>
+                </div>
+            </div>
+        `).join('');
+
+        drawerSub.innerText = `₹${totalPrice}`;
+        drawerTot.innerText = `₹${totalPrice}`;
+        drawerBtnTot.innerText = `₹${totalPrice} ➔`;
+    }
+
+    function openCartDrawer() {
+        document.getElementById("cartDrawerOverlay").classList.add("open");
+        document.getElementById("cartDrawer").classList.add("open");
+    }
+
+    function closeCartDrawer() {
+        document.getElementById("cartDrawerOverlay").classList.remove("open");
+        document.getElementById("cartDrawer").classList.remove("open");
+    }
+
+    function showToast(msg) {
+        const toast = document.getElementById("qcToast");
+        document.getElementById("qcToastMsg").innerText = msg;
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 2000);
+    }
+
+    function initCategoryFilters() {
+        const pills = document.querySelectorAll(".category-pill");
+        pills.forEach(p => {
+            p.addEventListener("click", function() {
+                pills.forEach(x => x.classList.remove("active"));
+                this.classList.add("active");
+                currentFilter = this.getAttribute("data-cat");
+                renderProducts();
+            });
+        });
+    }
+
+    function initSearch() {
+        const input = document.getElementById("qcSearchInput");
+        input.addEventListener("input", function(e) {
+            searchQuery = e.target.value;
+            renderProducts();
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", initStore);
+</script>
+
 </body>
 </html>

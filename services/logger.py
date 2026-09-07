@@ -49,11 +49,14 @@ class KrishiLogger:
         self.ml_logger = logging.getLogger('krishi.ml')
         self.weather_logger = logging.getLogger('krishi.weather')
     
-    def log_api_request(self, request: Request, user: Optional[str] = None):
+    def log_api_request(self, request: Optional[Request], user: Optional[str] = None):
         """Log API requests."""
-        client_ip = request.client.host if request.client else "unknown"
-        method = request.method
-        url = str(request.url)
+        if not request:
+            self.api_logger.info(f"API Request - User: {user or 'anonymous'}")
+            return
+        client_ip = request.client.host if request and request.client else "unknown"
+        method = request.method if request else "UNKNOWN"
+        url = str(request.url) if request else "UNKNOWN"
         
         self.api_logger.info(
             f"API Request - {method} {url} - IP: {client_ip} - User: {user or 'anonymous'}"
