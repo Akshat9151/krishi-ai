@@ -38,3 +38,131 @@
 2026-03-13 01:22:56,601 - krishi.api - INFO - API Response - http://localhost:8000/auth/login - Status: 400 - Time: 0.00s
 2026-03-13 10:54:56,832 - krishi.api - INFO - API Request - OPTIONS http://localhost:8000/auth/login - IP: 127.0.0.1 - User: anonymous
 2026-03-13 10:54:56,833 - krishi.api - INFO - API Response - http://localhost:8000/auth/login - Status: 400 - Time: 0.00s
+2026-09-08 00:29:12,458 - krishi.api - INFO - API Request - GET http://testserver/ - IP: testclient - User: anonymous
+2026-09-08 00:29:12,459 - krishi.api - INFO - API Response - http://testserver/ - Status: 200 - Time: 0.00s
+2026-09-08 00:29:12,462 - httpx - INFO - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-09-08 00:29:46,151 - krishi.api - INFO - API Request - GET http://testserver/ - IP: testclient - User: anonymous
+2026-09-08 00:29:46,152 - krishi.api - INFO - API Response - http://testserver/ - Status: 200 - Time: 0.00s
+2026-09-08 00:29:46,154 - httpx - INFO - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-09-08 00:29:46,157 - krishi.api - INFO - API Request - POST http://testserver/auth/register - IP: testclient - User: anonymous
+2026-09-08 00:29:46,201 - krishi.auth - WARNING - AUTH register - User: testfarmer123 - Status: SUCCESS - IP: unknown
+2026-09-08 00:29:46,203 - krishi.api - INFO - API Response - http://testserver/auth/register - Status: 200 - Time: 0.05s
+2026-09-08 00:29:46,206 - httpx - INFO - HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-09-08 00:29:46,208 - krishi.api - INFO - API Request - POST http://testserver/auth/login - IP: testclient - User: anonymous
+2026-09-08 00:29:46,230 - krishi.auth - WARNING - AUTH login - User: testfarmer123 - Status: SUCCESS - IP: unknown
+2026-09-08 00:29:46,230 - krishi.api - INFO - API Response - http://testserver/auth/login - Status: 200 - Time: 0.02s
+2026-09-08 00:29:46,232 - httpx - INFO - HTTP Request: POST http://testserver/auth/login "HTTP/1.1 200 OK"
+2026-09-08 00:29:46,233 - krishi.api - INFO - API Request - GET http://testserver/auth/me - IP: testclient - User: anonymous
+2026-09-08 00:29:46,235 - krishi.api - INFO - API Response - http://testserver/auth/me - Status: 200 - Time: 0.00s
+2026-09-08 00:29:46,237 - httpx - INFO - HTTP Request: GET http://testserver/auth/me "HTTP/1.1 200 OK"
+2026-09-08 00:29:46,239 - krishi.api - INFO - API Request - POST http://testserver/predict - IP: testclient - User: anonymous
+2026-09-08 00:29:46,241 - krishi.api - INFO - API Response - http://testserver/predict - Status: 200 - Time: 0.00s
+2026-09-08 00:29:46,241 - httpx - INFO - HTTP Request: POST http://testserver/predict "HTTP/1.1 200 OK"
+2026-09-08 00:30:53,455 - krishi.api - INFO - API Request - GET http://testserver/ - IP: testclient - User: anonymous
+2026-09-08 00:30:53,457 - krishi.api - INFO - API Response - http://testserver/ - Status: 200 - Time: 0.00s
+2026-09-08 00:30:53,460 - httpx - INFO - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-09-08 00:30:53,462 - krishi.api - INFO - API Request - POST http://testserver/auth/register - IP: testclient - User: anonymous
+2026-09-08 00:30:53,466 - krishi.api - INFO - API Response - http://testserver/auth/register - Status: 400 - Time: 0.00s
+2026-09-08 00:30:53,467 - httpx - INFO - HTTP Request: POST http://testserver/auth/register "HTTP/1.1 400 Bad Request"
+2026-09-08 00:30:53,469 - krishi.api - INFO - API Request - POST http://testserver/auth/login - IP: testclient - User: anonymous
+2026-09-08 00:30:53,481 - krishi.auth - WARNING - AUTH login - User: testfarmer123 - Status: SUCCESS - IP: unknown
+2026-09-08 00:30:53,482 - krishi.api - INFO - API Response - http://testserver/auth/login - Status: 200 - Time: 0.01s
+2026-09-08 00:30:53,483 - httpx - INFO - HTTP Request: POST http://testserver/auth/login "HTTP/1.1 200 OK"
+2026-09-08 00:30:53,485 - krishi.api - INFO - API Request - GET http://testserver/auth/me - IP: testclient - User: anonymous
+2026-09-08 00:30:53,486 - krishi.api - INFO - API Response - http://testserver/auth/me - Status: 200 - Time: 0.00s
+2026-09-08 00:30:53,487 - httpx - INFO - HTTP Request: GET http://testserver/auth/me "HTTP/1.1 200 OK"
+2026-09-08 00:30:53,489 - krishi.api - INFO - API Request - POST http://testserver/api/predict-crop - IP: testclient - User: anonymous
+2026-09-08 00:30:55,733 - krishi.api - INFO - API Response - http://testserver/api/predict-crop - Status: 200 - Time: 2.24s
+2026-09-08 00:30:55,735 - httpx - INFO - HTTP Request: POST http://testserver/api/predict-crop "HTTP/1.1 200 OK"
+2026-09-08 00:31:30,672 - krishi.api - INFO - API Request - GET http://testserver/ - IP: testclient - User: anonymous
+2026-09-08 00:31:30,673 - krishi.api - INFO - API Response - http://testserver/ - Status: 200 - Time: 0.00s
+2026-09-08 00:31:30,675 - httpx - INFO - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-09-08 00:31:30,677 - krishi.api - INFO - API Request - POST http://testserver/auth/register - IP: testclient - User: anonymous
+2026-09-08 00:31:30,682 - krishi.api - INFO - API Response - http://testserver/auth/register - Status: 400 - Time: 0.01s
+2026-09-08 00:31:30,683 - httpx - INFO - HTTP Request: POST http://testserver/auth/register "HTTP/1.1 400 Bad Request"
+2026-09-08 00:31:30,684 - krishi.api - INFO - API Request - POST http://testserver/auth/login - IP: testclient - User: anonymous
+2026-09-08 00:31:30,696 - krishi.auth - WARNING - AUTH login - User: testfarmer123 - Status: SUCCESS - IP: unknown
+2026-09-08 00:31:30,697 - krishi.api - INFO - API Response - http://testserver/auth/login - Status: 200 - Time: 0.01s
+2026-09-08 00:31:30,699 - httpx - INFO - HTTP Request: POST http://testserver/auth/login "HTTP/1.1 200 OK"
+2026-09-08 00:31:30,700 - krishi.api - INFO - API Request - GET http://testserver/auth/me - IP: testclient - User: anonymous
+2026-09-08 00:31:30,702 - krishi.api - INFO - API Response - http://testserver/auth/me - Status: 200 - Time: 0.00s
+2026-09-08 00:31:30,702 - httpx - INFO - HTTP Request: GET http://testserver/auth/me "HTTP/1.1 200 OK"
+2026-09-08 00:31:30,704 - krishi.api - INFO - API Request - POST http://testserver/api/predict-crop - IP: testclient - User: anonymous
+2026-09-08 00:31:33,026 - krishi.api - INFO - API Response - http://testserver/api/predict-crop - Status: 200 - Time: 2.32s
+2026-09-08 00:31:33,030 - httpx - INFO - HTTP Request: POST http://testserver/api/predict-crop "HTTP/1.1 200 OK"
+2026-09-08 00:31:33,033 - krishi.api - INFO - API Request - GET http://testserver/api/store/fertilizers/recommend?crop=Sugarcane - IP: testclient - User: anonymous
+2026-09-08 00:31:33,046 - krishi.ml - INFO - ML Prediction - Model: fertilizer_recommendation - Inputs: {'crop': 'Sugarcane', 'season': None, 'soil_type': None} - Prediction: Found 2 recommendations - Confidence: None
+2026-09-08 00:31:33,065 - krishi.api - INFO - API Response - http://testserver/api/store/fertilizers/recommend?crop=Sugarcane - Status: 200 - Time: 0.03s
+2026-09-08 00:31:33,068 - httpx - INFO - HTTP Request: GET http://testserver/api/store/fertilizers/recommend?crop=Sugarcane "HTTP/1.1 200 OK"
+2026-09-08 00:32:29,889 - krishi.api - INFO - API Request - GET http://testserver/ - IP: testclient - User: anonymous
+2026-09-08 00:32:29,890 - krishi.api - INFO - API Response - http://testserver/ - Status: 200 - Time: 0.00s
+2026-09-08 00:32:29,892 - httpx - INFO - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-09-08 00:32:29,894 - krishi.api - INFO - API Request - POST http://testserver/auth/register - IP: testclient - User: anonymous
+2026-09-08 00:32:29,899 - krishi.api - INFO - API Response - http://testserver/auth/register - Status: 400 - Time: 0.01s
+2026-09-08 00:32:29,901 - httpx - INFO - HTTP Request: POST http://testserver/auth/register "HTTP/1.1 400 Bad Request"
+2026-09-08 00:32:29,902 - krishi.api - INFO - API Request - POST http://testserver/auth/login - IP: testclient - User: anonymous
+2026-09-08 00:32:29,915 - krishi.auth - WARNING - AUTH login - User: testfarmer123 - Status: SUCCESS - IP: unknown
+2026-09-08 00:32:29,915 - krishi.api - INFO - API Response - http://testserver/auth/login - Status: 200 - Time: 0.01s
+2026-09-08 00:32:29,917 - httpx - INFO - HTTP Request: POST http://testserver/auth/login "HTTP/1.1 200 OK"
+2026-09-08 00:32:29,920 - krishi.api - INFO - API Request - GET http://testserver/auth/me - IP: testclient - User: anonymous
+2026-09-08 00:32:29,921 - krishi.api - INFO - API Response - http://testserver/auth/me - Status: 200 - Time: 0.00s
+2026-09-08 00:32:29,922 - httpx - INFO - HTTP Request: GET http://testserver/auth/me "HTTP/1.1 200 OK"
+2026-09-08 00:32:29,924 - krishi.api - INFO - API Request - POST http://testserver/api/predict-crop - IP: testclient - User: anonymous
+2026-09-08 00:32:35,485 - krishi.ml - INFO - ML Prediction - Model: crop_recommendation - Inputs: {'location': 'Indore', 'soil_type': 'black', 'season': 'kharif'} - Prediction: [{'crop': 'Sugarcane', 'confidence': 0.638, 'suitable_season': 'kharif, monsoon', 'recommended_fertilizer': 'High NPK fertilizer and organic manure', 'tips': 'Maintain steady irrigation and avoid water stress.', 'water_requirement': 'High', 'soil_compatibility': 'Loamy, Alluvial, Black', 'icon': '🍬', 'description': 'Thrives in warm, humid climates with steady water supply.'}, {'crop': 'Cotton', 'confidence': 0.469, 'suitable_season': 'kharif, summer', 'recommended_fertilizer': 'NPK 10-26-26 with boron application', 'tips': 'Plant after rains and avoid excess moisture during boll formation.', 'water_requirement': 'Moderate', 'soil_compatibility': 'Black, Loamy, Alluvial, Red', 'icon': '🌿', 'description': 'Prefers warm, dry periods after initial rains.'}, {'crop': 'Wheat', 'confidence': 0.458, 'suitable_season': 'rabi, winter', 'recommended_fertilizer': 'Nitrogen-rich fertilizer such as Urea and DAP', 'tips': 'Sow in cool weather and avoid waterlogging during the early stage.', 'water_requirement': 'Moderate', 'soil_compatibility': 'Loamy, Alluvial, Black', 'icon': '🌾', 'description': 'Suitable for cool, dry winters and well-drained soils.'}] - Confidence: None
+2026-09-08 00:32:35,486 - krishi.api - INFO - API Response - http://testserver/api/predict-crop - Status: 200 - Time: 5.56s
+2026-09-08 00:32:35,488 - httpx - INFO - HTTP Request: POST http://testserver/api/predict-crop "HTTP/1.1 200 OK"
+2026-09-08 00:32:35,491 - krishi.api - INFO - API Request - GET http://testserver/api/store/fertilizers/recommend?crop=Sugarcane - IP: testclient - User: anonymous
+2026-09-08 00:32:35,499 - krishi.ml - INFO - ML Prediction - Model: fertilizer_recommendation - Inputs: {'crop': 'Sugarcane', 'season': None, 'soil_type': None} - Prediction: Found 2 recommendations - Confidence: None
+2026-09-08 00:32:35,500 - krishi.api - INFO - API Response - http://testserver/api/store/fertilizers/recommend?crop=Sugarcane - Status: 200 - Time: 0.01s
+2026-09-08 00:32:35,503 - httpx - INFO - HTTP Request: GET http://testserver/api/store/fertilizers/recommend?crop=Sugarcane "HTTP/1.1 200 OK"
+2026-09-08 00:35:14,810 - krishi.api - INFO - API Request - GET http://testserver/ - IP: testclient - User: anonymous
+2026-09-08 00:35:14,815 - krishi.api - INFO - API Response - http://testserver/ - Status: 200 - Time: 0.00s
+2026-09-08 00:35:14,817 - httpx - INFO - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-09-08 00:35:14,820 - krishi.api - INFO - API Request - POST http://testserver/auth/register - IP: testclient - User: anonymous
+2026-09-08 00:35:14,827 - krishi.api - INFO - API Response - http://testserver/auth/register - Status: 400 - Time: 0.01s
+2026-09-08 00:35:14,830 - httpx - INFO - HTTP Request: POST http://testserver/auth/register "HTTP/1.1 400 Bad Request"
+2026-09-08 00:35:14,833 - krishi.api - INFO - API Request - POST http://testserver/auth/login - IP: testclient - User: anonymous
+2026-09-08 00:35:14,847 - krishi.auth - WARNING - AUTH login - User: testfarmer123 - Status: SUCCESS - IP: unknown
+2026-09-08 00:35:14,848 - krishi.api - INFO - API Response - http://testserver/auth/login - Status: 200 - Time: 0.02s
+2026-09-08 00:35:14,851 - httpx - INFO - HTTP Request: POST http://testserver/auth/login "HTTP/1.1 200 OK"
+2026-09-08 00:35:14,873 - krishi.api - INFO - API Request - GET http://testserver/auth/me - IP: testclient - User: anonymous
+2026-09-08 00:35:14,874 - krishi.api - INFO - API Response - http://testserver/auth/me - Status: 200 - Time: 0.00s
+2026-09-08 00:35:14,876 - httpx - INFO - HTTP Request: GET http://testserver/auth/me "HTTP/1.1 200 OK"
+2026-09-08 00:35:14,879 - krishi.api - INFO - API Request - POST http://testserver/api/predict-crop - IP: testclient - User: anonymous
+2026-09-08 00:35:16,768 - krishi.ml - INFO - ML Prediction - Model: crop_recommendation - Inputs: {'location': 'Indore', 'soil_type': 'black', 'season': 'kharif'} - Prediction: [{'crop': 'Sugarcane', 'confidence': 0.638, 'suitable_season': 'kharif, monsoon', 'recommended_fertilizer': 'High NPK fertilizer and organic manure', 'tips': 'Maintain steady irrigation and avoid water stress.', 'water_requirement': 'High', 'soil_compatibility': 'Loamy, Alluvial, Black', 'icon': '🍬', 'description': 'Thrives in warm, humid climates with steady water supply.'}, {'crop': 'Cotton', 'confidence': 0.469, 'suitable_season': 'kharif, summer', 'recommended_fertilizer': 'NPK 10-26-26 with boron application', 'tips': 'Plant after rains and avoid excess moisture during boll formation.', 'water_requirement': 'Moderate', 'soil_compatibility': 'Black, Loamy, Alluvial, Red', 'icon': '🌿', 'description': 'Prefers warm, dry periods after initial rains.'}, {'crop': 'Wheat', 'confidence': 0.458, 'suitable_season': 'rabi, winter', 'recommended_fertilizer': 'Nitrogen-rich fertilizer such as Urea and DAP', 'tips': 'Sow in cool weather and avoid waterlogging during the early stage.', 'water_requirement': 'Moderate', 'soil_compatibility': 'Loamy, Alluvial, Black', 'icon': '🌾', 'description': 'Suitable for cool, dry winters and well-drained soils.'}] - Confidence: None
+2026-09-08 00:35:16,770 - krishi.api - INFO - API Response - http://testserver/api/predict-crop - Status: 200 - Time: 1.89s
+2026-09-08 00:35:16,773 - httpx - INFO - HTTP Request: POST http://testserver/api/predict-crop "HTTP/1.1 200 OK"
+2026-09-08 00:35:16,779 - krishi.api - INFO - API Request - GET http://testserver/api/store/fertilizers/recommend?crop=Sugarcane - IP: testclient - User: anonymous
+2026-09-08 00:35:16,795 - krishi.ml - INFO - ML Prediction - Model: fertilizer_recommendation - Inputs: {'crop': 'Sugarcane', 'season': None, 'soil_type': None} - Prediction: Found 2 recommendations - Confidence: None
+2026-09-08 00:35:16,796 - krishi.api - INFO - API Response - http://testserver/api/store/fertilizers/recommend?crop=Sugarcane - Status: 200 - Time: 0.02s
+2026-09-08 00:35:16,801 - httpx - INFO - HTTP Request: GET http://testserver/api/store/fertilizers/recommend?crop=Sugarcane "HTTP/1.1 200 OK"
+2026-09-08 00:35:16,805 - krishi.api - INFO - API Request - POST http://testserver/api/store/orders - IP: testclient - User: anonymous
+2026-09-08 00:35:16,810 - krishi.api - INFO - API Response - http://testserver/api/store/orders - Status: 422 - Time: 0.01s
+2026-09-08 00:35:16,813 - httpx - INFO - HTTP Request: POST http://testserver/api/store/orders "HTTP/1.1 422 Unprocessable Entity"
+2026-09-08 00:37:32,350 - krishi.api - INFO - API Request - GET http://testserver/ - IP: testclient - User: anonymous
+2026-09-08 00:37:32,352 - krishi.api - INFO - API Response - http://testserver/ - Status: 200 - Time: 0.00s
+2026-09-08 00:37:32,355 - httpx - INFO - HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-09-08 00:37:32,357 - krishi.api - INFO - API Request - POST http://testserver/auth/register - IP: testclient - User: anonymous
+2026-09-08 00:37:32,361 - krishi.api - INFO - API Response - http://testserver/auth/register - Status: 400 - Time: 0.00s
+2026-09-08 00:37:32,362 - httpx - INFO - HTTP Request: POST http://testserver/auth/register "HTTP/1.1 400 Bad Request"
+2026-09-08 00:37:32,364 - krishi.api - INFO - API Request - POST http://testserver/auth/login - IP: testclient - User: anonymous
+2026-09-08 00:37:32,376 - krishi.auth - WARNING - AUTH login - User: testfarmer123 - Status: SUCCESS - IP: unknown
+2026-09-08 00:37:32,377 - krishi.api - INFO - API Response - http://testserver/auth/login - Status: 200 - Time: 0.01s
+2026-09-08 00:37:32,378 - httpx - INFO - HTTP Request: POST http://testserver/auth/login "HTTP/1.1 200 OK"
+2026-09-08 00:37:32,380 - krishi.api - INFO - API Request - GET http://testserver/auth/me - IP: testclient - User: anonymous
+2026-09-08 00:37:32,381 - krishi.api - INFO - API Response - http://testserver/auth/me - Status: 200 - Time: 0.00s
+2026-09-08 00:37:32,382 - httpx - INFO - HTTP Request: GET http://testserver/auth/me "HTTP/1.1 200 OK"
+2026-09-08 00:37:32,383 - krishi.api - INFO - API Request - POST http://testserver/api/predict-crop - IP: testclient - User: anonymous
+2026-09-08 00:37:34,261 - krishi.ml - INFO - ML Prediction - Model: crop_recommendation - Inputs: {'location': 'Indore', 'soil_type': 'black', 'season': 'kharif'} - Prediction: [{'crop': 'Sugarcane', 'confidence': 0.638, 'suitable_season': 'kharif, monsoon', 'recommended_fertilizer': 'High NPK fertilizer and organic manure', 'tips': 'Maintain steady irrigation and avoid water stress.', 'water_requirement': 'High', 'soil_compatibility': 'Loamy, Alluvial, Black', 'icon': '🍬', 'description': 'Thrives in warm, humid climates with steady water supply.'}, {'crop': 'Cotton', 'confidence': 0.469, 'suitable_season': 'kharif, summer', 'recommended_fertilizer': 'NPK 10-26-26 with boron application', 'tips': 'Plant after rains and avoid excess moisture during boll formation.', 'water_requirement': 'Moderate', 'soil_compatibility': 'Black, Loamy, Alluvial, Red', 'icon': '🌿', 'description': 'Prefers warm, dry periods after initial rains.'}, {'crop': 'Wheat', 'confidence': 0.458, 'suitable_season': 'rabi, winter', 'recommended_fertilizer': 'Nitrogen-rich fertilizer such as Urea and DAP', 'tips': 'Sow in cool weather and avoid waterlogging during the early stage.', 'water_requirement': 'Moderate', 'soil_compatibility': 'Loamy, Alluvial, Black', 'icon': '🌾', 'description': 'Suitable for cool, dry winters and well-drained soils.'}] - Confidence: None
+2026-09-08 00:37:34,262 - krishi.api - INFO - API Response - http://testserver/api/predict-crop - Status: 200 - Time: 1.88s
+2026-09-08 00:37:34,265 - httpx - INFO - HTTP Request: POST http://testserver/api/predict-crop "HTTP/1.1 200 OK"
+2026-09-08 00:37:34,270 - krishi.api - INFO - API Request - GET http://testserver/api/store/fertilizers/recommend?crop=Sugarcane - IP: testclient - User: anonymous
+2026-09-08 00:37:34,288 - krishi.ml - INFO - ML Prediction - Model: fertilizer_recommendation - Inputs: {'crop': 'Sugarcane', 'season': None, 'soil_type': None} - Prediction: Found 2 recommendations - Confidence: None
+2026-09-08 00:37:34,289 - krishi.api - INFO - API Response - http://testserver/api/store/fertilizers/recommend?crop=Sugarcane - Status: 200 - Time: 0.02s
+2026-09-08 00:37:34,293 - httpx - INFO - HTTP Request: GET http://testserver/api/store/fertilizers/recommend?crop=Sugarcane "HTTP/1.1 200 OK"
+2026-09-08 00:37:34,296 - krishi.api - INFO - API Request - POST http://testserver/api/store/orders - IP: testclient - User: anonymous
+2026-09-08 00:37:34,347 - krishi.api - INFO - API Response - http://testserver/api/store/orders - Status: 200 - Time: 0.05s
+2026-09-08 00:37:34,350 - httpx - INFO - HTTP Request: POST http://testserver/api/store/orders "HTTP/1.1 200 OK"
+2026-09-08 00:37:34,354 - krishi.api - INFO - API Request - GET http://testserver/api/store/orders/ORD1788808054300 - IP: testclient - User: anonymous
+2026-09-08 00:37:34,359 - krishi.api - INFO - API Response - http://testserver/api/store/orders/ORD1788808054300 - Status: 200 - Time: 0.00s
+2026-09-08 00:37:34,361 - httpx - INFO - HTTP Request: GET http://testserver/api/store/orders/ORD1788808054300 "HTTP/1.1 200 OK"

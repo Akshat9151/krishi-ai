@@ -145,17 +145,53 @@ function placeOrder() {
     }
 }
 
-function processCODOrder() {
-    // Simulate order processing
-    showNotification('ऑर्डर कन्फर्म किया गया!');
-    
-    // Clear cart
-    localStorage.removeItem('krishiCart');
-    
-    // Redirect to confirmation
-    setTimeout(() => {
-        window.location.href = 'order-confirmation.html';
-    }, 2000);
+async function processCODOrder() {
+    const cart = JSON.parse(localStorage.getItem('krishiCart')) || [];
+    if (cart.length === 0) return;
+
+    showNotification('ऑर्डर कन्फर्म किया जा रहा है...');
+
+    const customerName = document.getElementById('name')?.value || "किसान भाई";
+    const phone = document.getElementById('phone')?.value || "9876543210";
+    const address = document.getElementById('address')?.value || "ग्राम सोनपुर, बिहार";
+    const totalAmount = calculateTotal();
+
+    const orderPayload = {
+        customer_name: customerName,
+        phone: phone,
+        address: address,
+        items: cart.map(item => ({
+            product_id: item.id || 1,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity
+        })),
+        total_amount: totalAmount,
+        payment_method: "cod"
+    };
+
+    try {
+        const baseUrl = window.API_BASE_URL || "https://krishi-ai-2-4j3k.onrender.com";
+        const res = await fetch(`${baseUrl}/api/store/orders`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderPayload)
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            showNotification('✅ ' + data.message);
+            localStorage.removeItem('krishiCart');
+            setTimeout(() => {
+                window.location.href = `order-confirmation.html?order=${data.order_number}`;
+            }, 1000);
+            return;
+        }
+    } catch (e) {
+        console.warn("Backend order creation error, using fallback:", e);
+    }
+
+    completeOrder("COD");
 }
 
 function processOnlinePayment(paymentMethod) {

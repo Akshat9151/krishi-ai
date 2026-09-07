@@ -1,11 +1,41 @@
-# Python cache and bytecode
+﻿# Python
 __pycache__/
 *.py[cod]
-*$py.class
+*.pyo
+*.pyd
+*.pdb
+*.so
 
-# SQLite database file
-krishi_ai.db
+# Virtual environment
+.venv/
+venv/
+env/
+ENV/
 
-# Environment files
+# Distribution / build
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# Environment
 .env
-.env.*
+.env.local
+.secret
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/

@@ -22,7 +22,7 @@ class KrishiLogger:
         )
         
         # File handler for detailed logs
-        file_handler = logging.FileHandler('krishi_ai.log')
+        file_handler = logging.FileHandler('krishi_ai.log', encoding='utf-8')
         file_handler.setLevel(logging.INFO)
         file_handler.setFormatter(detailed_formatter)
         
@@ -32,7 +32,7 @@ class KrishiLogger:
         console_handler.setFormatter(simple_formatter)
         
         # Error file handler
-        error_handler = logging.FileHandler('krishi_ai_errors.log')
+        error_handler = logging.FileHandler('krishi_ai_errors.log', encoding='utf-8')
         error_handler.setLevel(logging.ERROR)
         error_handler.setFormatter(detailed_formatter)
         

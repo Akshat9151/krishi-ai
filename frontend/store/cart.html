@@ -8,52 +8,49 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Same Header -->
     <header class="store-header">
-        <!-- Copy header from index.html -->
+        <div class="top-bar">
+            <div class="container" style="display: flex; justify-content: space-between; font-size: 13px;">
+                <span><i class="fas fa-seedling"></i> Krishi AI Store</span>
+                <a href="index.html" style="color: white; text-decoration: none;"><i class="fas fa-arrow-left"></i> स्टोर होम</a>
+            </div>
+        </div>
     </header>
 
     <main class="cart-page">
         <div class="container">
-            <h1 class="page-title">मेरी शॉपिंग कार्ट</h1>
+            <h1 class="page-title" style="margin: 20px 0; color: #1b5e20;">🛒 मेरी शॉपिंग कार्ट</h1>
             
             <div class="cart-content">
                 <div class="cart-table">
-                    <div class="cart-header">
-                        <div>प्रोडक्ट</div>
-                        <div>कीमत</div>
-                        <div>मात्रा</div>
-                        <div>कुल</div>
-                        <div>हटाएं</div>
-                    </div>
-                    
                     <div class="cart-items" id="cart-items">
                         <!-- Cart items loaded via JavaScript -->
                     </div>
                 </div>
                 
-                <div class="cart-summary">
+                <div class="cart-summary" style="background: #f9f9f9; padding: 20px; border-radius: 12px; margin-top: 20px; border: 1px solid #eee;">
                     <h2>ऑर्डर सारांश</h2>
                     <div class="price-breakdown">
-                        <div class="price-row">
+                        <div class="price-row" style="display: flex; justify-content: space-between; margin: 10px 0;">
                             <span>सबटोटल</span>
                             <span id="cart-subtotal">₹0</span>
                         </div>
-                        <div class="price-row">
+                        <div class="price-row" style="display: flex; justify-content: space-between; margin: 10px 0;">
                             <span>शिपिंग</span>
-                            <span class="free">मुफ्त</span>
+                            <span class="free" style="color: #2e7d32; font-weight: bold;">मुफ्त</span>
                         </div>
-                        <div class="price-row total">
+                        <hr />
+                        <div class="price-row total" style="display: flex; justify-content: space-between; margin: 10px 0; font-size: 18px;">
                             <span><strong>कुल राशि</strong></span>
-                            <span><strong id="cart-total">₹0</strong></span>
+                            <span><strong id="cart-total" style="color: #1b5e20;">₹0</strong></span>
                         </div>
                     </div>
                     
-                    <div class="cart-actions">
-                        <a href="index.html" class="btn-primary btn-continue-shopping">
+                    <div class="cart-actions" style="display: flex; gap: 12px; margin-top: 20px;">
+                        <a href="index.html" class="btn-primary btn-continue-shopping" style="padding: 10px 16px; background: #e8f5e9; color: #1b5e20; border-radius: 8px; text-decoration: none; font-weight: bold;">
                             <i class="fas fa-arrow-left"></i> शॉपिंग जारी रखें
                         </a>
-                        <a href="checkout.html" class="btn-primary btn-checkout">
+                        <a href="checkout.html" class="btn-primary btn-checkout" style="padding: 10px 20px; background: #2e7d32; color: white; border-radius: 8px; text-decoration: none; font-weight: bold;">
                             चेकआउट <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -62,15 +59,19 @@
         </div>
     </main>
 
-    <!-- Same Footer -->
     <footer class="store-footer">
-        <!-- Copy footer from index.html -->
+        <div class="container" style="padding: 20px 0; text-align: center; color: #666; font-size: 14px;">
+            <p>© 2024 Krishi AI Store. सर्वाधिकार सुरक्षित।</p>
+        </div>
     </footer>
 
+    <script src="../config.js"></script>
     <script src="store.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            updateCartDisplay();
+            if (typeof updateCartDisplay === 'function') {
+                updateCartDisplay();
+            }
         });
     </script>
 </body>

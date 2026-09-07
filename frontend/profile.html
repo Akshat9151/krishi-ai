@@ -4,17 +4,11 @@
   <meta charset="UTF-8" />
   <title>My Profile – Krishi AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
 </head>
 <body>
-
-<script>
-  // 🔐 Session check
-  const user = localStorage.getItem("loggedInUser");
-  if (!user) {
-    window.location.href = "login.html";
-  }
-</script>
 
 <div class="profile-page">
   
@@ -23,25 +17,76 @@
   <h2>👤 My Profile</h2>
 
   <div class="profile-card">
-    <p><strong>Name:</strong> <span id="name"></span></p>
+    <p><strong>Username:</strong> <span id="name">Loading...</span></p>
     <p><strong>Role:</strong> Farmer 🌱</p>
     <p><strong>Last City:</strong> <span id="city">–</span></p>
     <p><strong>Preferred Season:</strong> <span id="season">–</span></p>
+    <p><strong>Auth Status:</strong> <span id="auth-status" style="color: #43a047; font-weight: bold;">Verified ✔</span></p>
+  </div>
+
+  <div style="margin-top: 20px; text-align: center;">
+    <a href="index.html" class="login-btn" style="text-decoration: none; padding: 10px 20px; display: inline-block; margin-right: 10px;">
+      <i class="fas fa-home"></i> Back to Home
+    </a>
+    <button id="logoutBtn" style="background-color: #d32f2f; cursor: pointer; padding: 10px 20px; border: none; color: white; border-radius: 8px; font-weight: bold;">
+      <i class="fas fa-sign-out-alt"></i> Log Out
+    </button>
   </div>
 
 </div>
 
 <script>
-  // 👤 Fill profile data (abhi localStorage se)
-  document.getElementById("name").textContent =
-    localStorage.getItem("loggedInUser");
+  async function loadProfile() {
+    const token = localStorage.getItem("accessToken");
+    const localUser = localStorage.getItem("loggedInUser");
+    const nameEl = document.getElementById("name");
 
-  // Future-ready (jab backend connect hoga)
-  document.getElementById("city").textContent =
-    localStorage.getItem("lastCity") || "–";
+    if (token) {
+      try {
+        const res = await fetch(getApiUrl("/auth/me"), {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          nameEl.textContent = data.username;
+          localStorage.setItem("loggedInUser", data.username);
+        } else {
+          if (localUser) {
+            nameEl.textContent = localUser + " (Offline)";
+            document.getElementById("auth-status").textContent = "Session Expired";
+            document.getElementById("auth-status").style.color = "#e53935";
+          } else {
+            window.location.href = "login.html";
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn("Could not verify auth with server:", err);
+        nameEl.textContent = localUser || "Guest Farmer";
+        document.getElementById("auth-status").textContent = "Offline Mode";
+        document.getElementById("auth-status").style.color = "#fb8c00";
+      }
+    } else if (localUser) {
+      nameEl.textContent = localUser;
+      document.getElementById("auth-status").textContent = "Logged in (Local)";
+    } else {
+      window.location.href = "login.html";
+      return;
+    }
 
-  document.getElementById("season").textContent =
-    localStorage.getItem("preferredSeason") || "–";
+    document.getElementById("city").textContent = localStorage.getItem("lastCity") || "Not set";
+    document.getElementById("season").textContent = localStorage.getItem("preferredSeason") || "Not set";
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "login.html";
+  });
+
+  loadProfile();
 </script>
 
 </body>

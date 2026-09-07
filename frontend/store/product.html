@@ -143,13 +143,47 @@
 
     <!-- Same Footer as index.html -->
     <footer class="store-footer">
-        <!-- Copy footer from index.html -->
+        <div class="container" style="padding: 20px 0; text-align: center; color: #666; font-size: 14px;">
+            <p>© 2024 Krishi AI Store. सर्वाधिकार सुरक्षित।</p>
+        </div>
     </footer>
 
-
+    <script src="../config.js"></script>
     <script src="store.js"></script>
     <script>
-        // Product detail specific JavaScript
+        let currentProduct = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get('id') || 1;
+
+            try {
+                const baseUrl = window.API_BASE_URL || "https://krishi-ai-2-4j3k.onrender.com";
+                const res = await fetch(`${baseUrl}/api/store/products/${productId}`);
+                if (res.ok) {
+                    currentProduct = await res.json();
+                    renderProductPage(currentProduct);
+                }
+            } catch (e) {
+                console.warn("Product API load failed, using fallback:", e);
+            }
+        });
+
+        function renderProductPage(prod) {
+            if (!prod) return;
+            document.getElementById('product-name').textContent = prod.name;
+            document.getElementById('product-title').textContent = prod.name;
+            document.getElementById('main-img').src = prod.image_url || prod.image;
+            document.querySelector('.current-price').textContent = `₹${prod.price}`;
+            if (prod.original_price) {
+                document.querySelector('.original-price').textContent = `₹${prod.original_price}`;
+            }
+            if (prod.description) {
+                document.querySelector('.product-description p').textContent = prod.description;
+            }
+            document.querySelector('.sku').textContent = `SKU: ${prod.sku || 'KRISHI-PROD-' + prod.id}`;
+        }
+
         function increaseQty() {
             const qtyInput = document.getElementById('quantity');
             if (qtyInput.value < 10) {
@@ -165,12 +199,36 @@
         }
 
         function addToCartDetail() {
-            const productId = 1; // Get from URL parameter
-            const quantity = parseInt(document.getElementById('quantity').value);
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            const p = currentProduct || {
+                id: 1,
+                name: document.getElementById('product-title').textContent,
+                price: 199,
+                image: document.getElementById('main-img').src
+            };
             
-            // Add to cart logic
-            showNotification('उत्पाद कार्ट में जोड़ा गया');
+            let cart = JSON.parse(localStorage.getItem('krishiCart')) || [];
+            let existing = cart.find(item => item.id === p.id);
+            if (existing) {
+                existing.quantity += quantity;
+            } else {
+                cart.push({
+                    id: p.id,
+                    name: p.name,
+                    price: p.price,
+                    image: p.image_url || p.image,
+                    quantity: quantity
+                });
+            }
+            localStorage.setItem('krishiCart', JSON.stringify(cart));
+            if (typeof updateCartCount === 'function') updateCartCount();
+            showNotification(`✅ ${p.name} (${quantity}) कार्ट में जोड़ा गया`);
         }
+
+        document.querySelector('.btn-buy-now').addEventListener('click', () => {
+            addToCartDetail();
+            window.location.href = 'checkout.html';
+        });
 
         function toggleWishlistDetail() {
             const btn = document.querySelector('.btn-wishlist-large i');
@@ -184,14 +242,6 @@
                 showNotification('विश लिस्ट से हटाया गया');
             }
         }
-
-        // Image gallery functionality
-        document.querySelectorAll('.image-thumbnails img').forEach(thumb => {
-            thumb.addEventListener('click', function() {
-                const mainImg = document.getElementById('main-img');
-                mainImg.src = this.src.replace('200', '800');
-            });
-        });
     </script>
 </body>
 </html>

@@ -30,11 +30,11 @@ class StoreProduct(Base):
     
     # Indexes for performance
     __table_args__ = (
-        Index('idx_product_category', 'category'),
-        Index('idx_product_fertilizer', 'fertilizer_type'),
-        Index('idx_product_brand', 'brand'),
-        Index('idx_product_price', 'price'),
-        Index('idx_product_rating', 'rating'),
+        Index('idx_store_product_category', 'category'),
+        Index('idx_store_product_fertilizer', 'fertilizer_type'),
+        Index('idx_store_product_brand', 'brand'),
+        Index('idx_store_product_price', 'price'),
+        Index('idx_store_product_rating', 'rating'),
     )
 
 class ProductCategory(Base):
@@ -51,21 +51,22 @@ class ProductCategory(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+from sqlalchemy.orm import relationship
+
 class FertilizerRecommendation(Base):
     __tablename__ = "fertilizer_recommendations"
 
     id = Column(Integer, primary_key=True, index=True)
     crop_name = Column(String, index=True)
     fertilizer_type = Column(String, index=True)  # NPK, organic, etc.
-    product_id = Column(Integer, index=True)
+    product_id = Column(Integer, ForeignKey("store_products.id"), index=True)
     recommendation_score = Column(Float, default=0.0)  # How relevant this recommendation is
     season = Column(String, index=True)  # kharif, rabi, zaid
     soil_type = Column(String, index=True)  # clay, sandy, loamy, etc.
     created_at = Column(DateTime, default=datetime.utcnow)
     
-    # Foreign key to product
-    from sqlalchemy import ForeignKey
-    product = Column(Integer, ForeignKey("store_products.id"))
+    # Relationship to product
+    product = relationship("StoreProduct")
     
     __table_args__ = (
         Index('idx_recommendation_crop', 'crop_name'),
@@ -73,3 +74,19 @@ class FertilizerRecommendation(Base):
         Index('idx_recommendation_soil', 'soil_type'),
         Index('idx_recommendation_score', 'recommendation_score'),
     )
+
+class StoreOrder(Base):
+    __tablename__ = "store_orders"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_number = Column(String, unique=True, index=True)
+    user_id = Column(Integer, nullable=True, index=True)
+    customer_name = Column(String)
+    phone = Column(String)
+    address = Column(Text)
+    items_json = Column(Text)
+    total_amount = Column(Float)
+    status = Column(String, default="processing")
+    payment_method = Column(String, default="cod")
+    created_at = Column(DateTime, default=datetime.utcnow)
+

@@ -74,7 +74,7 @@ class OllamaChat:
 
     def _check(self) -> bool:
         try:
-            r = requests.get(f"{self.base_url}/tags", timeout=5)
+            r = requests.get(f"{self.base_url}/tags", timeout=1)
             return r.status_code == 200
         except Exception:
             return False

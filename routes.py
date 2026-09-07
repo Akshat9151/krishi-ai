@@ -211,7 +211,7 @@ try:
     model = joblib.load("backend/model.pkl")
 except Exception as e:
     # log warning; model will not be used until fixed
-    print(f"⚠️ could not load legacy model: {e}")
+    print(f"[WARN] could not load legacy model: {e}")
 
 @legacy_router.post("/predict/crop")
 def legacy_predict_crop(data: dict):

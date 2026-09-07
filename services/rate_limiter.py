@@ -2,18 +2,19 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from fastapi import Request, HTTPException, status
+from fastapi.responses import JSONResponse
 import redis
 from typing import Optional
 import time
 
 # Redis client for distributed rate limiting
 try:
-    redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+    redis_client = redis.Redis(host='127.0.0.1', port=6379, db=0, decode_responses=True, socket_connect_timeout=0.5, socket_timeout=0.5)
     redis_client.ping()  # Test connection
     REDIS_AVAILABLE = True
 except:
     REDIS_AVAILABLE = False
-    print("⚠️ Redis not available, using in-memory rate limiting")
+    print("[WARN] Redis not available, using in-memory rate limiting")
 
 # Initialize rate limiter
 def get_identifier(request: Request) -> str:
@@ -32,9 +33,9 @@ limiter = Limiter(key_func=get_identifier)
 # Custom rate limit exceeded handler
 async def custom_rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     """Custom handler for rate limit exceeded."""
-    return HTTPException(
+    return JSONResponse(
         status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-        detail={
+        content={
             "error": "Rate limit exceeded",
             "message": f"Too many requests. Try again in {exc.detail.split(' ')[-1]}",
             "retry_after": str(int(time.time()) + 60)  # 1 minute retry

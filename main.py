@@ -10,8 +10,10 @@ from services.rate_limiter import limiter, custom_rate_limit_exceeded_handler, R
 from services.monitoring import router as monitoring_router, metrics_middleware
 from services import store_api
 
-from backend.database import engine
+from backend.database import engine, SessionLocal
 from backend.models import Base
+import backend.models_store  # Register store models with Base
+from services.seed_data import seed_database
 
 # Create FastAPI app
 app = FastAPI(
@@ -24,12 +26,15 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, custom_rate_limit_exceeded_handler)
 
-# Create database tables
+# Create database tables and seed initial store data
 try:
     Base.metadata.create_all(bind=engine)
-    print("✅ Database tables created successfully!")
+    db_session = SessionLocal()
+    seed_database(db_session)
+    db_session.close()
+    print("[INFO] Database tables created and verified successfully!")
 except Exception as e:
-    print(f"❌ Error creating database tables: {e}")
+    print(f"[ERROR] Error creating/seeding database tables: {e}")
 
 # CORS middleware - Allow deployed frontend origins and local development
 app.add_middleware(

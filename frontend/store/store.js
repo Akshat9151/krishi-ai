@@ -125,23 +125,47 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Load Featured Products
-function loadFeaturedProducts() {
+// Load Featured Products
+async function loadFeaturedProducts() {
     if (!featuredProductsEl) return;
     
-    featuredProductsEl.innerHTML = productsData.featured.map(product => `
+    try {
+        const baseUrl = window.API_BASE_URL || "https://krishi-ai-2-4j3k.onrender.com";
+        const res = await fetch(`${baseUrl}/api/store/products`);
+        if (res.ok) {
+            const apiProducts = await res.json();
+            if (apiProducts && apiProducts.length > 0) {
+                window.liveStoreProducts = apiProducts;
+                renderProductGrid(apiProducts);
+                return;
+            }
+        }
+    } catch (e) {
+        console.warn("Using local products fallback:", e);
+    }
+    
+    renderProductGrid(productsData.featured);
+}
+
+function renderProductGrid(products) {
+    featuredProductsEl.innerHTML = products.map(product => `
         <div class="product-card" data-id="${product.id}">
             ${product.badge ? `<span class="product-badge">${product.badge}</span>` : ''}
-            <img src="${product.image}" alt="${product.name}" class="product-img">
+            <a href="product.html?id=${product.id}">
+              <img src="${product.image || product.image_url}" alt="${product.name}" class="product-img">
+            </a>
             <div class="product-info">
-                <h3 class="product-title">${product.name}</h3>
+                <h3 class="product-title">
+                  <a href="product.html?id=${product.id}" style="text-decoration: none; color: inherit;">${product.name}</a>
+                </h3>
                 <div class="product-rating">
-                    ${getStarRating(product.rating)}
-                    <span>(${product.reviews})</span>
+                    ${getStarRating(product.rating || 4.5)}
+                    <span>(${product.reviews_count || product.reviews || 50})</span>
                 </div>
                 <div class="product-price">
                     <span class="current-price">₹${product.price}</span>
-                    <span class="original-price">₹${product.originalPrice}</span>
-                    <span class="discount">${calculateDiscount(product.price, product.originalPrice)}% OFF</span>
+                    ${(product.original_price || product.originalPrice) ? `<span class="original-price">₹${product.original_price || product.originalPrice}</span>` : ''}
+                    ${product.discount_percentage ? `<span class="discount">${Math.round(product.discount_percentage)}% OFF</span>` : ''}
                 </div>
                 <div class="product-actions">
                     <button class="action-btn btn-cart" onclick="addToCart(${product.id})">
@@ -178,7 +202,10 @@ function calculateDiscount(current, original) {
 
 // Cart Functions
 function addToCart(productId) {
-    const product = productsData.featured.find(p => p.id === productId);
+    let product = (window.liveStoreProducts || []).find(p => p.id === productId);
+    if (!product) {
+        product = productsData.featured.find(p => p.id === productId);
+    }
     if (!product) return;
     
     const existingItem = cart.find(item => item.id === productId);
@@ -187,7 +214,10 @@ function addToCart(productId) {
         existingItem.quantity += 1;
     } else {
         cart.push({
-            ...product,
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image || product.image_url,
             quantity: 1
         });
     }
@@ -201,18 +231,85 @@ function removeFromCart(productId) {
     cart = cart.filter(item => item.id !== productId);
     saveCart();
     updateCartCount();
+    if (typeof updateCartDisplay === 'function') updateCartDisplay();
 }
 
 function updateCartCount() {
     if (cartCountEl) {
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
         cartCountEl.textContent = totalItems;
+        cartCountEl.classList.remove('cart-bump');
+        void cartCountEl.offsetWidth;
+        cartCountEl.classList.add('cart-bump');
     }
 }
 
 function saveCart() {
     localStorage.setItem('krishiCart', JSON.stringify(cart));
 }
+
+function updateCartDisplay() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    const subtotalEl = document.getElementById('cart-subtotal');
+    const totalEl = document.getElementById('cart-total');
+    if (!cartItemsContainer) return;
+
+    let cartData = JSON.parse(localStorage.getItem('krishiCart')) || [];
+    if (cartData.length === 0) {
+        cartItemsContainer.innerHTML = `
+            <div style="padding: 40px; text-align: center; color: #666; font-size: 16px;">
+                🛒 आपकी कार्ट खाली है। <a href="index.html" style="color: #2e7d32; font-weight: bold;">खरीदारी शुरू करें</a>
+            </div>
+        `;
+        if (subtotalEl) subtotalEl.textContent = '₹0';
+        if (totalEl) totalEl.textContent = '₹0';
+        return;
+    }
+
+    let subtotal = 0;
+    cartItemsContainer.innerHTML = cartData.map(item => {
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+        return `
+            <div class="cart-item-row" style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 50px; align-items: center; padding: 12px; border-bottom: 1px solid #eee; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;" />
+                    <strong>${item.name}</strong>
+                </div>
+                <div>₹${item.price}</div>
+                <div>
+                    <button onclick="changeCartQty(${item.id}, -1)" style="padding: 2px 8px; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px;">-</button>
+                    <span style="margin: 0 6px; font-weight: bold;">${item.quantity}</span>
+                    <button onclick="changeCartQty(${item.id}, 1)" style="padding: 2px 8px; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px;">+</button>
+                </div>
+                <div style="font-weight: bold; color: #2e7d32;">₹${itemTotal}</div>
+                <div>
+                    <button onclick="changeCartQty(${item.id}, -${item.quantity})" style="color: #d32f2f; background: none; border: none; cursor: pointer; font-size: 16px;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    if (subtotalEl) subtotalEl.textContent = `₹${subtotal.toFixed(2)}`;
+    if (totalEl) totalEl.textContent = `₹${subtotal.toFixed(2)}`;
+}
+
+window.changeCartQty = function(id, delta) {
+    let cartData = JSON.parse(localStorage.getItem('krishiCart')) || [];
+    let item = cartData.find(i => i.id === id);
+    if (item) {
+        item.quantity += delta;
+        if (item.quantity <= 0) {
+            cartData = cartData.filter(i => i.id !== id);
+        }
+    }
+    localStorage.setItem('krishiCart', JSON.stringify(cartData));
+    cart = cartData;
+    updateCartCount();
+    updateCartDisplay();
+};
 
 // Wishlist Functions
 function toggleWishlist(productId) {
