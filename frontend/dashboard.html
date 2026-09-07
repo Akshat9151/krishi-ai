@@ -3,25 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Krishi AI – Farmer Dashboard</title>
+  <title>Krishi AI – Farmer Workspace</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     /* ===================================================
-       VOTEVICTORY-STYLE SIDEBAR & WORKSPACE ARCHITECTURE
+       VOTEVICTORY MINIMALIST WORKSPACE & SIDEBAR
     =================================================== */
     :root {
-      --sidebar-width: 260px;
-      --primary-color: #2e7d32;
+      --sidebar-width: 250px;
+      --primary-green: #2e7d32;
       --primary-dark: #1b5e20;
-      --primary-light: #e8f5e9;
-      --accent-pill: #2e7d32;
       --sidebar-bg: #143818;
-      --sidebar-card: #1c4721;
-      --text-main: #1f2937;
+      --sidebar-card-bg: #1a451f;
+      --bg-workspace: #ffffff;
+      --border-color: #e5e7eb;
+      --text-main: #111827;
       --text-muted: #6b7280;
-      --bg-workspace: #f8faf8;
     }
 
     * {
@@ -31,7 +30,7 @@
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-workspace);
       color: var(--text-main);
       overflow-x: hidden;
@@ -54,138 +53,95 @@
       flex-direction: column;
       height: 100%;
       border-right: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
       z-index: 1000;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Brand / Header */
+    /* Brand Header */
     .sidebar-brand {
-      padding: 24px 20px 18px 20px;
+      padding: 24px 20px 20px 20px;
       display: flex;
       align-items: center;
       gap: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .sidebar-brand img {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
       background: #ffffff;
-      padding: 3px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      padding: 2px;
     }
 
     .sidebar-brand-text h2 {
       margin: 0;
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 800;
       color: #ffffff;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
     }
 
     .sidebar-brand-text span {
-      font-size: 11px;
+      font-size: 10.5px;
       color: #81c784;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.8px;
     }
 
-    /* Quick Express Store Button (Prominent Shortcut) */
-    .store-shortcut-pill {
-      margin: 14px 16px 6px 16px;
-      padding: 10px 14px;
-      background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-      border-radius: 10px;
-      color: #ffffff;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-weight: 700;
-      font-size: 13px;
-      box-shadow: 0 4px 12px rgba(245, 124, 0, 0.3);
-      transition: all 0.2s ease;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .store-shortcut-pill:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(245, 124, 0, 0.45);
-    }
-
-    .store-shortcut-pill span {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .store-shortcut-pill .badge {
-      background: rgba(0,0,0,0.25);
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 12px;
-    }
-
-    /* Navigation List */
+    /* Clean Navigation Group */
     .sidebar-nav-container {
       flex: 1;
-      padding: 14px 12px;
+      padding: 20px 14px;
       overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,0.2) transparent;
+      scrollbar-width: none;
     }
-
     .sidebar-nav-container::-webkit-scrollbar {
-      width: 4px;
-    }
-    .sidebar-nav-container::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.2);
-      border-radius: 4px;
+      display: none;
     }
 
-    .nav-section-title {
+    /* VoteVictory Category Header */
+    .nav-category-header {
       font-size: 11px;
       font-weight: 800;
       color: #81c784;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 10px 14px 6px 14px;
+      letter-spacing: 1.2px;
+      padding: 8px 12px 10px 12px;
     }
 
-    .nav-group {
+    .nav-list {
       list-style: none;
-      margin: 0 0 12px 0;
+      margin: 0 0 16px 0;
       padding: 0;
     }
 
     .nav-item {
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
-    /* VoteVictory Match: Solid colored pill highlight for active item */
+    /* VoteVictory Active Solid Colored Pill */
     .nav-link {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 11px 16px;
+      gap: 14px;
+      padding: 10px 16px;
       color: #c8e6c9;
       text-decoration: none;
       font-size: 13.5px;
       font-weight: 600;
-      border-radius: 10px;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: 8px;
+      transition: all 0.18s ease;
       cursor: pointer;
     }
 
     .nav-link i {
-      font-size: 17px;
-      width: 22px;
+      font-size: 16px;
+      width: 20px;
       text-align: center;
       color: #a5d6a7;
-      transition: transform 0.2s ease;
+      transition: transform 0.15s ease;
     }
 
     .nav-link:hover {
@@ -195,25 +151,24 @@
 
     .nav-link:hover i {
       color: #ffffff;
-      transform: scale(1.1);
     }
 
     .nav-link.active {
-      background: var(--accent-pill);
+      background: var(--primary-green);
       color: #ffffff;
       font-weight: 700;
-      box-shadow: 0 4px 14px rgba(46, 125, 50, 0.35);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .nav-link.active i {
       color: #ffffff;
     }
 
-    /* Bottom User Profile Card & Sign Out Button */
+    /* User Profile Card & Sign Out at Bottom */
     .sidebar-footer {
       padding: 16px;
-      background: rgba(0, 0, 0, 0.2);
       border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.15);
     }
 
     .user-profile-card {
@@ -221,24 +176,23 @@
       align-items: center;
       gap: 12px;
       padding: 10px 12px;
-      background: var(--sidebar-card);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      margin-bottom: 12px;
+      background: var(--sidebar-card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      margin-bottom: 10px;
     }
 
     .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #4caf50;
       color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 16px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      font-size: 15px;
     }
 
     .user-details {
@@ -248,7 +202,7 @@
 
     .user-name-display {
       margin: 0;
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
       color: #ffffff;
       white-space: nowrap;
@@ -261,16 +215,16 @@
     .user-role-label {
       margin: 2px 0 0 0;
       font-size: 11px;
-      color: #81c784;
+      color: #a5d6a7;
       font-weight: 600;
     }
 
-    .btn-signout-full {
+    .btn-signout {
       width: 100%;
-      background: rgba(239, 68, 68, 0.12);
+      background: transparent;
       color: #fca5a5;
       border: 1px solid rgba(239, 68, 68, 0.25);
-      padding: 9px 12px;
+      padding: 8px 12px;
       border-radius: 8px;
       font-size: 12.5px;
       font-weight: 700;
@@ -282,29 +236,28 @@
       transition: all 0.2s ease;
     }
 
-    .btn-signout-full:hover {
+    .btn-signout:hover {
       background: #ef4444;
       color: #ffffff;
       border-color: #ef4444;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 
-    /* 2. Main Right Content Area */
-    .app-content-area {
+    /* 2. Main Right Content Area (Clean White Workspace) */
+    .app-main-area {
       flex: 1;
       display: flex;
       flex-direction: column;
       overflow-y: auto;
       height: 100vh;
-      background: #f8faf8;
+      background: #ffffff;
     }
 
-    /* Content Header Topbar */
-    .workspace-topbar {
-      height: 64px;
-      min-height: 64px;
+    /* Minimal Topbar: user info + language + store shortcut icon */
+    .minimal-topbar {
+      height: 60px;
+      min-height: 60px;
       background: #ffffff;
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid var(--border-color);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -314,271 +267,221 @@
       z-index: 40;
     }
 
-    .topbar-title-wrap {
+    .topbar-left {
       display: flex;
       align-items: center;
       gap: 16px;
     }
 
-    .mobile-menu-trigger {
+    .mobile-nav-toggle {
       display: none;
-      background: #f1f8ed;
-      border: 1px solid #c8e6c9;
-      color: var(--primary-color);
-      width: 38px;
-      height: 38px;
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      width: 36px;
+      height: 36px;
       border-radius: 8px;
-      font-size: 18px;
+      font-size: 16px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
     }
 
-    .workspace-topbar h1 {
-      margin: 0;
-      font-size: 20px;
-      font-weight: 800;
-      color: #111827;
-      letter-spacing: -0.2px;
-    }
-
-    .topbar-actions-wrap {
+    .topbar-right-controls {
       display: flex;
       align-items: center;
       gap: 14px;
     }
 
-    .topbar-badge-store {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #fff3e0;
-      color: #e65100;
-      border: 1px solid #ffe0b2;
-      padding: 7px 16px;
+    .topbar-store-icon-link {
+      background: #f1f8ed;
+      color: var(--primary-green);
+      border: 1px solid #c8e6c9;
+      padding: 6px 14px;
       border-radius: 20px;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 700;
       text-decoration: none;
-      transition: transform 0.2s;
-    }
-    .topbar-badge-store:hover {
-      transform: translateY(-1px);
-    }
-
-    .topbar-badge-landing {
-      color: #4b5563;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
+      transition: all 0.15s ease;
     }
 
-    /* Workspace Content Container */
-    .workspace-body {
-      padding: 32px;
-      max-width: 1240px;
+    .topbar-store-icon-link:hover {
+      background: var(--primary-green);
+      color: #ffffff;
+      border-color: var(--primary-green);
+    }
+
+    .topbar-user-badge {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .topbar-user-badge strong {
+      color: var(--text-main);
+    }
+
+    /* Main Workspace Container with Generous White Space */
+    .workspace-container {
+      padding: 36px 40px;
+      max-width: 1180px;
       width: 100%;
       margin: 0 auto;
       box-sizing: border-box;
     }
 
+    .page-heading-block {
+      margin-bottom: 28px;
+    }
+
+    .page-heading-block h1 {
+      margin: 0 0 6px 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.3px;
+    }
+
+    .page-heading-block p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Content Views */
     .content-view {
       display: none;
-      animation: viewSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fadeIn 0.2s ease-out forwards;
     }
 
     .content-view.active-view {
       display: block;
     }
 
-    @keyframes viewSlideIn {
-      from { opacity: 0; transform: translateY(12px); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Standard Card Structure for Views */
-    .clean-card {
+    /* Minimal White Cards */
+    .minimal-card {
       background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
       padding: 24px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
       margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
     }
 
-    .card-header-row {
+    .card-title-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
-      padding-bottom: 14px;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
       border-bottom: 1px solid #f3f4f6;
     }
 
-    .card-header-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: #111827;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .card-header-badge {
-      font-size: 12px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 20px;
-      background: var(--primary-light);
-      color: var(--primary-color);
-    }
-
-    /* Overview Stats Row */
-    .stats-card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 18px;
-      margin-bottom: 24px;
-    }
-
-    .stat-box {
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-      transition: all 0.2s ease;
-    }
-
-    .stat-box:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-      border-color: #c8e6c9;
-    }
-
-    .stat-icon-square {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-    }
-
-    .sq-green { background: #e8f5e9; color: #2e7d32; }
-    .sq-amber { background: #fff3e0; color: #e65100; }
-    .sq-blue  { background: #e3f2fd; color: #1565c0; }
-    .sq-purple{ background: #f3e5f5; color: #7b1fa2; }
-
-    .stat-content-val h3 {
+    .card-title-row h3 {
       margin: 0;
-      font-size: 26px;
-      font-weight: 800;
+      font-size: 16px;
+      font-weight: 700;
       color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .stat-content-val p {
-      margin: 4px 0 0 0;
-      font-size: 13px;
-      color: #6b7280;
-      font-weight: 600;
-    }
-
-    /* Fast Quick-Action Launchpad */
-    .launchpad-grid {
+    /* Evenly-Spaced Minimalist Stat Cards (VoteVictory Pattern) */
+    .minimal-stat-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
+      gap: 18px;
+      margin-bottom: 28px;
     }
 
-    .launchpad-tile {
-      background: #f9fafb;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 14px;
-      padding: 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-
-    .launchpad-tile:hover {
+    .minimal-stat-box {
       background: #ffffff;
-      border-color: var(--primary-color);
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(46, 125, 50, 0.1);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px 22px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .launchpad-tile .tile-icon {
-      font-size: 32px;
-      display: block;
+    .minimal-stat-box:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .minimal-stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
       margin-bottom: 8px;
     }
 
-    .launchpad-tile h4 {
-      margin: 0 0 4px 0;
-      font-size: 15px;
-      font-weight: 700;
+    .minimal-stat-num {
+      font-size: 28px;
+      font-weight: 800;
       color: #111827;
+      line-height: 1.1;
     }
 
-    .launchpad-tile p {
-      margin: 0;
-      font-size: 12px;
-      color: #6b7280;
+    /* Two-Column Even Grid */
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
-    /* Responsive Mobile Collapse */
     @media (max-width: 900px) {
+      .split-grid {
+        grid-template-columns: 1fr;
+      }
       .app-sidebar {
         position: fixed;
         left: calc(-1 * var(--sidebar-width));
         top: 0;
         bottom: 0;
       }
-      .app-sidebar.sidebar-open {
+      .app-sidebar.open {
         transform: translateX(var(--sidebar-width));
       }
-      .mobile-menu-trigger {
+      .mobile-nav-toggle {
         display: flex;
       }
-      .mobile-overlay {
+      .mobile-drawer-overlay {
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.5);
+        background: rgba(0, 0, 0, 0.4);
         z-index: 999;
       }
-      .mobile-overlay.active {
+      .mobile-drawer-overlay.active {
         display: block;
       }
-      .workspace-topbar {
+      .minimal-topbar {
         padding: 0 16px;
       }
-      .workspace-body {
-        padding: 16px;
+      .workspace-container {
+        padding: 20px 16px;
       }
     }
   </style>
 </head>
 <body>
 
-<!-- Mobile Drawer Backdrop -->
-<div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+<!-- Mobile Drawer Overlay -->
+<div class="mobile-drawer-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
 
 <div class="app-layout">
 
   <!-- ==============================================
-       VOTEVICTORY-STYLE PERSISTENT LEFT SIDEBAR
+       VOTEVICTORY MINIMALIST LEFT SIDEBAR
   ============================================== -->
   <aside class="app-sidebar" id="appSidebar">
 
@@ -591,53 +494,47 @@
       </div>
     </div>
 
-    <!-- Quick Access Store Shortcut (Flipkart Minutes Style) -->
-    <a href="store/index.html" class="store-shortcut-pill" title="Click to open AgriStore directly">
-      <span><i class="fa-solid fa-bolt"></i> AgriStore Express</span>
-      <span class="badge">10 MIN</span>
-    </a>
-
-    <!-- Navigation List with VoteVictory Category Headers -->
+    <!-- Navigation List with Clean Category Headers -->
     <div class="sidebar-nav-container">
       
-      <!-- Section 1: FARM TOOLS -->
-      <div class="nav-section-title">FARM TOOLS</div>
-      <ul class="nav-group">
+      <!-- Category 1: FARM MANAGEMENT -->
+      <div class="nav-category-header">FARM MANAGEMENT</div>
+      <ul class="nav-list">
         <li class="nav-item">
-          <a class="nav-link active" data-view="view-dashboard">
+          <a class="nav-link active" data-view="view-dashboard" data-title="Dashboard" data-subtitle="Overview and farm health metrics">
             <i class="fa-solid fa-table-cells-large"></i>
             <span>Dashboard</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-view="view-crop">
+          <a class="nav-link" data-view="view-crop" data-title="Crop Recommendation" data-subtitle="Predict optimal crop yields based on soil and real-time weather">
             <i class="fa-solid fa-seedling"></i>
             <span>Crop Recommendation</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-view="view-disease">
+          <a class="nav-link" data-view="view-disease" data-title="Disease Detection" data-subtitle="Identify crop diseases and recommended remedies">
             <i class="fa-solid fa-virus-covid"></i>
             <span>Disease Detection</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-view="view-assistant">
+          <a class="nav-link" data-view="view-assistant" data-title="AI Assistant" data-subtitle="Consult Krishi AI in Hindi or Hinglish">
             <i class="fa-solid fa-robot"></i>
             <span>AI Assistant</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-view="view-weather">
+          <a class="nav-link" data-view="view-weather" data-title="Weather Insights" data-subtitle="Local meteorological conditions and farming tips">
             <i class="fa-solid fa-cloud-sun-rain"></i>
             <span>Weather</span>
           </a>
         </li>
       </ul>
 
-      <!-- Section 2: COMMERCE & ACCOUNT -->
-      <div class="nav-section-title">COMMERCE & ACCOUNT</div>
-      <ul class="nav-group">
+      <!-- Category 2: COMMERCE & ACCOUNT -->
+      <div class="nav-category-header">COMMERCE & ACCOUNT</div>
+      <ul class="nav-list">
         <li class="nav-item">
           <a href="store/index.html" class="nav-link">
             <i class="fa-solid fa-store"></i>
@@ -645,19 +542,19 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-view="view-orders">
+          <a class="nav-link" data-view="view-orders" data-title="My Orders" data-subtitle="Track and review your AgriStore purchases">
             <i class="fa-solid fa-box-open"></i>
             <span>My Orders</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-view="view-profile">
+          <a class="nav-link" data-view="view-profile" data-title="Profile" data-subtitle="Manage account credentials and security">
             <i class="fa-solid fa-circle-user"></i>
             <span>Profile</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-view="view-settings">
+          <a class="nav-link" data-view="view-settings" data-title="Settings" data-subtitle="Preferences and platform configuration">
             <i class="fa-solid fa-gear"></i>
             <span>Settings</span>
           </a>
@@ -666,17 +563,17 @@
 
     </div>
 
-    <!-- Bottom User Profile Card & Sign Out Button (VoteVictory pattern) -->
+    <!-- Bottom Profile Card & Sign Out Button -->
     <div class="sidebar-footer">
       <div class="user-profile-card">
-        <div class="user-avatar" id="sidebarAvatarLetter">A</div>
+        <div class="user-avatar" id="sidebarAvatar">A</div>
         <div class="user-details">
-          <h5 class="user-name-display" id="sidebarUserNameDisplay">FARMER</h5>
+          <h5 class="user-name-display" id="sidebarUserName">FARMER</h5>
           <p class="user-role-label">Kisan / Farm Lead</p>
         </div>
       </div>
 
-      <button class="btn-signout-full" onclick="handleSignOut()">
+      <button class="btn-signout" onclick="handleSignOut()">
         <i class="fa-solid fa-arrow-right-from-bracket"></i>
         <span>Sign Out</span>
       </button>
@@ -685,150 +582,92 @@
   </aside>
 
   <!-- ==============================================
-       MAIN WORKSPACE AREA (Right of Sidebar)
+       MAIN WORKSPACE (Minimalist Clean White Area)
   ============================================== -->
-  <main class="app-content-area">
+  <main class="app-main-area">
 
-    <!-- Workspace Topbar Header -->
-    <header class="workspace-topbar">
-      <div class="topbar-title-wrap">
-        <button class="mobile-menu-trigger" onclick="toggleSidebar()" title="Toggle Navigation">
+    <!-- Minimalist Topbar Header -->
+    <header class="minimal-topbar">
+      <div class="topbar-left">
+        <button class="mobile-nav-toggle" onclick="toggleSidebar()" title="Toggle Navigation">
           <i class="fa-solid fa-bars"></i>
         </button>
-        <h1 id="workspaceCurrentTitle">Dashboard Overview</h1>
+        <span class="topbar-user-badge">Logged in as: <strong id="topbarUserText">Farmer</strong></span>
       </div>
 
-      <div class="topbar-actions-wrap">
-        <a href="index.html" class="topbar-badge-landing">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          <span>Public Landing</span>
-        </a>
-        <a href="store/index.html" class="topbar-badge-store">
-          <i class="fa-solid fa-bolt"></i>
+      <div class="topbar-right-controls">
+        <a href="store/index.html" class="topbar-store-icon-link" title="Open AgriStore">
+          <i class="fa-solid fa-store"></i>
           <span>AgriStore</span>
         </a>
       </div>
     </header>
 
-    <!-- Workspace Body Views -->
-    <div class="workspace-body">
+    <!-- Workspace Container -->
+    <div class="workspace-container">
 
-      <!-- ================= 1. DASHBOARD VIEW ================= -->
+      <!-- Dynamic Header: Title + Subtitle -->
+      <div class="page-heading-block">
+        <h1 id="pageTitleText">Dashboard</h1>
+        <p id="pageSubtitleText">Overview and farm health metrics</p>
+      </div>
+
+      <!-- ================= VIEW 1: DASHBOARD (CLEAN & MINIMAL) ================= -->
       <section id="view-dashboard" class="content-view active-view">
-        <!-- Stats Row -->
-        <div class="stats-card-grid">
-          <div class="stat-box">
-            <div class="stat-icon-square sq-green"><i class="fa-solid fa-wheat-awn"></i></div>
-            <div class="stat-content-val">
-              <h3 id="statPredictionsCount">0</h3>
-              <p>Crops Recommended</p>
-            </div>
+        
+        <!-- Clean Evenly-Spaced Stat Cards -->
+        <div class="minimal-stat-grid">
+          <div class="minimal-stat-box">
+            <div class="minimal-stat-label">Crops Recommended</div>
+            <div class="minimal-stat-num" id="statPredictions">0</div>
           </div>
-
-          <div class="stat-box">
-            <div class="stat-icon-square sq-amber"><i class="fa-solid fa-shield-virus"></i></div>
-            <div class="stat-content-val">
-              <h3 id="statDiseasesCount">0</h3>
-              <p>Diseases Identified</p>
-            </div>
+          <div class="minimal-stat-box">
+            <div class="minimal-stat-label">Diseases Identified</div>
+            <div class="minimal-stat-num" id="statDiseases">0</div>
           </div>
-
-          <div class="stat-box">
-            <div class="stat-icon-square sq-blue"><i class="fa-solid fa-cloud-sun"></i></div>
-            <div class="stat-content-val">
-              <h3 id="statWeatherSnapshot">Live</h3>
-              <p>Weather Connected</p>
-            </div>
+          <div class="minimal-stat-box">
+            <div class="minimal-stat-label">Weather Station</div>
+            <div class="minimal-stat-num" id="statWeatherLocation" style="font-size: 20px; line-height: 1.5;">Connected</div>
           </div>
-
-          <div class="stat-box">
-            <div class="stat-icon-square sq-purple"><i class="fa-solid fa-calendar-check"></i></div>
-            <div class="stat-content-val">
-              <h3 id="statDaysUsing">1</h3>
-              <p>Days with Krishi AI</p>
-            </div>
+          <div class="minimal-stat-box">
+            <div class="minimal-stat-label">Days Active</div>
+            <div class="minimal-stat-num" id="statDaysActive">1</div>
           </div>
         </div>
 
-        <!-- Quick Farm Tools Launchpad -->
-        <div class="clean-card">
-          <div class="card-header-row">
-            <div class="card-header-title">
-              <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary-color);"></i>
-              <span>Quick Farm Tools</span>
+        <!-- Clean Two-Column Cards: Weather Snapshot & Recent Predictions -->
+        <div class="split-grid">
+          
+          <div class="minimal-card">
+            <div class="card-title-row">
+              <h3><i class="fa-solid fa-cloud-sun" style="color: var(--primary-green);"></i> Weather Snapshot</h3>
             </div>
-            <span class="card-header-badge">One-Click</span>
+            <div id="overviewWeatherCard" style="line-height: 1.7; color: #4b5563; font-size: 14px;">
+              <p>Fetching local weather station data...</p>
+            </div>
           </div>
 
-          <div class="launchpad-grid">
-            <div class="launchpad-tile" onclick="navigateToSection('view-crop', 'Crop Recommendation')">
-              <span class="tile-icon">🌾</span>
-              <h4>Crop Recommendation</h4>
-              <p>Soil & live weather prediction</p>
+          <div class="minimal-card">
+            <div class="card-title-row">
+              <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-green);"></i> Recent Predictions</h3>
             </div>
-
-            <div class="launchpad-tile" onclick="navigateToSection('view-disease', 'Disease Detection')">
-              <span class="tile-icon">🦠</span>
-              <h4>Disease Diagnosis</h4>
-              <p>Check symptoms & remedies</p>
+            <div id="overviewRecentCrops" style="line-height: 1.6; color: #4b5563; font-size: 14px;">
+              <p>No recent prediction logs.</p>
             </div>
-
-            <div class="launchpad-tile" onclick="navigateToSection('view-assistant', 'AI Assistant')">
-              <span class="tile-icon">🤖</span>
-              <h4>AI Assistant</h4>
-              <p>Ask in Hindi or Hinglish</p>
-            </div>
-
-            <a href="store/index.html" class="launchpad-tile" style="border-color: #ff9800; background: #fffde7;">
-              <span class="tile-icon">⚡</span>
-              <h4 style="color: #e65100;">AgriStore Direct</h4>
-              <p>Order seeds & fertilizers</p>
-            </a>
           </div>
+
         </div>
 
-        <!-- Feeds: Weather Snapshot & Recent Predictions -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-          <div class="clean-card">
-            <div class="card-header-row">
-              <div class="card-header-title">
-                <i class="fa-solid fa-cloud-sun" style="color: #1565c0;"></i>
-                <span>Weather Snapshot</span>
-              </div>
-            </div>
-            <div id="dashboardWeatherSnippet" style="line-height: 1.7; color: #4b5563;">
-              <p>Connecting to regional weather station...</p>
-            </div>
-          </div>
-
-          <div class="clean-card">
-            <div class="card-header-row">
-              <div class="card-header-title">
-                <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-color);"></i>
-                <span>Recent Predictions</span>
-              </div>
-            </div>
-            <div id="dashboardRecentList" style="line-height: 1.6; color: #4b5563;">
-              <p>No recent predictions yet.</p>
-            </div>
-          </div>
-        </div>
       </section>
 
-      <!-- ================= 2. CROP RECOMMENDATION VIEW ================= -->
+      <!-- ================= VIEW 2: CROP RECOMMENDATION ================= -->
       <section id="view-crop" class="content-view">
-        <div class="clean-card">
-          <div class="card-header-row">
-            <div class="card-header-title">
-              <i class="fa-solid fa-seedling" style="color: var(--primary-color);"></i>
-              <span>AI Crop Recommendation Engine</span>
-            </div>
-            <span class="card-header-badge">Live Weather Scoring</span>
+        <div class="minimal-card">
+          <div class="card-title-row">
+            <h3><i class="fa-solid fa-seedling" style="color: var(--primary-green);"></i> Crop Prediction Form</h3>
           </div>
 
-          <p style="color: #4b5563; margin-bottom: 20px;">Input your field soil type, city location, and growing season. Our engine pairs your data with real-time weather metrics to identify top yielding crops and matching fertilizers.</p>
-
-          <form id="cropForm" style="max-width: 650px; margin-bottom: 24px;">
+          <form id="cropForm" style="max-width: 620px; margin-bottom: 24px;">
             <div class="input-group">
               <label>Soil Type:</label>
               <select id="soilType" required>
@@ -843,8 +682,8 @@
             </div>
 
             <div class="input-group">
-              <label>City / Farming Location:</label>
-              <input type="text" id="city" required placeholder="e.g. Indore, Jaipur, Nashik, Patna" />
+              <label>City / Location:</label>
+              <input type="text" id="city" required placeholder="e.g. Indore, Jaipur, Nashik" />
             </div>
 
             <div class="input-group">
@@ -861,7 +700,7 @@
             </div>
 
             <button type="submit" class="predict-btn" style="width: 100%;">
-              🌾 Predict Best Crops for My Land
+              🌾 Predict Best Crops
             </button>
           </form>
 
@@ -869,38 +708,32 @@
         </div>
       </section>
 
-      <!-- ================= 3. DISEASE DETECTION VIEW ================= -->
+      <!-- ================= VIEW 3: DISEASE DETECTION ================= -->
       <section id="view-disease" class="content-view">
-        <div class="clean-card">
-          <div class="card-header-row">
-            <div class="card-header-title">
-              <i class="fa-solid fa-virus-covid" style="color: #dc2626;"></i>
-              <span>Crop Disease Detection & Remedies</span>
-            </div>
-            <span class="card-header-badge" style="background: #fef2f2; color: #dc2626;">Database Verified</span>
+        <div class="minimal-card">
+          <div class="card-title-row">
+            <h3><i class="fa-solid fa-virus-covid" style="color: #dc2626;"></i> Plant Diagnosis</h3>
           </div>
 
-          <!-- Photo Upload Preview Box -->
-          <div style="background: #f9fafb; border: 2px dashed #d1d5db; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 24px;">
+          <div style="background: #fafafa; border: 1.5px dashed var(--border-color); border-radius: 10px; padding: 20px; text-align: center; margin-bottom: 24px;">
             <label style="cursor: pointer; display: block;">
-              <span style="font-size: 32px; display: block; margin-bottom: 8px;">📷</span>
-              <strong style="color: #111827;">Upload Crop or Leaf Image</strong>
-              <p style="margin: 4px 0 10px 0; font-size: 12px; color: #6b7280;">Upload photo for disease inspection preview</p>
+              <span style="font-size: 28px; display: block; margin-bottom: 6px;">📷</span>
+              <strong style="color: #111827; font-size: 14px;">Upload Plant Photo</strong>
+              <p style="margin: 2px 0 0 0; font-size: 12px; color: var(--text-muted);">Preview crop leaf or stem photo</p>
               <input type="file" id="cropImage" accept="image/*" style="display: none;" />
             </label>
             <div id="imagePreview" style="display: none; margin-top: 14px;">
-              <img id="previewImg" style="max-width: 260px; max-height: 200px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
-              <p id="imageName" style="margin-top: 8px; color: var(--primary-color); font-weight: bold; font-size: 13px;"></p>
+              <img id="previewImg" style="max-width: 240px; max-height: 180px; border-radius: 8px;" />
+              <p id="imageName" style="margin-top: 6px; color: var(--primary-green); font-weight: bold; font-size: 12px;"></p>
             </div>
           </div>
 
-          <!-- Disease Form -->
           <form id="diseaseForm" style="max-width: 600px; margin-bottom: 24px;">
             <div class="input-group">
-              <label>Enter Crop Name for Diagnostic Search:</label>
-              <input type="text" id="diseaseCrop" required placeholder="e.g. wheat, rice, cotton, maize, potato" />
+              <label>Crop Name:</label>
+              <input type="text" id="diseaseCrop" required placeholder="e.g. wheat, rice, cotton, maize" />
             </div>
-            <button type="submit" class="predict-btn" style="background: #2e7d32;">
+            <button type="submit" class="predict-btn">
               🔬 Diagnose Disease & Remedies
             </button>
           </form>
@@ -910,150 +743,118 @@
         </div>
       </section>
 
-      <!-- ================= 4. AI ASSISTANT VIEW ================= -->
+      <!-- ================= VIEW 4: AI ASSISTANT ================= -->
       <section id="view-assistant" class="content-view">
-        <div class="clean-card">
-          <div class="card-header-row">
-            <div class="card-header-title">
-              <i class="fa-solid fa-robot" style="color: var(--primary-color);"></i>
-              <span>Krishi AI Farming Assistant</span>
-            </div>
-            <span class="card-header-badge">Hindi & Hinglish</span>
+        <div class="minimal-card">
+          <div class="card-title-row">
+            <h3><i class="fa-solid fa-robot" style="color: var(--primary-green);"></i> Chat with Krishi AI</h3>
           </div>
 
-          <!-- Chat History -->
-          <div id="assistantChat" class="chat-box" style="height: 380px; overflow-y: auto; background: #fafafa; border: 1px solid #e5e7eb; border-radius: 14px; padding: 16px; margin-bottom: 16px;">
+          <div id="assistantChat" class="chat-box" style="height: 380px; overflow-y: auto; background: #fafafa; border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
             <div class="chat bot">
-              Namaste! Main Krishi AI hoon. Fasal, mitti, keet prabandhan ya fertilizer se juda koi bhi sawal poochiye.
+              Namaste! Main Krishi AI hoon. Fasal, mitti ya kheti se jude sawal pooch sakte hain.
             </div>
           </div>
 
           <form id="assistantForm" class="assistant-form">
             <div style="display: flex; gap: 10px;">
-              <textarea id="assistantMessage" rows="2" placeholder="Apna sawal likhiye (e.g. Gehu me peele daag aa rahe hain, kya karun?)" required style="flex: 1; border-radius: 10px; padding: 10px; border: 1px solid #d1d5db; font-size: 14px;"></textarea>
-              <button type="submit" class="predict-btn" style="padding: 10px 24px; height: fit-content; align-self: center;">
-                Send 🚀
+              <textarea id="assistantMessage" rows="2" placeholder="Apna sawal likhiye (e.g. Gehu me peele daag aa rahe hain...)" required style="flex: 1; border-radius: 8px; padding: 10px; border: 1px solid var(--border-color); font-size: 14px;"></textarea>
+              <button type="submit" class="predict-btn" style="padding: 10px 22px; height: fit-content; align-self: center;">
+                Send
               </button>
             </div>
           </form>
 
           <div id="assistantStatus" style="margin-top: 8px; font-size: 13px; font-weight: 600;"></div>
 
-          <!-- Suggested Chips -->
           <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #f3f4f6;">
-            <strong style="font-size: 13px; color: #4b5563;">💡 Suggested Questions:</strong>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
-              <button class="prompt-chip" onclick="fillPrompt('Gehu me peele daag aa rahe hain, kya karun?')">🌾 Gehu me peele daag</button>
-              <button class="prompt-chip" onclick="fillPrompt('Rice ke liye best fertilizer kya hai?')">🍚 Rice ke liye fertilizer</button>
-              <button class="prompt-chip" onclick="fillPrompt('Mitti me paani kaise maintain karu?')">💧 Irrigation schedule</button>
-              <button class="prompt-chip" onclick="fillPrompt('Cotton ki fasal me keede lage hain')">🌿 Cotton pest control</button>
+            <strong style="font-size: 13px; color: var(--text-muted);">Suggested Questions:</strong>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+              <button class="prompt-pill" onclick="fillPrompt('Gehu me peele daag aa rahe hain, kya karun?')">🌾 Gehu me peele daag</button>
+              <button class="prompt-pill" onclick="fillPrompt('Rice ke liye best fertilizer kya hai?')">🍚 Rice ke liye fertilizer</button>
+              <button class="prompt-pill" onclick="fillPrompt('Mitti me paani kaise maintain karu?')">💧 Irrigation tips</button>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ================= 5. WEATHER VIEW ================= -->
+      <!-- ================= VIEW 5: WEATHER ================= -->
       <section id="view-weather" class="content-view">
-        <div class="clean-card">
-          <div class="card-header-row">
-            <div class="card-header-title">
-              <i class="fa-solid fa-cloud-sun-rain" style="color: #0284c7;"></i>
-              <span>Live Meteorological Insights</span>
-            </div>
+        <div class="minimal-card">
+          <div class="card-title-row">
+            <h3><i class="fa-solid fa-cloud-sun-rain" style="color: #0284c7;"></i> Weather Lookup</h3>
           </div>
 
-          <p style="color: #4b5563; margin-bottom: 20px;">Get real-time weather metrics including temperature, relative humidity, precipitation, and agricultural farming advice for any district.</p>
-
-          <form id="dashboardWeatherForm" style="display: flex; gap: 10px; max-width: 500px; margin-bottom: 24px;">
-            <input type="text" id="weatherSearchCity" placeholder="Enter City (e.g. Bhopal, Jaipur, Pune, Indore)" required style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #d1d5db;" />
-            <button type="submit" class="predict-btn" style="padding: 10px 20px;">Get Weather 🌦️</button>
+          <form id="dashboardWeatherForm" style="display: flex; gap: 10px; max-width: 480px; margin-bottom: 24px;">
+            <input type="text" id="weatherSearchCity" placeholder="Enter City (e.g. Bhopal, Jaipur, Pune)" required style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color);" />
+            <button type="submit" class="predict-btn" style="padding: 10px 20px;">Search</button>
           </form>
 
           <div id="dashboardWeatherResult"></div>
         </div>
       </section>
 
-      <!-- ================= 6. MY ORDERS VIEW ================= -->
+      <!-- ================= VIEW 6: MY ORDERS ================= -->
       <section id="view-orders" class="content-view">
-        <div class="clean-card">
-          <div class="card-header-row">
-            <div class="card-header-title">
-              <i class="fa-solid fa-box-open" style="color: #e65100;"></i>
-              <span>Track & Manage Store Orders</span>
-            </div>
-            <a href="store/index.html" style="font-size: 13px; color: var(--primary-color); font-weight: 700; text-decoration: none;">Visit AgriStore ➔</a>
+        <div class="minimal-card">
+          <div class="card-title-row">
+            <h3><i class="fa-solid fa-box-open" style="color: #ea580c;"></i> Order Status</h3>
           </div>
 
-          <p style="color: #4b5563; margin-bottom: 20px;">Enter your order tracking number (received on checkout confirmation) to check real-time order status directly in the database.</p>
-
-          <div style="display: flex; gap: 10px; max-width: 480px; margin-bottom: 24px;">
-            <input type="text" id="trackOrderNumber" placeholder="e.g. ORD1788811991840" style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1.5px solid #d1d5db;" />
-            <button onclick="trackOrderDirectly()" class="predict-btn" style="padding: 10px 20px;">Track Order</button>
+          <div style="display: flex; gap: 10px; max-width: 460px; margin-bottom: 20px;">
+            <input type="text" id="trackOrderNumber" placeholder="Enter Order # (e.g. ORD1788812632933)" style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color);" />
+            <button onclick="trackOrderDirectly()" class="predict-btn" style="padding: 10px 20px;">Track</button>
           </div>
 
           <div id="trackOrderResult"></div>
         </div>
       </section>
 
-      <!-- ================= 7. PROFILE VIEW ================= -->
+      <!-- ================= VIEW 7: PROFILE ================= -->
       <section id="view-profile" class="content-view">
-        <div class="clean-card" style="max-width: 650px;">
-          <div class="card-header-row">
-            <div class="card-header-title">
-              <i class="fa-solid fa-circle-user" style="color: var(--primary-color);"></i>
-              <span>Farmer Account Profile</span>
-            </div>
-            <span class="card-header-badge">Verified Account ✔</span>
+        <div class="minimal-card" style="max-width: 600px;">
+          <div class="card-title-row">
+            <h3><i class="fa-solid fa-circle-user" style="color: var(--primary-green);"></i> Account Details</h3>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 18px; margin-bottom: 24px;">
-            <div style="width: 64px; height: 64px; border-radius: 12px; background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800;" id="profileAvatarLarge">A</div>
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+            <div style="width: 56px; height: 56px; border-radius: 10px; background: var(--primary-green); color: white; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800;" id="profileAvatarBig">A</div>
             <div>
-              <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: #111827;" id="profileUsernameFull">FARMER</h3>
-              <p style="margin: 4px 0 0 0; font-size: 13px; color: #6b7280;">Farmer / Agricultural Lead • Krishi AI Member</p>
+              <h4 style="margin: 0; font-size: 18px; font-weight: 700; color: #111827;" id="profileUsernameFull">FARMER</h4>
+              <p style="margin: 2px 0 0 0; font-size: 13px; color: var(--text-muted);">Verified Account • JWT Protected</p>
             </div>
           </div>
 
-          <div style="background: #f9fafb; border-radius: 12px; padding: 18px; border: 1px solid #e5e7eb; margin-bottom: 24px; line-height: 1.9; font-size: 13.5px;">
-            <p style="margin: 0;"><strong>User ID / Username:</strong> <span id="profileUsernameField">Loading...</span></p>
-            <p style="margin: 0;"><strong>Security Auth:</strong> JWT Bearer Authentication Active</p>
+          <div style="background: #fafafa; border-radius: 8px; padding: 16px; border: 1px solid var(--border-color); margin-bottom: 20px; font-size: 13.5px; line-height: 1.8;">
+            <p style="margin: 0;"><strong>Username:</strong> <span id="profileUsernameField">Loading...</span></p>
+            <p style="margin: 0;"><strong>Authentication:</strong> Active JWT Session</p>
             <p style="margin: 0;"><strong>Database:</strong> SQLite Engine Connected</p>
-            <p style="margin: 0;"><strong>Session State:</strong> <span style="color: var(--primary-color); font-weight: 700;">Active & Verified</span></p>
           </div>
 
-          <button onclick="handleSignOut()" style="padding: 10px 22px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+          <button onclick="handleSignOut()" style="padding: 9px 20px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700;">
+            Sign Out
           </button>
         </div>
       </section>
 
-      <!-- ================= 8. SETTINGS VIEW ================= -->
+      <!-- ================= VIEW 8: SETTINGS ================= -->
       <section id="view-settings" class="content-view">
-        <div class="clean-card" style="max-width: 650px;">
-          <div class="card-header-row">
-            <div class="card-header-title">
-              <i class="fa-solid fa-gear" style="color: #4b5563;"></i>
-              <span>System & App Settings</span>
-            </div>
+        <div class="minimal-card" style="max-width: 600px;">
+          <div class="card-title-row">
+            <h3><i class="fa-solid fa-gear" style="color: #4b5563;"></i> Platform Settings</h3>
           </div>
 
           <div class="input-group" style="margin-bottom: 20px;">
-            <label>Interface Language (भाषा):</label>
-            <select id="settingsLanguageSelect" style="padding: 10px; border-radius: 8px; border: 1.5px solid #d1d5db; width: 100%;">
+            <label>Language:</label>
+            <select id="settingsLanguageSelect" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); width: 100%;">
               <option value="en">English (default)</option>
               <option value="hi">हिंदी (Hindi)</option>
               <option value="hinglish">Hinglish</option>
             </select>
           </div>
 
-          <div style="background: #f9fafb; border-radius: 12px; padding: 18px; border: 1px solid #e5e7eb; margin-bottom: 24px;">
-            <h4 style="margin: 0 0 8px 0; color: #111827;">System Connectivity</h4>
-            <p style="margin: 0; font-size: 13px; color: #6b7280;">Backend API: FastAPI (Python 3.11)</p>
-            <p style="margin: 4px 0 0 0; font-size: 13px; color: #6b7280;">Database: SQLite (krishi_ai.db)</p>
-          </div>
-
-          <button onclick="saveAppSettings()" class="predict-btn" style="padding: 10px 24px;">
-            💾 Save Preferences
+          <button onclick="saveAppSettings()" class="predict-btn" style="padding: 9px 20px;">
+            Save Settings
           </button>
         </div>
       </section>
@@ -1064,19 +865,18 @@
 </div>
 
 <style>
-  .prompt-chip {
+  .prompt-pill {
     background: #f1f8ed;
     border: 1px solid #c8e6c9;
-    color: #2e7d32;
-    padding: 6px 14px;
+    color: var(--primary-green);
+    padding: 5px 12px;
     border-radius: 16px;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
   }
-  .prompt-chip:hover {
-    background: #2e7d32;
+  .prompt-pill:hover {
+    background: var(--primary-green);
     color: #fff;
   }
 </style>
@@ -1088,76 +888,75 @@
 
 <script>
   // ===================================================
-  // VOTEVICTORY SIDEBAR ROUTER & PROFILE LOGIC
+  // MINIMALIST ROUTER & USER INITIALIZATION
   // ===================================================
 
   const loggedUser = localStorage.getItem("loggedInUser") || "Farmer";
   
-  // Set User Details
-  const formattedUser = loggedUser.toUpperCase();
-  document.getElementById("sidebarUserNameDisplay").textContent = formattedUser;
-  document.getElementById("profileUsernameFull").textContent = formattedUser;
+  // Update Usernames
+  const upperUser = loggedUser.toUpperCase();
+  document.getElementById("sidebarUserName").textContent = upperUser;
+  document.getElementById("profileUsernameFull").textContent = upperUser;
   document.getElementById("profileUsernameField").textContent = loggedUser;
-  
-  const initial = loggedUser.charAt(0).toUpperCase();
-  document.getElementById("sidebarAvatarLetter").textContent = initial;
-  document.getElementById("profileAvatarLarge").textContent = initial;
+  document.getElementById("topbarUserText").textContent = loggedUser;
 
-  // Sidebar Link Navigation
+  const letter = loggedUser.charAt(0).toUpperCase();
+  document.getElementById("sidebarAvatar").textContent = letter;
+  document.getElementById("profileAvatarBig").textContent = letter;
+
+  // Nav Item Switching
   document.querySelectorAll(".nav-link[data-view]").forEach(link => {
     link.addEventListener("click", function(e) {
       e.preventDefault();
-      const targetView = this.getAttribute("data-view");
-      const title = this.querySelector("span").textContent;
-      navigateToSection(targetView, title);
+      const viewId = this.getAttribute("data-view");
+      const title = this.getAttribute("data-title") || this.querySelector("span").textContent;
+      const subtitle = this.getAttribute("data-subtitle") || "";
+      switchSection(viewId, title, subtitle);
     });
   });
 
-  function navigateToSection(viewId, viewTitle) {
-    // 1. Highlight Active Nav Link with VoteVictory style pill
+  function switchSection(viewId, title, subtitle) {
+    // Nav highlight
     document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
-    const targetLink = document.querySelector(`.nav-link[data-view="${viewId}"]`);
-    if (targetLink) targetLink.classList.add("active");
+    const activeLink = document.querySelector(`.nav-link[data-view="${viewId}"]`);
+    if (activeLink) activeLink.classList.add("active");
 
-    // 2. Switch Right Content Area View
+    // View content switch
     document.querySelectorAll(".content-view").forEach(v => v.classList.remove("active-view"));
-    const targetViewEl = document.getElementById(viewId);
-    if (targetViewEl) {
-      targetViewEl.classList.add("active-view");
+    const target = document.getElementById(viewId);
+    if (target) {
+      target.classList.add("active-view");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    // 3. Update Header Title
-    if (viewTitle) {
-      document.getElementById("workspaceCurrentTitle").textContent = viewTitle;
-    }
+    // Update Header Text
+    if (title) document.getElementById("pageTitleText").textContent = title;
+    if (subtitle) document.getElementById("pageSubtitleText").textContent = subtitle;
 
-    // 4. Close mobile drawer if opened
     closeSidebar();
   }
 
-  // Mobile Drawer Controls
-  const sidebar = document.getElementById("appSidebar");
-  const overlay = document.getElementById("mobileOverlay");
+  // Mobile Drawer
+  const sidebarEl = document.getElementById("appSidebar");
+  const overlayEl = document.getElementById("mobileOverlay");
 
   function toggleSidebar() {
-    sidebar.classList.toggle("sidebar-open");
-    overlay.classList.toggle("active");
+    sidebarEl.classList.toggle("open");
+    overlayEl.classList.toggle("active");
   }
 
   function closeSidebar() {
-    sidebar.classList.remove("sidebar-open");
-    overlay.classList.remove("active");
+    sidebarEl.classList.remove("open");
+    overlayEl.classList.remove("active");
   }
 
-  // Sign Out Handler
+  // Sign out
   function handleSignOut() {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("loggedInUser");
     window.location.href = "login.html";
   }
 
-  // Suggested Prompt Helper
   function fillPrompt(txt) {
     const box = document.getElementById("assistantMessage");
     if (box) {
@@ -1166,64 +965,63 @@
     }
   }
 
-  // Settings Save
   function saveAppSettings() {
     const lang = document.getElementById("settingsLanguageSelect").value;
     localStorage.setItem("krishi_lang", lang);
-    alert("Preferences saved successfully!");
+    alert("Settings saved!");
   }
 
-  // Order Tracking Directly in View
+  // Track Order
   async function trackOrderDirectly() {
     const orderNum = document.getElementById("trackOrderNumber").value.trim();
     const resultDiv = document.getElementById("trackOrderResult");
     if (!orderNum) {
-      resultDiv.innerHTML = "<p style='color:#dc2626;'>Please enter an Order Number.</p>";
+      resultDiv.innerHTML = "<p style='color:#dc2626;'>Please enter Order Number.</p>";
       return;
     }
 
-    resultDiv.innerHTML = "<div class='loading-text'><span class='spinner'></span> Searching database...</div>";
+    resultDiv.innerHTML = "<div class='loading-text'><span class='spinner'></span> Querying database...</div>";
 
     try {
       const res = await fetch(getApiUrl(`/api/store/orders/${encodeURIComponent(orderNum)}`));
-      if (!res.ok) throw new Error("Order not found in database.");
+      if (!res.ok) throw new Error("Order not found.");
       const order = await res.json();
 
       let itemsHtml = order.items.map(it => `
-        <li style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e5e7eb;">
+        <li style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e5e7eb;">
           <span>${it.name || "Product"} × ${it.quantity}</span>
           <strong>₹${it.price * it.quantity}</strong>
         </li>
       `).join("");
 
       resultDiv.innerHTML = `
-        <div style="background: #ffffff; border: 1.5px solid #c8e6c9; border-radius: 12px; padding: 20px; box-shadow: 0 4px 14px rgba(0,0,0,0.05);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <h4 style="margin: 0; color: var(--primary-color);">Order #${order.order_number}</h4>
-            <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 12px; border-radius: 20px; font-weight: 800; font-size: 12px;">
+        <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; margin-top: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h4 style="margin: 0; color: var(--primary-green);">Order #${order.order_number}</h4>
+            <span style="background: #e8f5e9; color: var(--primary-green); padding: 3px 10px; border-radius: 12px; font-weight: 700; font-size: 12px;">
               ${order.status.toUpperCase()}
             </span>
           </div>
           <p style="margin: 4px 0; font-size: 13px;"><strong>Customer:</strong> ${order.customer_name} (${order.phone})</p>
-          <p style="margin: 4px 0; font-size: 13px;"><strong>Shipping Address:</strong> ${order.address}</p>
-          <p style="margin: 4px 0; font-size: 13px;"><strong>Payment Method:</strong> ${order.payment_method.toUpperCase()}</p>
-          <ul style="list-style: none; padding: 0; margin: 14px 0;">${itemsHtml}</ul>
-          <div style="text-align: right; font-size: 16px; color: var(--primary-color); font-weight: 800; padding-top: 10px; border-top: 2px solid #e8f5e9;">
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Address:</strong> ${order.address}</p>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Payment:</strong> ${order.payment_method.toUpperCase()}</p>
+          <ul style="list-style: none; padding: 0; margin: 10px 0;">${itemsHtml}</ul>
+          <div style="text-align: right; font-size: 15px; color: var(--primary-green); font-weight: 700; padding-top: 8px; border-top: 1px solid #eee;">
             Total: ₹${order.total_amount}
           </div>
         </div>
       `;
     } catch (err) {
-      resultDiv.innerHTML = `<p style='color: #dc2626; font-weight: bold;'>⚠️ ${err.message}</p>`;
+      resultDiv.innerHTML = `<p style='color: #dc2626;'>⚠️ ${err.message}</p>`;
     }
   }
 
-  // Dashboard Weather Search
+  // Dashboard Weather
   document.getElementById("dashboardWeatherForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const city = document.getElementById("weatherSearchCity").value.trim();
     const resDiv = document.getElementById("dashboardWeatherResult");
-    resDiv.innerHTML = "<div class='loading-text'><span class='spinner'></span> Loading weather data...</div>";
+    resDiv.innerHTML = "<div class='loading-text'><span class='spinner'></span> Fetching weather...</div>";
 
     try {
       const res = await fetch(getApiUrl("/api/weather"), {
@@ -1231,21 +1029,21 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ location: city })
       });
-      if (!res.ok) throw new Error("Could not fetch weather data");
+      if (!res.ok) throw new Error("Could not fetch weather");
       const data = await res.json();
 
       resDiv.innerHTML = `
-        <div style="background: #f1f8ed; border-left: 4px solid var(--primary-color); padding: 18px; border-radius: 12px;">
-          <h3 style="margin: 0 0 10px 0; color: var(--primary-color);">🌍 Weather for ${city}</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 14px;">
-            <div>🌡️ <strong>Temperature:</strong> ${data.temperature} °C</div>
+        <div style="background: #fafafa; border: 1px solid var(--border-color); padding: 18px; border-radius: 10px;">
+          <h4 style="margin: 0 0 10px 0; color: #111827;">🌍 Weather in ${city}</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 12px; font-size: 13.5px;">
+            <div>🌡️ <strong>Temp:</strong> ${data.temperature} °C</div>
             <div>💧 <strong>Humidity:</strong> ${data.humidity} %</div>
             <div>🌧️ <strong>Rainfall:</strong> ${data.rainfall} mm</div>
-            <div>💨 <strong>Wind Speed:</strong> ${data.wind_speed} km/h</div>
+            <div>💨 <strong>Wind:</strong> ${data.wind_speed} km/h</div>
           </div>
-          <div style="background: #ffffff; padding: 14px; border-radius: 8px; border: 1px solid #c8e6c9;">
-            <strong style="color: #1b5e20;">🌾 Agronomic Recommendation:</strong>
-            <p style="white-space: pre-line; margin: 6px 0 0 0; color: #374151; font-size: 13.5px;">${data.recommendations}</p>
+          <div style="background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <strong style="color: var(--primary-green); font-size: 13px;">Agronomic Tip:</strong>
+            <p style="white-space: pre-line; margin: 4px 0 0 0; color: #4b5563; font-size: 13px;">${data.recommendations}</p>
           </div>
         </div>
       `;
@@ -1266,38 +1064,37 @@
     }
   });
 
-  // Overview Stats Loader
+  // Overview Stats
   function loadDashboardStats() {
     const stats = JSON.parse(localStorage.getItem('krishi_stats')) || {};
-    document.getElementById('statPredictionsCount').innerText = stats.predictions || 0;
-    document.getElementById('statDiseasesCount').innerText = stats.diseases || 0;
+    document.getElementById('statPredictions').innerText = stats.predictions || 0;
+    document.getElementById('statDiseases').innerText = stats.diseases || 0;
 
     const firstUse = localStorage.getItem('krishi_first_use');
     if (firstUse) {
       const days = Math.floor((Date.now() - parseInt(firstUse)) / (1000 * 60 * 60 * 24)) || 1;
-      document.getElementById('statDaysUsing').innerText = days;
+      document.getElementById('statDaysActive').innerText = days;
     }
 
     const lastW = JSON.parse(localStorage.getItem('krishi_last_weather'));
-    const wSnippet = document.getElementById("dashboardWeatherSnippet");
+    const wCard = document.getElementById("overviewWeatherCard");
     if (lastW) {
-      document.getElementById("statWeatherSnapshot").innerText = lastW.location;
-      wSnippet.innerHTML = `
-        <h4 style="margin: 0 0 4px 0; color: var(--primary-color);">📍 ${lastW.location}</h4>
-        <div>🌡️ <b>${lastW.temperature}°C</b> • 💧 <b>${lastW.humidity}%</b> • 🌧️ <b>${lastW.rainfall} mm</b></div>
-        <p style="margin: 6px 0 0 0; font-size: 13px; color: #4b5563;">${lastW.recommendations.split('\n')[0]}</p>
+      document.getElementById("statWeatherLocation").innerText = lastW.location;
+      wCard.innerHTML = `
+        <div style="margin-bottom: 6px;"><strong>📍 ${lastW.location}</strong> — 🌡️ ${lastW.temperature}°C • 💧 ${lastW.humidity}% humidity</div>
+        <p style="margin: 0; color: #6b7280; font-size: 13px;">${lastW.recommendations.split('\n')[0]}</p>
       `;
     } else {
-      wSnippet.innerHTML = "<p style='color:#6b7280;'>No weather checked yet. <a href='#' onclick="navigateToSection('view-weather', 'Weather')">Check live weather</a>.</p>";
+      wCard.innerHTML = "<p style='color:#6b7280;'>No weather station connected. Check live weather in the Weather section.</p>";
     }
 
     const history = JSON.parse(localStorage.getItem('krishi_prediction_history')) || [];
-    const rList = document.getElementById("dashboardRecentList");
+    const rList = document.getElementById("overviewRecentCrops");
     if (history.length > 0) {
       rList.innerHTML = history.slice(-3).reverse().map(h => `
-        <div style="padding: 8px 0; border-bottom: 1px dashed #e5e7eb;">
+        <div style="padding: 6px 0; border-bottom: 1px dashed #f3f4f6;">
           <strong>🌾 ${h.crop}</strong> (${h.location}) • ${h.season}
-          <div style="font-size: 11px; color: #9ca3af;">${new Date(h.timestamp).toLocaleDateString()}</div>
+          <span style="font-size: 11px; color: #9ca3af; margin-left: 8px;">${new Date(h.timestamp).toLocaleDateString()}</span>
         </div>
       `).join("");
     }

@@ -13,7 +13,10 @@
 <!-- 🔐 SESSION HANDLING -->
 <script>
   const loggedInUser = localStorage.getItem("loggedInUser");
-  // Permissive public landing page: keep guests on landing page, logged in users have quick access
+  // Once logged in, user should land directly on the sidebar Dashboard, not the public marketing page
+  if (loggedInUser && !window.location.search.includes("view_landing=true")) {
+    window.location.href = "dashboard.html";
+  }
 </script>
 
 <!-- ================= HEADER ================= -->

@@ -98,10 +98,10 @@
 
                     localStorage.setItem("loggedInUser", username);
 
-                    // Redirect after a brief delay to Dashboard
+                    // Redirect immediately to Dashboard shell
                     setTimeout(() => {
                         window.location.href = "dashboard.html";
-                    }, 1200);
+                    }, 500);
                 } else {
                     loginStatus.textContent = data.detail || "Login failed. Please check your credentials.";
                     loginStatus.className = "error";
