@@ -179,31 +179,47 @@ async function loadProducts(crop) {
 
 }
 
-document.getElementById("fertilizerForm").addEventListener("submit", function (e) {
-  e.preventDefault();
+if (document.getElementById("fertilizerForm")) {
+  document.getElementById("fertilizerForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-  const crop = document.getElementById("fertilizerCrop").value.trim().toLowerCase();
-  const resultDiv = document.getElementById("fertilizerResult");
+    const crop = document.getElementById("fertilizerCrop").value.trim();
+    const resultDiv = document.getElementById("fertilizerResult");
 
-  if (!crop) {
-    resultDiv.innerHTML = "⚠️ Please enter crop name";
-    return;
-  }
+    if (!crop) {
+      resultDiv.innerHTML = "⚠️ Please enter crop name";
+      return;
+    }
 
-  const fertilizerMap = {
-    wheat: "Urea + DAP (Di-Ammonium Phosphate)",
-    rice: "Urea + Potash",
-    cotton: "Nitrogen + Potassium",
-    maize: "NPK (10:26:26)",
-    sugarcane: "Urea + SSP + Potash"
-  };
+    resultDiv.innerHTML = `<div class="loading-text"><span class="spinner"></span> Querying database for ${crop} fertilizers...</div>`;
 
-  const fertilizer = fertilizerMap[crop];
+    try {
+      const res = await fetch(getApiUrl(`/api/store/fertilizers/recommend?crop=${encodeURIComponent(crop)}`));
+      if (!res.ok) throw new Error("Could not fetch recommendations");
+      const recs = await res.json();
 
-  resultDiv.innerHTML = fertilizer
-    ? `🧪 <strong>Recommended Fertilizer:</strong> ${fertilizer}`
-    : `❌ No fertilizer data found for "${crop}".`;
-});
+      if (recs && recs.length > 0) {
+        const topRec = recs[0];
+        resultDiv.innerHTML = `
+          <div style="background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+            🧪 <strong>Recommended Fertilizer for ${crop}:</strong> ${topRec.fertilizer_type || "Balanced NPK"} (Score: ${topRec.recommendation_score})
+          </div>
+        `;
+        loadProducts(crop);
+      } else {
+        resultDiv.innerHTML = `
+          <div style="background: #fff3e0; border-left: 4px solid #e65100; padding: 12px; border-radius: 8px;">
+            ℹ️ No specific chemical recommendation mapped for "${crop}". Explore general organic bio-fertilizers below:
+          </div>
+        `;
+        loadProducts(crop);
+      }
+    } catch (err) {
+      console.error(err);
+      resultDiv.innerHTML = `❌ Error connecting to fertilizer database. Please visit <a href="store/index.html">AgriStore</a>.`;
+    }
+  });
+}
 
 /* =========================
    🤖 AI ASSISTANT

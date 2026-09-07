@@ -1711,3 +1711,191 @@ button:hover {
   box-shadow: 0 12px 24px rgba(45, 80, 22, 0.15);
 }
 
+
+/* =========================================================
+   DASHBOARD LAYOUT (PHASE 1 RESTRUCTURE)
+========================================================= */
+
+.dashboard-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-color);
+}
+
+.sidebar {
+  width: 250px;
+  background: var(--primary-green);
+  color: var(--light-text);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar-header {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: white;
+  padding: 4px;
+}
+
+.sidebar-title {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar-nav a {
+  padding: 14px 24px;
+  color: var(--nav-link);
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+  border-left: 4px solid transparent;
+}
+
+.sidebar-nav a:hover, .sidebar-nav a.active {
+  background: rgba(255,255,255,0.1);
+  color: var(--light-text);
+  border-left-color: var(--button-bg);
+}
+
+.sidebar-nav a i {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+}
+
+/* Quick Access Store Button */
+.quick-store-btn {
+  margin: 10px 20px;
+  padding: 12px !important;
+  background: #ff9800 !important;
+  color: #fff !important;
+  border-radius: 8px;
+  border-left: none !important;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  animation: pulse-store 2s infinite;
+}
+.quick-store-btn:hover {
+  background: #f57c00 !important;
+  transform: translateY(-2px);
+}
+
+@keyframes pulse-store {
+  0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  position: relative;
+}
+
+.dashboard-topbar {
+  height: 60px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  z-index: 10;
+}
+
+.hamburger-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--primary-green);
+  cursor: pointer;
+}
+
+.dashboard-view {
+  display: none;
+  padding: 24px;
+  animation: fadeSlideUp 0.4s ease-out forwards;
+}
+
+.dashboard-view.active {
+  display: block;
+}
+
+/* =========================================================
+   ANIMATIONS (ORGANIC & GROWTH)
+========================================================= */
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes growReveal {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.grow-reveal {
+  animation: growReveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  border-left: 4px solid var(--primary-green);
+  transition: transform 0.2s;
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    height: 100%;
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .hamburger-btn {
+    display: block;
+  }
+}

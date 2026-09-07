@@ -10,23 +10,23 @@
 </head>
 <body>
 
-<!-- 🔐 SESSION CHECK -->
+<!-- 🔐 SESSION HANDLING -->
 <script>
   const loggedInUser = localStorage.getItem("loggedInUser");
-  if (!loggedInUser) {
-    window.location.href = "login.html";
-  }
+  // Permissive public landing page: keep guests on landing page, logged in users have quick access
 </script>
 
 <!-- ================= HEADER ================= -->
 <header class="main-header">
 
   <div class="header-left">
-    <img src="statics/images/logo.jpg" alt="Krishi AI Logo" class="header-logo" />
-    <div class="header-title">
-      <h1>Krishi AI</h1>
-      <span>Your Smart Agriculture Assistant</span>
-    </div>
+    <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+      <img src="statics/images/krishi-logo.svg" alt="Krishi AI Logo" class="header-logo" style="width: 44px; height: 44px; border-radius: 8px; background: #fff; padding: 2px;" />
+      <div class="header-title">
+        <h1 style="margin: 0; font-size: 22px;">Krishi AI</h1>
+        <span style="font-size: 11px; color: #a5d6a7;">Smart Agriculture Suite</span>
+      </div>
+    </a>
   </div>
 
   <!-- ☰ Hamburger -->
@@ -34,24 +34,28 @@
 
   <!-- Navigation -->
   <nav class="header-nav" id="mobileMenu">
-    <a href="index.html">Home</a>
+    <a href="index.html" class="active">Home</a>
+    <a href="dashboard.html" style="color: #81c784; font-weight: bold;">📊 Dashboard</a>
+    <a href="store/index.html" style="background: #ff9800; color: #ffffff !important; padding: 6px 14px; border-radius: 20px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(255, 152, 0, 0.4);">
+      ⚡ AgriStore
+    </a>
     <a href="about.html">About</a>
-    <a href="disease.html">Disease</a>
     <a href="contact.html">Contact</a>
+    <a href="login.html" id="navAuthLink" style="font-weight: 600;">Sign In</a>
   </nav>
 
-  <!-- 👤 PROFILE -->
-  <div class="profile-wrapper">
+  <!-- 👤 PROFILE (if logged in) -->
+  <div class="profile-wrapper" id="profileWrapper" style="display: none;">
     <div class="profile-btn" id="profileBtn">
-      <img src="profile image.webp" class="profile-img" />
+      <img src="profile image.webp" class="profile-img" onerror="this.src='statics/images/krishi-logo.svg'" />
       <span id="profileName">User</span>
       <span class="arrow">▼</span>
     </div>
 
     <div class="profile-dropdown" id="profileDropdown">
       <p class="dropdown-user">👤 <span id="dropdownUser"></span></p>
+      <a href="dashboard.html">📊 App Dashboard</a>
       <a href="profile.html">My Profile</a>
-      <a href="settings.html">Settings</a>
       <hr />
       <a href="#" class="logout" onclick="logout()">Logout</a>
     </div>
@@ -176,9 +180,15 @@
 <script src="script.js"></script>
 
 <script>
-  // 👤 Show logged-in username
-  document.getElementById("profileName").textContent = loggedInUser;
-  document.getElementById("dropdownUser").textContent = loggedInUser;
+  // 👤 Show logged-in username or guest links
+  if (loggedInUser) {
+    const pw = document.getElementById("profileWrapper");
+    if (pw) pw.style.display = "block";
+    document.getElementById("profileName").textContent = loggedInUser;
+    document.getElementById("dropdownUser").textContent = loggedInUser;
+    const authLink = document.getElementById("navAuthLink");
+    if (authLink) authLink.style.display = "none";
+  }
 
   // ☰ Mobile menu toggle
   const menuToggle = document.getElementById("menuToggle");

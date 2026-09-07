@@ -2,280 +2,1241 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard – Krishi AI</title>
-  <link rel="stylesheet" href="style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Krishi AI – Farmer Dashboard & Workspace</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      margin: 20px auto;
-      max-width: 1200px;
-      padding: 20px;
+    /* ==============================================
+       APP-LEVEL DASHBOARD & SIDEBAR LAYOUT
+    ============================================== */
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f4f7f4;
+      color: #2c3e50;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
     }
 
-    .dashboard-card {
-      background: linear-gradient(135deg, #e8f5e9 0%, #f1f8ed 100%);
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(46, 125, 50, 0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    .app-shell {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
     }
 
-    .dashboard-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    /* Persistent Sidebar */
+    .app-sidebar {
+      width: 270px;
+      min-width: 270px;
+      background: #1b431e;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.12);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
     }
 
-    .card-header {
-      font-size: 16px;
+    .sidebar-brand {
+      padding: 20px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-brand img {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: #fff;
+      padding: 3px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .sidebar-brand-text h2 {
+      margin: 0;
+      font-size: 20px;
       font-weight: 700;
-      color: #2d5016;
-      margin-bottom: 12px;
+      color: #e8f5e9;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-brand-text span {
+      font-size: 11px;
+      color: #a5d6a7;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    /* ⚡ FLIPKART MINUTES STYLE QUICK STORE SHORTCUT */
+    .quick-store-banner {
+      margin: 14px 16px 8px 16px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+      border-radius: 12px;
+      color: #ffffff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 15px rgba(245, 124, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .quick-store-banner:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 124, 0, 0.5);
+    }
+
+    .quick-store-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(60deg, transparent, rgba(255,255,255,0.25), transparent);
+      transform: rotate(30deg);
+      animation: storeShine 3.5s infinite;
+    }
+
+    @keyframes storeShine {
+      0% { transform: translateX(-100%) rotate(30deg); }
+      30%, 100% { transform: translateX(100%) rotate(30deg); }
+    }
+
+    .store-banner-left {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .card-value {
-      font-size: 32px;
+    .store-banner-icon {
+      font-size: 20px;
+      background: #ffffff;
+      color: #e65100;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .store-banner-text h4 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .store-banner-text p {
+      margin: 2px 0 0 0;
+      font-size: 10px;
+      color: #fff3e0;
+      font-weight: 500;
+    }
+
+    .store-banner-badge {
+      font-size: 10px;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+
+    /* Sidebar Navigation Links */
+    .sidebar-menu {
+      flex: 1;
+      padding: 10px 12px;
+      overflow-y: auto;
+      list-style: none;
+      margin: 0;
+    }
+
+    .menu-header {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #81c784;
+      font-weight: 700;
+      padding: 10px 14px 6px 14px;
+      letter-spacing: 0.8px;
+    }
+
+    .menu-item {
+      margin-bottom: 4px;
+    }
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 11px 16px;
+      color: #c8e6c9;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .menu-link i {
+      font-size: 17px;
+      width: 22px;
+      text-align: center;
+      color: #a5d6a7;
+      transition: transform 0.2s ease;
+    }
+
+    .menu-link:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .menu-link:hover i {
+      transform: scale(1.15);
+      color: #ffffff;
+    }
+
+    .menu-link.active {
+      background: #2e7d32;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+    }
+
+    .menu-link.active i {
+      color: #ffffff;
+    }
+
+    /* Sidebar Footer / User Card */
+    .sidebar-user {
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.18);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #4caf50;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      border: 2px solid #81c784;
+    }
+
+    .user-meta h5 {
+      margin: 0;
+      font-size: 13px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .user-meta p {
+      margin: 2px 0 0 0;
+      font-size: 11px;
+      color: #81c784;
+    }
+
+    .logout-btn-icon {
+      background: none;
+      border: none;
+      color: #ef9a9a;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 6px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .logout-btn-icon:hover {
+      background: rgba(244, 67, 54, 0.15);
+      color: #ff5252;
+    }
+
+    /* Main Content Area */
+    .app-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      height: 100vh;
+      background: #f8faf8;
+    }
+
+    /* Top Navigation Bar */
+    .app-topbar {
+      height: 64px;
+      min-height: 64px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .menu-toggle-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: #1b5e20;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+
+    .topbar-title h1 {
+      margin: 0;
+      font-size: 20px;
       font-weight: 700;
       color: #1b5e20;
-      margin: 12px 0;
     }
 
-    .card-detail {
-      font-size: 14px;
-      color: #558b2f;
-      line-height: 1.5;
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
 
-    .activity-log {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 20px;
-      background: #f1f8ed;
-      border-radius: 18px;
-      border: 1px solid #c8e6c9;
-    }
-
-    .activity-item {
-      padding: 12px 16px;
-      background: white;
-      border-radius: 12px;
-      margin: 10px 0;
-      border-left: 4px solid #2e7d32;
-      font-size: 14px;
-    }
-
-    .activity-time {
-      color: #999;
-      font-size: 12px;
-    }
-
-    .history-section {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 20px;
-      background: linear-gradient(135deg, #e8f5e9 0%, #f1f8ed 100%);
-      border-radius: 18px;
-      border: 1px solid rgba(46, 125, 50, 0.2);
-    }
-
-    .history-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
-    }
-
-    .history-card {
-      background: white;
-      padding: 16px;
-      border-radius: 12px;
-      border-left: 4px solid #2e7d32;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    .history-card h4 {
-      color: #2d5016;
-      margin: 0 0 8px 0;
-      font-size: 14px;
-    }
-
-    .history-card p {
-      margin: 4px 0;
-      font-size: 13px;
-      color: #555;
-    }
-
-    .history-card .timestamp {
-      color: #999;
-      font-size: 11px;
-      margin-top: 8px;
-    }
-
-    .weather-insights {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 20px;
+    .topbar-store-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       background: #fff3e0;
-      border-radius: 18px;
-      border-left: 5px solid #e65100;
-    }
-
-    .weather-insights h3 {
       color: #e65100;
-      margin-top: 0;
+      border: 1px solid #ffe0b2;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
     }
 
-    .weather-insights p {
-      line-height: 1.6;
-      color: #555;
+    .topbar-store-pill:hover {
+      background: #ffe0b2;
+      transform: translateY(-1px);
+    }
+
+    .home-link-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* View Container */
+    .view-container {
+      padding: 28px;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    .dashboard-view {
+      display: none;
+      animation: viewSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .dashboard-view.active-view {
+      display: block;
+    }
+
+    @keyframes viewSlideIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Organic Agro UI Cards */
+    .agro-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e8f0e8;
+      margin-bottom: 24px;
+    }
+
+    .agro-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f1f8ed;
+    }
+
+    .agro-card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #1b5e20;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* Overview Stats Grid */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .stat-pill-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e8f5e9;
+      transition: all 0.25s ease;
+    }
+
+    .stat-pill-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 22px rgba(46, 125, 50, 0.1);
+      border-color: #c8e6c9;
+    }
+
+    .stat-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .icon-green { background: #e8f5e9; color: #2e7d32; }
+    .icon-amber { background: #fff3e0; color: #e65100; }
+    .icon-blue  { background: #e3f2fd; color: #1565c0; }
+    .icon-purple{ background: #f3e5f5; color: #7b1fa2; }
+
+    .stat-text h3 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+      color: #1b5e20;
+    }
+
+    .stat-text p {
+      margin: 4px 0 0 0;
+      font-size: 13px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    /* Quick Launch Bar */
+    .quick-launch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .quick-launch-item {
+      background: #f9fbf9;
+      border: 1px solid #c8e6c9;
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .quick-launch-item:hover {
+      background: #e8f5e9;
+      transform: translateY(-3px);
+      border-color: #81c784;
+    }
+
+    .quick-launch-item span {
+      font-size: 32px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .quick-launch-item h4 {
+      margin: 0 0 4px 0;
+      color: #1b5e20;
+      font-size: 15px;
+    }
+
+    .quick-launch-item p {
+      margin: 0;
+      font-size: 12px;
+      color: #666;
+    }
+
+    /* Mobile Drawer */
+    @media (max-width: 900px) {
+      .app-sidebar {
+        position: fixed;
+        left: -270px;
+        top: 0;
+        bottom: 0;
+      }
+      .app-sidebar.open {
+        left: 0;
+      }
+      .menu-toggle-btn {
+        display: block;
+      }
+      .sidebar-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+      }
+      .sidebar-backdrop.active {
+        display: block;
+      }
+      .view-container {
+        padding: 16px;
+      }
     }
   </style>
 </head>
 <body>
- <header class="main-header">
-  <div class="header-left">
-    <img src="statics/images/logo.jpg" alt="Krishi AI Logo" class="header-logo" />
-    <div class="header-title">
-      <h1>Krishi AI</h1>
-      <span>Your Smart Agriculture Assistant</span>
-    </div>
-  </div>
 
-  <button class="menu-toggle" id="menuToggle">☰</button>
+<!-- Mobile Backdrop -->
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-  <nav class="header-nav" id="mobileMenu">
-    <a href="index.html">Home</a>
-    <a href="dashboard.html" class="active">Dashboard</a>
-    <a href="disease.html">Disease</a>
-    <a href="contact.html">Contact</a>
-  </nav>
-</header>
+<div class="app-shell">
 
-<main style="max-width: 1200px; margin: 0 auto; padding: 20px;">
-  <h2 style="text-align: center; color: #2d5016; margin-bottom: 30px;">🏡 Your Farming Dashboard</h2>
-
-  <div class="dashboard-grid">
-    <div class="dashboard-card">
-      <div class="card-header">📊 Total Predictions</div>
-      <div class="card-value" id="totalPredictions">0</div>
-      <div class="card-detail">Crop predictions made</div>
-    </div>
-
-    <div class="dashboard-card">
-      <div class="card-header">🦠 Disease Detections</div>
-      <div class="card-value" id="totalDiseases">0</div>
-      <div class="card-detail">Diseases identified</div>
-    </div>
-
-    <div class="dashboard-card">
-      <div class="card-header">💬 AI Conversations</div>
-      <div class="card-value" id="totalChats">0</div>
-      <div class="card-detail">Questions asked</div>
-    </div>
-
-    <div class="dashboard-card">
-      <div class="card-header">📅 Days Active</div>
-      <div class="card-value" id="daysActive">0</div>
-      <div class="card-detail">Using Krishi AI</div>
-    </div>
-  </div>
-
-  <!-- Weather Insights -->
-  <div class="weather-insights">
-    <h3>🌤️ Weather Insights</h3>
-    <p id="weatherInsights">Loading weather insights...</p>
-  </div>
-
-  <!-- Prediction History -->
-  <div class="history-section">
-    <h3 style="color: #2d5016; margin-top: 0;">📊 Prediction History</h3>
-    <div id="predictionHistory" class="history-grid">
-      <p style="color: #777;">No predictions yet. Start using crop prediction!</p>
-    </div>
-  </div>
-
-  <!-- Disease History -->
-  <div class="history-section">
-    <h3 style="color: #2d5016; margin-top: 0;">🦠 Disease Detection History</h3>
-    <div id="diseaseHistory" class="history-grid">
-      <p style="color: #777;">No disease detections yet. Start using disease detection!</p>
-    </div>
-  </div>
-
-  <div class="activity-log">
-    <h3 style="color: #2d5016; margin-top: 0;">📝 Recent Activity</h3>
-    <div id="activityList" style="max-height: 400px; overflow-y: auto;">
-      <div class="activity-item">
-        Welcome! Start using Krishi AI for farming assistance.
-        <div class="activity-time">Just now</div>
+  <!-- ================= PERSISTENT SIDEBAR ================= -->
+  <aside class="app-sidebar" id="appSidebar">
+    
+    <!-- Brand Header with Modern SVG Logo -->
+    <div class="sidebar-brand">
+      <img src="statics/images/krishi-logo.svg" alt="Krishi AI Logo" />
+      <div class="sidebar-brand-text">
+        <h2>Krishi AI</h2>
+        <span>Smart Agri-Tech Suite</span>
       </div>
     </div>
-  </div>
-</main>
 
+    <!-- ⚡ FLIPKART MINUTES STYLE QUICK ACCESS STORE SHORTCUT -->
+    <a href="store/index.html" class="quick-store-banner" title="Click to open AgriStore directly">
+      <div class="store-banner-left">
+        <div class="store-banner-icon">🛒</div>
+        <div class="store-banner-text">
+          <h4>AgriStore Express</h4>
+          <p>Instant Seeds & Fertilizers</p>
+        </div>
+      </div>
+      <span class="store-banner-badge">SHOP ⚡</span>
+    </a>
+
+    <!-- Navigation List -->
+    <ul class="sidebar-menu">
+      <li class="menu-header">Farmer Suite</li>
+      
+      <li class="menu-item">
+        <a class="menu-link active" data-view="view-overview">
+          <i class="fa-solid fa-house"></i>
+          <span>Dashboard Overview</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a class="menu-link" data-view="view-crop">
+          <i class="fa-solid fa-seedling"></i>
+          <span>Crop Predictor</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a class="menu-link" data-view="view-disease">
+          <i class="fa-solid fa-virus-covid"></i>
+          <span>Disease Detection</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a class="menu-link" data-view="view-assistant">
+          <i class="fa-solid fa-robot"></i>
+          <span>AI Assistant (Chat)</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a class="menu-link" data-view="view-weather">
+          <i class="fa-solid fa-cloud-sun-rain"></i>
+          <span>Weather Insights</span>
+        </a>
+      </li>
+
+      <li class="menu-header">Commerce & Account</li>
+
+      <li class="menu-item">
+        <a href="store/index.html" class="menu-link">
+          <i class="fa-solid fa-store"></i>
+          <span>Visit AgriStore</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a class="menu-link" data-view="view-orders">
+          <i class="fa-solid fa-box-open"></i>
+          <span>My Orders</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a class="menu-link" data-view="view-profile">
+          <i class="fa-solid fa-user-gear"></i>
+          <span>My Profile</span>
+        </a>
+      </li>
+    </ul>
+
+    <!-- User Profile Footer -->
+    <div class="sidebar-user">
+      <div class="user-info">
+        <div class="user-avatar" id="sidebarAvatar">U</div>
+        <div class="user-meta">
+          <h5 id="sidebarUserName">Farmer</h5>
+          <p>Online ✔</p>
+        </div>
+      </div>
+      <button class="logout-btn-icon" onclick="logoutSession()" title="Logout">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ================= MAIN CONTENT WORKSPACE ================= -->
+  <main class="app-main">
+
+    <!-- Top Navigation Bar -->
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle-btn" id="sidebarToggle" title="Open Sidebar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="topbar-title">
+          <h1 id="topbarViewTitle">Dashboard Overview</h1>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="index.html" class="home-link-pill">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          <span>Landing Page</span>
+        </a>
+        <a href="store/index.html" class="topbar-store-pill">
+          <span>⚡ AgriStore</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Dynamic Views Container -->
+    <div class="view-container">
+
+      <!-- ================= 1. DASHBOARD OVERVIEW VIEW ================= -->
+      <section id="view-overview" class="dashboard-view active-view">
+        
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-pill-card">
+            <div class="stat-icon-wrap icon-green">🌾</div>
+            <div class="stat-text">
+              <h3 id="statPredictions">0</h3>
+              <p>Crops Recommended</p>
+            </div>
+          </div>
+
+          <div class="stat-pill-card">
+            <div class="stat-icon-wrap icon-amber">🦠</div>
+            <div class="stat-text">
+              <h3 id="statDiseases">0</h3>
+              <p>Diseases Checked</p>
+            </div>
+          </div>
+
+          <div class="stat-pill-card">
+            <div class="stat-icon-wrap icon-blue">🌤️</div>
+            <div class="stat-text">
+              <h3 id="statWeatherLocation">Live</h3>
+              <p>Local Weather Connected</p>
+            </div>
+          </div>
+
+          <div class="stat-pill-card">
+            <div class="stat-icon-wrap icon-purple">📅</div>
+            <div class="stat-text">
+              <h3 id="statDaysActive">1</h3>
+              <p>Days with Krishi AI</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Launch Pad -->
+        <div class="agro-card">
+          <div class="agro-card-header">
+            <div class="agro-card-title">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>Quick Actions</span>
+            </div>
+          </div>
+
+          <div class="quick-launch-grid">
+            <div class="quick-launch-item" onclick="switchDashboardTab('view-crop', 'Crop Predictor')">
+              <span>🌾</span>
+              <h4>Predict Crop</h4>
+              <p>Soil & Season Analysis</p>
+            </div>
+
+            <div class="quick-launch-item" onclick="switchDashboardTab('view-disease', 'Disease Detection')">
+              <span>🦠</span>
+              <h4>Check Disease</h4>
+              <p>Symptoms & Remedies</p>
+            </div>
+
+            <div class="quick-launch-item" onclick="switchDashboardTab('view-assistant', 'AI Assistant')">
+              <span>🤖</span>
+              <h4>Ask AI Assistant</h4>
+              <p>Voice & Chat Guidance</p>
+            </div>
+
+            <a href="store/index.html" class="quick-launch-item" style="border-color: #ff9800; background: #fffde7;">
+              <span>🛒</span>
+              <h4 style="color: #e65100;">AgriStore Shop</h4>
+              <p>Fertilizers & Seeds Direct</p>
+            </a>
+          </div>
+        </div>
+
+        <!-- Live Weather Snapshot & Recent Activity -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+          
+          <div class="agro-card">
+            <div class="agro-card-header">
+              <div class="agro-card-title">
+                <i class="fa-solid fa-cloud-sun"></i>
+                <span>Weather Snapshot</span>
+              </div>
+            </div>
+            <div id="overviewWeatherCard" style="line-height: 1.7; color: #444;">
+              <p>Connecting to regional weather station...</p>
+            </div>
+          </div>
+
+          <div class="agro-card">
+            <div class="agro-card-header">
+              <div class="agro-card-title">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Recent Predictions</span>
+              </div>
+            </div>
+            <div id="overviewRecentCrops" style="line-height: 1.6; color: #555;">
+              <p>No recent crops yet. Try running a prediction!</p>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ================= 2. CROP PREDICTOR VIEW ================= -->
+      <section id="view-crop" class="dashboard-view">
+        <div class="agro-card">
+          <div class="agro-card-header">
+            <div class="agro-card-title">
+              <i class="fa-solid fa-seedling"></i>
+              <span>AI Crop Recommendation Engine</span>
+            </div>
+            <span style="font-size: 12px; background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 12px; font-weight: 700;">Live Weather Scoring</span>
+          </div>
+
+          <p style="color: #555; margin-top: 0;">Select your farm's soil profile, city location, and growing season to get tailored crop suggestions backed by real-time meteorological data.</p>
+
+          <form id="cropForm" style="max-width: 650px; margin: 20px 0;">
+            <div class="input-group">
+              <label>Soil Type:</label>
+              <select id="soilType" required>
+                <option value="">Select Soil Type</option>
+                <option value="alluvial">Alluvial (जलोढ़)</option>
+                <option value="black">Black (काली मिट्टी)</option>
+                <option value="clay">Clay (चिकनी मिट्टी)</option>
+                <option value="loamy">Loamy (दोमट)</option>
+                <option value="red">Red (लाल मिट्टी)</option>
+                <option value="sandy">Sandy (बलुई मिट्टी)</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label>City / Farming Region:</label>
+              <input type="text" id="city" required placeholder="e.g., Indore, Jaipur, Nashik, Patna" />
+            </div>
+
+            <div class="input-group">
+              <label>Season:</label>
+              <select id="season" required>
+                <option value="">Select Season</option>
+                <option value="kharif">Kharif (खरीफ - Monsoon)</option>
+                <option value="rabi">Rabi (रबी - Winter)</option>
+                <option value="zaid">Zaid (जायद - Summer)</option>
+                <option value="summer">Summer</option>
+                <option value="monsoon">Monsoon</option>
+                <option value="winter">Winter</option>
+              </select>
+            </div>
+
+            <button type="submit" class="predict-btn" style="width: 100%;">
+              🌾 Predict Best Crops for My Land
+            </button>
+          </form>
+
+          <div id="result"></div>
+        </div>
+      </section>
+
+      <!-- ================= 3. DISEASE DETECTION VIEW ================= -->
+      <section id="view-disease" class="dashboard-view">
+        <div class="agro-card">
+          <div class="agro-card-header">
+            <div class="agro-card-title">
+              <i class="fa-solid fa-virus-covid"></i>
+              <span>Crop Disease & Treatment Center</span>
+            </div>
+            <span style="font-size: 12px; background: #fff3e0; color: #e65100; padding: 4px 10px; border-radius: 12px; font-weight: 700;">Database Verified Remedies</span>
+          </div>
+
+          <!-- Image Upload Preview -->
+          <div style="background: #fafafa; border: 2px dashed #c8e6c9; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 24px;">
+            <label style="cursor: pointer; display: block;">
+              <span style="font-size: 32px; display: block; margin-bottom: 8px;">📷</span>
+              <strong style="color: #2e7d32;">Upload Crop / Leaf Photo</strong>
+              <p style="margin: 4px 0 12px 0; font-size: 12px; color: #777;">Click to select an image from your device</p>
+              <input type="file" id="cropImage" accept="image/*" style="display: none;" />
+            </label>
+            <div id="imagePreview" style="display: none; margin-top: 14px;">
+              <img id="previewImg" style="max-width: 260px; max-height: 200px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
+              <p id="imageName" style="margin-top: 8px; color: #2e7d32; font-weight: bold; font-size: 13px;"></p>
+            </div>
+          </div>
+
+          <!-- Disease Form -->
+          <form id="diseaseForm" style="max-width: 600px; margin-bottom: 24px;">
+            <div class="input-group">
+              <label>Enter Crop Name for Diagnosis:</label>
+              <input type="text" id="diseaseCrop" required placeholder="e.g., wheat, rice, cotton, maize, potato" />
+            </div>
+            <button type="submit" class="predict-btn" style="background: #2e7d32;">
+              🔬 Diagnose Disease & Remedies
+            </button>
+          </form>
+
+          <div id="diseaseResult"></div>
+          <div id="fertilizerResult" style="margin-top: 20px;"></div>
+        </div>
+      </section>
+
+      <!-- ================= 4. AI ASSISTANT VIEW ================= -->
+      <section id="view-assistant" class="dashboard-view">
+        <div class="agro-card">
+          <div class="agro-card-header">
+            <div class="agro-card-title">
+              <i class="fa-solid fa-robot"></i>
+              <span>Krishi AI Conversational Assistant</span>
+            </div>
+            <span style="font-size: 12px; background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 12px; font-weight: 700;">Hindi & Hinglish Supported</span>
+          </div>
+
+          <p style="color: #555;">Ask questions about plant care, irrigation schedules, pest management, or government schemes.</p>
+
+          <!-- Chat Box -->
+          <div id="assistantChat" class="chat-box" style="height: 380px; overflow-y: auto; background: #fdfdfd; border: 1px solid #e0e0e0; border-radius: 14px; padding: 16px; margin-bottom: 16px;">
+            <div class="chat bot">
+              Namaste! Main Krishi AI hoon. Aap apni fasal, mitti ya kheti se jude koi bhi sawal pooch sakte hain.
+            </div>
+          </div>
+
+          <form id="assistantForm" class="assistant-form">
+            <div style="display: flex; gap: 10px;">
+              <textarea id="assistantMessage" rows="2" placeholder="Apna sawal likhiye (e.g., Gehu me paani kab dein?)" required style="flex: 1; border-radius: 10px; padding: 10px; border: 1px solid #c8e6c9; font-size: 14px;"></textarea>
+              <button type="submit" class="predict-btn" style="padding: 10px 24px; height: fit-content; align-self: center;">
+                Poochein 🚀
+              </button>
+            </div>
+          </form>
+
+          <div id="assistantStatus" style="margin-top: 8px; font-size: 13px; font-weight: 600;"></div>
+
+          <!-- Suggested Prompts -->
+          <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #eee;">
+            <strong style="font-size: 13px; color: #555;">💡 Suggested Questions:</strong>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+              <button class="prompt-chip" onclick="askQuickPrompt('Gehu me peele daag aa rahe hain, kya karun?')">🌾 Gehu me peele daag</button>
+              <button class="prompt-chip" onclick="askQuickPrompt('Rice ke liye best fertilizer kya hai?')">🍚 Rice ke liye fertilizer</button>
+              <button class="prompt-chip" onclick="askQuickPrompt('Mitti me paani kaise maintain karu?')">💧 Irrigation tips</button>
+              <button class="prompt-chip" onclick="askQuickPrompt('Cotton ki fasal me keede lage hain')">🌿 Cotton pest control</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. WEATHER VIEW ================= -->
+      <section id="view-weather" class="dashboard-view">
+        <div class="agro-card">
+          <div class="agro-card-header">
+            <div class="agro-card-title">
+              <i class="fa-solid fa-cloud-sun-rain"></i>
+              <span>Live Meteorological Insights</span>
+            </div>
+          </div>
+
+          <form id="dashboardWeatherForm" style="display: flex; gap: 10px; max-width: 500px; margin-bottom: 24px;">
+            <input type="text" id="weatherSearchCity" placeholder="Enter City (e.g. Bhopal, Jaipur, Pune)" required style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid #c8e6c9;" />
+            <button type="submit" class="predict-btn" style="padding: 10px 20px;">Check 🌦️</button>
+          </form>
+
+          <div id="dashboardWeatherResult"></div>
+        </div>
+      </section>
+
+      <!-- ================= 6. MY ORDERS VIEW ================= -->
+      <section id="view-orders" class="dashboard-view">
+        <div class="agro-card">
+          <div class="agro-card-header">
+            <div class="agro-card-title">
+              <i class="fa-solid fa-boxes-packing"></i>
+              <span>Track & Manage Store Orders</span>
+            </div>
+            <a href="store/index.html" style="font-size: 12px; color: #2e7d32; font-weight: bold; text-decoration: none;">Explore Store ➔</a>
+          </div>
+
+          <p style="color: #555;">Enter your Order Confirmation Number to fetch real-time dispatch status directly from the AgriStore database.</p>
+
+          <div style="display: flex; gap: 10px; max-width: 480px; margin: 20px 0;">
+            <input type="text" id="trackOrderNumber" placeholder="e.g. ORD1788808054300" style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid #ccc;" />
+            <button onclick="trackOrderDirectly()" class="predict-btn" style="padding: 10px 20px;">Track Order</button>
+          </div>
+
+          <div id="trackOrderResult"></div>
+        </div>
+      </section>
+
+      <!-- ================= 7. PROFILE VIEW ================= -->
+      <section id="view-profile" class="dashboard-view">
+        <div class="agro-card" style="max-width: 600px;">
+          <div class="agro-card-header">
+            <div class="agro-card-title">
+              <i class="fa-solid fa-user-check"></i>
+              <span>Account & Security</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 18px; margin-bottom: 24px;">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: #2e7d32; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;" id="profileAvatarBig">U</div>
+            <div>
+              <h3 style="margin: 0; color: #1b5e20;" id="profileFullUser">User</h3>
+              <span style="font-size: 12px; background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 10px; font-weight: 700;">Verified Farmer Account ✔</span>
+            </div>
+          </div>
+
+          <div style="background: #f9fbf9; border-radius: 10px; padding: 16px; border: 1px solid #e0e0e0; margin-bottom: 20px; line-height: 1.8;">
+            <p style="margin: 0;"><strong>Authentication:</strong> JWT Bearer Secured</p>
+            <p style="margin: 0;"><strong>Database:</strong> SQLite Engine Connected</p>
+            <p style="margin: 0;"><strong>Session Status:</strong> <span style="color: #2e7d32; font-weight: bold;">Active</span></p>
+          </div>
+
+          <button onclick="logoutSession()" style="padding: 10px 20px; background: #d32f2f; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out of Session
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<style>
+  .prompt-chip {
+    background: #f1f8ed;
+    border: 1px solid #c8e6c9;
+    color: #2e7d32;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .prompt-chip:hover {
+    background: #2e7d32;
+    color: #fff;
+  }
+</style>
+
+<!-- Scripts -->
 <script src="config.js"></script>
+<script src="script.js"></script>
+<script src="disease.js"></script>
+
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const stats = JSON.parse(localStorage.getItem('krishi_stats')) || {};
-    document.getElementById('totalPredictions').innerText = stats.predictions || 0;
-    document.getElementById('totalDiseases').innerText = stats.diseases || 0;
-    document.getElementById('totalChats').innerText = stats.chats || 0;
-    
-    const firstUse = localStorage.getItem('krishi_first_use');
-    if (firstUse) {
-      const daysActive = Math.floor((Date.now() - parseInt(firstUse)) / (1000 * 60 * 60 * 24)) || 1;
-      document.getElementById('daysActive').innerText = daysActive;
+  // ===================================
+  // DASHBOARD SESSION & VIEW SWITCHER
+  // ===================================
+
+  const loggedUser = localStorage.getItem("loggedInUser") || "Farmer";
+  document.getElementById("sidebarUserName").textContent = loggedUser;
+  document.getElementById("profileFullUser").textContent = loggedUser;
+  document.getElementById("sidebarAvatar").textContent = loggedUser.charAt(0).toUpperCase();
+  document.getElementById("profileAvatarBig").textContent = loggedUser.charAt(0).toUpperCase();
+
+  // Sidebar link clicks
+  document.querySelectorAll(".menu-link[data-view]").forEach(link => {
+    link.addEventListener("click", function(e) {
+      e.preventDefault();
+      const targetView = this.getAttribute("data-view");
+      const title = this.querySelector("span").textContent;
+      switchDashboardTab(targetView, title);
+    });
+  });
+
+  function switchDashboardTab(viewId, viewTitle) {
+    // Update active nav link
+    document.querySelectorAll(".menu-link").forEach(l => l.classList.remove("active"));
+    const activeLink = document.querySelector(`.menu-link[data-view="${viewId}"]`);
+    if (activeLink) activeLink.classList.add("active");
+
+    // Hide all views, activate target
+    document.querySelectorAll(".dashboard-view").forEach(v => v.classList.remove("active-view"));
+    const target = document.getElementById(viewId);
+    if (target) {
+      target.classList.add("active-view");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    // Load prediction history
-    const predictionHistory = JSON.parse(localStorage.getItem('krishi_prediction_history')) || [];
-    const predictionContainer = document.getElementById('predictionHistory');
-    if (predictionHistory.length > 0) {
-      predictionContainer.innerHTML = predictionHistory.slice(-6).reverse().map(item => `
-        <div class="history-card">
-          <h4>🌾 ${item.crop}</h4>
-          <p>📍 ${item.location}</p>
-          <p>🌡️ ${item.temperature}°C | 💧 ${item.humidity}%</p>
-          <div class="timestamp">${new Date(item.timestamp).toLocaleString()}</div>
+    if (viewTitle) {
+      document.getElementById("topbarViewTitle").textContent = viewTitle;
+    }
+
+    // Close mobile drawer if open
+    closeMobileSidebar();
+  }
+
+  // Mobile drawer handlers
+  const sidebar = document.getElementById("appSidebar");
+  const backdrop = document.getElementById("sidebarBackdrop");
+  const toggleBtn = document.getElementById("sidebarToggle");
+
+  toggleBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+    backdrop.classList.toggle("active");
+  });
+
+  backdrop.addEventListener("click", closeMobileSidebar);
+
+  function closeMobileSidebar() {
+    sidebar.classList.remove("open");
+    backdrop.classList.remove("active");
+  }
+
+  // Quick Prompt Filler for AI Chat
+  function askQuickPrompt(text) {
+    const input = document.getElementById("assistantMessage");
+    if (input) {
+      input.value = text;
+      document.getElementById("assistantForm").dispatchEvent(new Event("submit"));
+    }
+  }
+
+  // Logout session
+  function logoutSession() {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "login.html";
+  }
+
+  // Track Order Directly in Orders View
+  async function trackOrderDirectly() {
+    const orderNum = document.getElementById("trackOrderNumber").value.trim();
+    const resultDiv = document.getElementById("trackOrderResult");
+    if (!orderNum) {
+      resultDiv.innerHTML = "<p style='color:#c0392b;'>Please enter an Order Number.</p>";
+      return;
+    }
+
+    resultDiv.innerHTML = "<div class='loading-text'><span class='spinner'></span> Querying database...</div>";
+
+    try {
+      const res = await fetch(getApiUrl(`/api/store/orders/${encodeURIComponent(orderNum)}`));
+      if (!res.ok) {
+        throw new Error("Order not found in database.");
+      }
+      const order = await res.json();
+
+      let itemsHtml = order.items.map(it => `
+        <li style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #eee;">
+          <span>${it.name || "Product"} × ${it.quantity}</span>
+          <strong>₹${it.price * it.quantity}</strong>
+        </li>
+      `).join("");
+
+      resultDiv.innerHTML = `
+        <div style="background: #ffffff; border: 1px solid #c8e6c9; border-radius: 12px; padding: 18px; margin-top: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h4 style="margin: 0; color: #1b5e20;">Order #${order.order_number}</h4>
+            <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 12px;">
+              ${order.status.toUpperCase()}
+            </span>
+          </div>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Customer:</strong> ${order.customer_name} (${order.phone})</p>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Address:</strong> ${order.address}</p>
+          <p style="margin: 4px 0; font-size: 13px;"><strong>Payment:</strong> ${order.payment_method.toUpperCase()}</p>
+          <ul style="list-style: none; padding: 0; margin: 12px 0;">${itemsHtml}</ul>
+          <div style="text-align: right; font-size: 16px; color: #2e7d32; font-weight: bold; padding-top: 8px; border-top: 2px solid #e8f5e9;">
+            Total: ₹${order.total_amount}
+          </div>
         </div>
-      `).join('');
-    }
-
-    // Load disease history
-    const diseaseHistory = JSON.parse(localStorage.getItem('krishi_disease_history')) || [];
-    const diseaseContainer = document.getElementById('diseaseHistory');
-    if (diseaseHistory.length > 0) {
-      diseaseContainer.innerHTML = diseaseHistory.slice(-6).reverse().map(item => `
-        <div class="history-card">
-          <h4>🦠 ${item.crop}</h4>
-          <p>🔬 ${item.disease}</p>
-          <p>💊 ${item.solution}</p>
-          <div class="timestamp">${new Date(item.timestamp).toLocaleString()}</div>
-        </div>
-      `).join('');
-    }
-
-    // Load weather insights
-    const lastWeather = JSON.parse(localStorage.getItem('krishi_last_weather'));
-    if (lastWeather) {
-      document.getElementById('weatherInsights').innerHTML = `
-        <strong>📍 ${lastWeather.location}</strong><br>
-        🌡️ Temperature: ${lastWeather.temperature}°C<br>
-        💧 Humidity: ${lastWeather.humidity}%<br>
-        🌧️ Rainfall: ${lastWeather.rainfall}mm<br>
-        💨 Wind Speed: ${lastWeather.wind_speed}km/h<br>
-        <em>Last updated: ${new Date(lastWeather.timestamp).toLocaleString()}</em>
       `;
-    } else {
-      document.getElementById('weatherInsights').innerHTML = 'Check weather on the Weather page to see insights here.';
+    } catch (err) {
+      resultDiv.innerHTML = `<p style="color: #c0392b; font-weight: bold;">⚠️ ${err.message}</p>`;
+    }
+  }
+
+  // Dashboard Weather Search
+  document.getElementById("dashboardWeatherForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const city = document.getElementById("weatherSearchCity").value.trim();
+    const resDiv = document.getElementById("dashboardWeatherResult");
+    resDiv.innerHTML = "<div class='loading-text'><span class='spinner'></span> Loading weather data...</div>";
+
+    try {
+      const res = await fetch(getApiUrl("/api/weather"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ location: city })
+      });
+      if (!res.ok) throw new Error("Could not fetch weather");
+      const data = await res.json();
+
+      resDiv.innerHTML = `
+        <div style="background: #f1f8ed; border-left: 4px solid #2e7d32; padding: 18px; border-radius: 12px;">
+          <h3 style="margin: 0 0 10px 0; color: #1b5e20;">🌍 Live Weather in ${city}</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 14px;">
+            <div>🌡️ <strong>Temp:</strong> ${data.temperature} °C</div>
+            <div>💧 <strong>Humidity:</strong> ${data.humidity} %</div>
+            <div>🌧️ <strong>Rainfall:</strong> ${data.rainfall} mm</div>
+            <div>💨 <strong>Wind:</strong> ${data.wind_speed} km/h</div>
+          </div>
+          <div style="background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #c8e6c9;">
+            <strong>🌾 Farming Recommendation:</strong>
+            <p style="white-space: pre-line; margin: 6px 0 0 0; color: #444;">${data.recommendations}</p>
+          </div>
+        </div>
+      `;
+
+      // Cache for overview
+      localStorage.setItem("krishi_last_weather", JSON.stringify({
+        location: city,
+        temperature: data.temperature,
+        humidity: data.humidity,
+        rainfall: data.rainfall,
+        wind_speed: data.wind_speed,
+        recommendations: data.recommendations,
+        timestamp: Date.now()
+      }));
+
+      loadDashboardOverviewStats();
+    } catch(err) {
+      resDiv.innerHTML = `<p style="color: #c0392b;">⚠️ Weather lookup failed for ${city}.</p>`;
     }
   });
+
+  // Load Overview Data on Launch
+  function loadDashboardOverviewStats() {
+    const stats = JSON.parse(localStorage.getItem('krishi_stats')) || {};
+    document.getElementById('statPredictions').innerText = stats.predictions || 0;
+    document.getElementById('statDiseases').innerText = stats.diseases || 0;
+
+    const firstUse = localStorage.getItem('krishi_first_use');
+    if (firstUse) {
+      const days = Math.floor((Date.now() - parseInt(firstUse)) / (1000 * 60 * 60 * 24)) || 1;
+      document.getElementById('statDaysActive').innerText = days;
+    }
+
+    const lastWeather = JSON.parse(localStorage.getItem('krishi_last_weather'));
+    const wCard = document.getElementById("overviewWeatherCard");
+    if (lastWeather) {
+      document.getElementById("statWeatherLocation").innerText = lastWeather.location;
+      wCard.innerHTML = `
+        <h4 style="margin: 0 0 6px 0; color: #1b5e20;">📍 ${lastWeather.location}</h4>
+        <div>🌡️ <b>${lastWeather.temperature} °C</b> | 💧 <b>${lastWeather.humidity}%</b> humidity | 🌧️ <b>${lastWeather.rainfall} mm</b> rain</div>
+        <p style="margin: 8px 0 0 0; font-size: 13px; color: #666;">${lastWeather.recommendations.split('
+')[0]}</p>
+      `;
+    } else {
+      wCard.innerHTML = "<p style='color:#777;'>No weather data yet. <a href='#' onclick="switchDashboardTab('view-weather', 'Weather Insights')">Check weather here</a>.</p>";
+    }
+
+    const recHistory = JSON.parse(localStorage.getItem('krishi_prediction_history')) || [];
+    const rDiv = document.getElementById("overviewRecentCrops");
+    if (recHistory.length > 0) {
+      rDiv.innerHTML = recHistory.slice(-3).reverse().map(h => `
+        <div style="padding: 8px 0; border-bottom: 1px dashed #e0e0e0;">
+          <strong>🌾 ${h.crop}</strong> (${h.location}) — ${h.season} season
+          <div style="font-size: 11px; color: #999;">${new Date(h.timestamp).toLocaleDateString()}</div>
+        </div>
+      `).join("");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", loadDashboardOverviewStats);
 </script>
+
 </body>
 </html>
