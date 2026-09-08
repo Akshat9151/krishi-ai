@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="store.css">
+    <script src="../config.js"></script>
+    <script src="../i18n.js"></script>
     
     <style>
         :root {
@@ -195,6 +197,26 @@
 
         .qc-header-btn:hover {
             background: #e5e7eb;
+        }
+
+        #storeLangSelector .krishi-lang-picker-wrap {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: var(--radius-full);
+            padding: 6px 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #storeLangSelector .krishi-lang-select {
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--qc-green-dark);
+            outline: none;
+            cursor: pointer;
         }
 
         .qc-header-cart-btn {
@@ -837,8 +859,8 @@
 <!-- Header -->
 <header class="qc-header">
     <div class="qc-top-strip">
-        <span>⚡ 10 मिनट में कृषि उत्पाद आपके खेत / घर तक</span>
-        <span>📞 हेल्पलाइन: 1800-123-4567 (टोल फ्री)</span>
+        <span data-i18n="storeSubheader">⚡ 10 मिनट में कृषि उत्पाद आपके खेत / घर तक</span>
+        <span data-i18n="helpline">📞 हेल्पलाइन: 1800-123-4567 (टोल फ्री)</span>
     </div>
 
     <div class="qc-nav">
@@ -852,18 +874,20 @@
 
         <div class="qc-delivery-pill">
             <span class="dot"></span>
-            <span>डिलीवरी: 10-15 मिनट</span>
+            <span data-i18n="deliveryTime">डिलीवरी: 10-15 मिनट</span>
         </div>
 
         <div class="qc-search-wrap">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="qcSearchInput" placeholder="सर्च करें 'NPK खाद', 'गेहूं बीज', 'स्प्रेयर'..." />
+            <input type="text" id="qcSearchInput" data-i18n-placeholder="searchStorePlaceholder" placeholder="सर्च करें 'NPK खाद', 'गेहूं बीज', 'स्प्रेयर'..." />
         </div>
 
         <div class="qc-nav-actions">
+            <div id="storeLangSelector"></div>
+
             <a href="../dashboard.html" class="qc-header-btn">
                 <i class="fa-solid fa-gauge-high"></i>
-                <span>डैशबोर्ड</span>
+                <span data-i18n="dashboard">डैशबोर्ड</span>
             </a>
 
             <button class="qc-header-cart-btn" onclick="openCartDrawer()">
@@ -1240,7 +1264,13 @@
         });
     }
 
-    document.addEventListener("DOMContentLoaded", initStore);
+    document.addEventListener("DOMContentLoaded", () => {
+        initStore();
+        if (window.krishiI18n) {
+            window.krishiI18n.renderSelector('storeLangSelector', { compact: true });
+            window.krishiI18n.translatePage();
+        }
+    });
 </script>
 
 </body>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -9,43 +9,52 @@
 </head>
 <body>
     <script src="config.js"></script>
-    <!-- Animated background pattern -->
+    <script src="i18n.js"></script>
+
+    <!-- Animated background pattern (UNTOUCHED) -->
     <div class="bg-pattern"></div>
     
-    <!-- Decorative leaves -->
+    <!-- Decorative leaves (UNTOUCHED) -->
     <div class="leaf-decoration" style="top: 10%; left: 5%; font-size: 60px;">🍃</div>
     <div class="leaf-decoration" style="top: 20%; right: 10%; font-size: 40px; animation-delay: 1s;">🌿</div>
     <div class="leaf-decoration" style="bottom: 20%; left: 15%; font-size: 50px; animation-delay: 2s;">🌱</div>
     <div class="leaf-decoration" style="bottom: 10%; right: 8%; font-size: 30px; animation-delay: 0.5s;">🍂</div>
 
+    <!-- Centered Auth Wrapper -->
     <div class="register-container">
         <div class="register-glass-card fade-in">
+
+            <!-- Language Selector -->
+            <div class="auth-lang-bar">
+                <div id="registerLangSelector"></div>
+            </div>
+
             <div class="register-header">
                 <div class="logo">
                     <i class="fas fa-seedling"></i>
                 </div>
-                <h1>Join Krishi AI</h1>
-                <p class="tagline">Start your smart farming journey</p>
-            </div>
-
-            <div class="farmer-illustration">
-                <i class="fas fa-user-plus"></i>
+                <h1 data-i18n="joinKrishi">Join Krishi AI</h1>
+                <p class="tagline" data-i18n="registerTagline">Start your smart farming journey</p>
             </div>
 
             <form id="registerForm" class="register-form">
                 <div class="input-group">
-                    <label for="username"><i class="fas fa-user"></i> Username</label>
+                    <label for="username">
+                        <i class="fas fa-user"></i> <span data-i18n="username">Username</span>
+                    </label>
                     <div class="input-icon">
                         <i class="fas fa-user"></i>
-                        <input type="text" id="username" required placeholder="Choose your username"/>
+                        <input type="text" id="username" required placeholder="Choose your username" data-i18n-placeholder="usernameChoose" autocomplete="username"/>
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    <label for="password">
+                        <i class="fas fa-lock"></i> <span data-i18n="password">Password</span>
+                    </label>
                     <div class="input-icon">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="password" required placeholder="Create a strong password"/>
+                        <input type="password" id="password" required placeholder="Create a strong password" data-i18n-placeholder="passwordCreate" autocomplete="new-password"/>
                     </div>
                     <div class="password-strength">
                         <div class="strength-meter" id="passwordStrength"></div>
@@ -53,44 +62,29 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="confirmPassword"><i class="fas fa-lock"></i> Confirm Password</label>
+                    <label for="confirmPassword">
+                        <i class="fas fa-lock"></i> <span data-i18n="confirmPassword">Confirm Password</span>
+                    </label>
                     <div class="input-icon">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="confirmPassword" required placeholder="Confirm your password"/>
+                        <input type="password" id="confirmPassword" required placeholder="Confirm your password" data-i18n-placeholder="confirmPasswordPlaceholder" autocomplete="new-password"/>
                     </div>
                 </div>
 
                 <div class="terms-container">
                     <input type="checkbox" id="terms" required>
-                    <label for="terms">I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy</a></label>
+                    <label for="terms">
+                        <span data-i18n="agreeTerms">I agree to the Terms of Service and Privacy Policy</span>
+                    </label>
                 </div>
 
                 <button type="submit" class="login-btn">
-                    <i class="fas fa-user-plus"></i> Create Account
+                    <i class="fas fa-user-plus"></i> <span data-i18n="registerBtn">Create Account</span>
                 </button>
             </form>
 
-            <div class="feature-grid">
-                <div class="feature-item">
-                    <div class="feature-icon">🌾</div>
-                    <div class="feature-text">Crop Recommendations</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🌤️</div>
-                    <div class="feature-text">Weather Insights</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🤖</div>
-                    <div class="feature-text">AI Assistant</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">📊</div>
-                    <div class="feature-text">Farm Analytics</div>
-                </div>
-            </div>
-
             <div class="register-link">
-                <p>Already have an account? <a href="login.html">Login here <i class="fas fa-arrow-right"></i></a></p>
+                <p><span data-i18n="alreadyHaveAccount">Already have an account?</span> <a href="login.html"><span data-i18n="loginHere">Login here</span> <i class="fas fa-arrow-right"></i></a></p>
             </div>
 
             <div id="registerStatus"></div>
@@ -99,6 +93,12 @@
     </div>
 
     <script>
+        // Mount language picker widget
+        if (window.krishiI18n) {
+            window.krishiI18n.renderSelector('registerLangSelector');
+            window.krishiI18n.translatePage();
+        }
+
         const registerForm = document.getElementById("registerForm");
         const registerStatus = document.getElementById("registerStatus");
         const growingBar = document.querySelector(".growing-bar");
@@ -144,14 +144,14 @@
             
             // Validate passwords match
             if (password !== confirmPassword) {
-                registerStatus.textContent = "Passwords do not match!";
+                registerStatus.textContent = window.krishiI18n ? window.krishiI18n.t("passwordsDoNotMatch", "Passwords do not match!") : "Passwords do not match!";
                 registerStatus.className = "error";
                 return;
             }
             
             // Validate password strength
             if (password.length < 8) {
-                registerStatus.textContent = "Password must be at least 8 characters long!";
+                registerStatus.textContent = window.krishiI18n ? window.krishiI18n.t("passwordLengthWarn", "Password must be at least 8 characters long!") : "Password must be at least 8 characters long!";
                 registerStatus.className = "error";
                 return;
             }
@@ -176,16 +176,13 @@
                 // Hide loading animation
                 growingBar.style.display = "none";
                 
-                console.log("Response status:", res.status, "Data:", data);
-                
                 if(res.ok){
-                    registerStatus.textContent = "Registration successful! Redirecting...";
+                    registerStatus.textContent = window.krishiI18n ? window.krishiI18n.t("registerSuccess", "Registration successful! Redirecting...") : "Registration successful! Redirecting...";
                     registerStatus.className = "success";
                     
                     setTimeout(() => {
-                        alert("Registration successful ✅\nWelcome to Krishi AI!");
                         window.location.href = "login.html";
-                    }, 1500);
+                    }, 1200);
                 } else {
                     registerStatus.textContent = data.detail || "Registration failed. Please try a different username.";
                     registerStatus.className = "error";
@@ -193,7 +190,7 @@
             } catch(err) {
                 console.error(err);
                 growingBar.style.display = "none";
-                registerStatus.textContent = "Error connecting to server. Please try again.";
+                registerStatus.textContent = window.krishiI18n ? window.krishiI18n.t("serverError", "Error connecting to server. Please try again.") : "Error connecting to server. Please try again.";
                 registerStatus.className = "error";
             }
         });
