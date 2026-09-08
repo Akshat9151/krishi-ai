@@ -652,50 +652,107 @@
         <p id="pageSubtitleText">Overview and farm health metrics</p>
       </div>
 
-      <!-- ================= VIEW 1: DASHBOARD (CLEAN & MINIMAL) ================= -->
+      <!-- ================= VIEW 1: DASHBOARD (FARMER-FRIENDLY OVERVIEW) ================= -->
       <section id="view-dashboard" class="content-view active-view">
         
-        <!-- Clean Evenly-Spaced Stat Cards -->
-        <div class="minimal-stat-grid">
-          <div class="minimal-stat-box">
-            <div class="minimal-stat-label" data-i18n="statCropsRecommended">Crops Recommended</div>
-            <div class="minimal-stat-num" id="statPredictions">0</div>
+        <!-- Welcoming Daily Farm Greeting & Advisory Banner -->
+        <div style="background: linear-gradient(135deg, #e8f5ec 0%, #f4fbf5 100%); border: 1.5px solid #cce5d2; border-radius: 16px; padding: 22px 26px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="font-size: 42px; line-height: 1;">🌱</div>
+            <div>
+              <h2 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: var(--primary-green);">नमस्ते किसान भाई! / Welcome to Your Farm</h2>
+              <p style="margin: 0; font-size: 14px; color: var(--text-muted);">आज का मौसम फसल देखभाल और सिंचाई के लिए उत्तम है। / Today is suitable for field care.</p>
+            </div>
           </div>
-          <div class="minimal-stat-box">
-            <div class="minimal-stat-label" data-i18n="statDiseasesIdentified">Diseases Identified</div>
-            <div class="minimal-stat-num" id="statDiseases">0</div>
-          </div>
-          <div class="minimal-stat-box">
-            <div class="minimal-stat-label" data-i18n="statWeatherStation">Weather Station</div>
-            <div class="minimal-stat-num" id="statWeatherLocation" style="font-size: 20px; line-height: 1.5;">Connected</div>
-          </div>
-          <div class="minimal-stat-box">
-            <div class="minimal-stat-label" data-i18n="statDaysActive">Days Active</div>
-            <div class="minimal-stat-num" id="statDaysActive">1</div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="background: #ffffff; border: 1px solid #cce5d2; border-radius: 24px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: var(--primary-green); display: flex; align-items: center; gap: 6px;">
+              <span>📍</span> <span id="statWeatherLocation">Connected</span>
+            </div>
+            <div style="background: #ffffff; border: 1px solid #cce5d2; border-radius: 24px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: var(--primary-green); display: flex; align-items: center; gap: 6px;">
+              <span>🗓️</span> <span>Day <span id="statDaysActive">1</span></span>
+            </div>
           </div>
         </div>
 
-        <!-- Clean Two-Column Cards: Weather Snapshot & Recent Predictions -->
+        <!-- 3 Primary Quick Action Cards (High visual clarity, big targets) -->
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--primary-green); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+            <span>⚡ मुख्य सेवाएँ (Quick Farm Actions)</span>
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px;">
+            
+            <!-- Card 1: Crop Prediction -->
+            <div onclick="switchSection('view-crop', 'Crop Recommendation', 'Predict optimal crop yields based on soil and real-time weather')" style="background: #ffffff; border: 1.5px solid #d4ebd9; border-radius: 16px; padding: 22px; cursor: pointer; transition: all 0.2s ease; display: flex; gap: 16px; align-items: center; box-shadow: 0 2px 8px rgba(11, 122, 58, 0.04);" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#0b7a3a'; this.style.boxShadow='0 8px 20px rgba(11, 122, 58, 0.12)';" onmouseout="this.style.transform='none'; this.style.borderColor='#d4ebd9'; this.style.boxShadow='0 2px 8px rgba(11, 122, 58, 0.04)';">
+              <div style="width: 58px; height: 58px; min-width: 58px; border-radius: 14px; background: #e8f5ec; display: flex; align-items: center; justify-content: center; font-size: 28px;">
+                🌾
+              </div>
+              <div style="flex: 1;">
+                <h4 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 800; color: #192a1e;">फसल चयन (Crop Guide)</h4>
+                <p style="margin: 0; font-size: 13px; color: #5c6f60; line-height: 1.4;">अपनी मिट्टी और मौसम अनुसार सर्वोत्तम फसल जानें</p>
+                <div style="margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--primary-green); display: flex; align-items: center; gap: 4px;">
+                  शुरू करें (Predict) ➔
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Plant Doctor / Disease Detection -->
+            <div onclick="switchSection('view-disease', 'Disease Detection', 'Identify crop diseases and recommended remedies')" style="background: #ffffff; border: 1.5px solid #fee2e2; border-radius: 16px; padding: 22px; cursor: pointer; transition: all 0.2s ease; display: flex; gap: 16px; align-items: center; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.04);" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#dc2626'; this.style.boxShadow='0 8px 20px rgba(220, 38, 38, 0.12)';" onmouseout="this.style.transform='none'; this.style.borderColor='#fee2e2'; this.style.boxShadow='0 2px 8px rgba(220, 38, 38, 0.04)';">
+              <div style="width: 58px; height: 58px; min-width: 58px; border-radius: 14px; background: #fef2f2; display: flex; align-items: center; justify-content: center; font-size: 28px;">
+                📷
+              </div>
+              <div style="flex: 1;">
+                <h4 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 800; color: #192a1e;">फसल डॉक्टर (Plant Doctor)</h4>
+                <p style="margin: 0; font-size: 13px; color: #5c6f60; line-height: 1.4;">पत्ते की फोटो से बीमारी और सही इलाज पाएं</p>
+                <div style="margin-top: 8px; font-size: 12px; font-weight: 700; color: #dc2626; display: flex; align-items: center; gap: 4px;">
+                  जाँच करें (Diagnose) ➔
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: AgriStore 10-Min Fast -->
+            <a href="store/index.html" style="text-decoration: none; background: #ffffff; border: 1.5px solid #fef3c7; border-radius: 16px; padding: 22px; cursor: pointer; transition: all 0.2s ease; display: flex; gap: 16px; align-items: center; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.04);" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#f59e0b'; this.style.boxShadow='0 8px 20px rgba(245, 158, 11, 0.12)';" onmouseout="this.style.transform='none'; this.style.borderColor='#fef3c7'; this.style.boxShadow='0 2px 8px rgba(245, 158, 11, 0.04)';">
+              <div style="width: 58px; height: 58px; min-width: 58px; border-radius: 14px; background: #fffbeb; display: flex; align-items: center; justify-content: center; font-size: 28px;">
+                ⚡
+              </div>
+              <div style="flex: 1;">
+                <h4 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 800; color: #192a1e;">कृषि स्टोर (AgriStore Express)</h4>
+                <p style="margin: 0; font-size: 13px; color: #5c6f60; line-height: 1.4;">10 मिनट में बीज, खाद व कीटनाशक घर तक</p>
+                <div style="margin-top: 8px; font-size: 12px; font-weight: 700; color: #b45309; display: flex; align-items: center; gap: 4px;">
+                  दुकान खोलें (Shop Now) ➔
+                </div>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Clean Two-Column Cards: Live Weather Glance & Recent Activity -->
         <div class="split-grid">
           
-          <div class="minimal-card">
+          <div class="minimal-card" style="margin-bottom: 0;">
             <div class="card-title-row">
-              <h3><i class="fa-solid fa-cloud-sun" style="color: var(--primary-green);"></i> Weather Snapshot</h3>
+              <h3><i class="fa-solid fa-cloud-sun" style="color: #0284c7;"></i> मौसम व खेत सलाह (Live Weather Snapshot)</h3>
             </div>
-            <div id="overviewWeatherCard" style="line-height: 1.7; color: #4b5563; font-size: 14px;">
+            <div id="overviewWeatherCard" style="line-height: 1.7; color: var(--text-muted); font-size: 14px;">
               <p>Fetching local weather station data...</p>
             </div>
           </div>
 
-          <div class="minimal-card">
+          <div class="minimal-card" style="margin-bottom: 0;">
             <div class="card-title-row">
-              <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-green);"></i> Recent Predictions</h3>
+              <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-green);"></i> हाल की गतिविधियाँ (Recent Activity)</h3>
             </div>
-            <div id="overviewRecentCrops" style="line-height: 1.6; color: #4b5563; font-size: 14px;">
+            <div id="overviewRecentCrops" style="line-height: 1.6; color: var(--text-muted); font-size: 14px;">
               <p>No recent prediction logs.</p>
             </div>
           </div>
 
+        </div>
+
+        <!-- Hidden counters preserved for script stats compatibility -->
+        <div style="display: none;">
+          <span id="statPredictions">0</span>
+          <span id="statDiseases">0</span>
         </div>
 
       </section>
