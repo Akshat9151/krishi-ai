@@ -88,8 +88,142 @@
         <button class="store-category-chip" data-category="irrigation" onclick="filterCategory('irrigation', this)">
             💧 सिंचाई प्रणाली (Irrigation)
         </button>
+        <button class="store-category-chip" data-category="farm-utility" onclick="filterCategory('farm-utility', this)">
+            ⛺ तिरपाल व सुरक्षा (Farm Utility)
+        </button>
+        <button class="store-category-chip" data-category="cattle-care" onclick="filterCategory('cattle-care', this)">
+            🐄 पशु आहार (Cattle Care)
+        </button>
+        <button class="store-category-chip" data-category="organic-bio" onclick="filterCategory('organic-bio', this)">
+            🍃 जैविक उत्पाद (Organic Bio)
+        </button>
     </div>
 </nav>
+
+<!-- Hero Banner Auto-Rotating Carousel (BigHaat / E-commerce Style) -->
+<section class="hero-carousel" id="heroCarousel" aria-label="Special Offers and Highlights">
+    <div class="hero-slides" id="heroSlides">
+        <!-- Slide 1: High quality produce / seeds -->
+        <div class="hero-slide active" style="background: linear-gradient(135deg, #075026 0%, #0b7a3a 50%, #16a34a 100%);">
+            <div class="hero-slide-inner">
+                <div class="hero-content">
+                    <span class="hero-badge">🌱 100% शुद्ध प्रमाणित बीज</span>
+                    <h2 class="hero-title">उगाएं निर्यात-गुणवत्ता की उत्तम फसल</h2>
+                    <p class="hero-subtitle">IARI और Syngenta प्रमाणित हाइब्रिड बीज • 90%+ अंकुरण गारंटी • सीधे किसान के खेत तक</p>
+                    <div class="hero-actions">
+                        <button class="hero-btn-primary" onclick="quickFilterCategory('vegetable-seeds')">
+                            बीज खरीदें <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <span class="hero-guarantee"><i class="fa-solid fa-shield-halved"></i> 100% ओरिजिनल गारंटी</span>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-visual-card">
+                        <div class="hero-visual-icon">🌾</div>
+                        <div class="hero-visual-stat">
+                            <strong>120+</strong>
+                            <span>सत्यापित उत्पाद</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Smart Irrigation -->
+        <div class="hero-slide" style="background: linear-gradient(135deg, #0c4a6e 0%, #0284c7 50%, #38bdf8 100%);">
+            <div class="hero-slide-inner">
+                <div class="hero-content">
+                    <span class="hero-badge">💧 70% पानी की बचत</span>
+                    <h2 class="hero-title">आधुनिक ड्रिप व स्प्रिंकलर सिंचाई</h2>
+                    <p class="hero-subtitle">कम पानी में भरपूर पैदावार • सोलर पंप एवं पाइप सेट पर विशेष छूट • फ्री डिलीवरी</p>
+                    <div class="hero-actions">
+                        <button class="hero-btn-primary" onclick="quickFilterCategory('irrigation')">
+                            सिंचाई किट देखें <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <span class="hero-guarantee"><i class="fa-solid fa-droplet"></i> वाटर सेवर सर्टिफाइड</span>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-visual-card">
+                        <div class="hero-visual-icon">💧</div>
+                        <div class="hero-visual-stat">
+                            <strong>70%</strong>
+                            <span>जल संरक्षण</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Farm Utility / Monsoon Protection -->
+        <div class="hero-slide" style="background: linear-gradient(135deg, #78350f 0%, #b45309 50%, #f59e0b 100%);">
+            <div class="hero-slide-inner">
+                <div class="hero-content">
+                    <span class="hero-badge">⛺ मौसम व फसल सुरक्षा</span>
+                    <h2 class="hero-title">भारी तिरपाल, बोरी व स्प्रे पंप ऑफर</h2>
+                    <p class="hero-subtitle">फसल भंडारण और सुरक्षा के मजबूत सामान • गांव-गांव तक सुरक्षित डिलीवरी</p>
+                    <div class="hero-actions">
+                        <button class="hero-btn-primary" onclick="quickFilterCategory('farm-utility')">
+                            सुरक्षा सामान देखें <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <span class="hero-guarantee"><i class="fa-solid fa-truck-fast"></i> तेज़ होम डिलीवरी</span>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-visual-card">
+                        <div class="hero-visual-icon">⛺</div>
+                        <div class="hero-visual-stat">
+                            <strong>₹799</strong>
+                            <span>शुरुआती कीमत</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Cash On Delivery -->
+        <div class="hero-slide" style="background: linear-gradient(135deg, #3b0764 0%, #6b21a8 50%, #9333ea 100%);">
+            <div class="hero-slide-inner">
+                <div class="hero-content">
+                    <span class="hero-badge">💵 Pay on Delivery (COD)</span>
+                    <h2 class="hero-title">हाथ में सामान आने पर ही पैसे दें</h2>
+                    <p class="hero-subtitle">कोई ऑनलाइन भुगतान की बाध्यता नहीं • भरोसा सबसे पहले • 100% सुरक्षित सेवा</p>
+                    <div class="hero-actions">
+                        <button class="hero-btn-primary" onclick="quickFilterCategory('all')">
+                            अभी ऑर्डर करें <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <span class="hero-guarantee"><i class="fa-solid fa-hand-holding-dollar"></i> नकद भुगतान उपलब्ध</span>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-visual-card">
+                        <div class="hero-visual-icon">📦</div>
+                        <div class="hero-visual-stat">
+                            <strong>COD</strong>
+                            <span>सभी पिनकोड पर</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carousel Controls: Prev / Next Buttons -->
+    <button class="hero-nav-arrow hero-prev" onclick="prevHeroSlide()" aria-label="Previous Slide">
+        <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button class="hero-nav-arrow hero-next" onclick="nextHeroSlide()" aria-label="Next Slide">
+        <i class="fa-solid fa-chevron-right"></i>
+    </button>
+
+    <!-- Carousel Indicators: Dots -->
+    <div class="hero-dots" id="heroDots">
+        <button class="hero-dot active" onclick="setHeroSlide(0)" aria-label="Slide 1"></button>
+        <button class="hero-dot" onclick="setHeroSlide(1)" aria-label="Slide 2"></button>
+        <button class="hero-dot" onclick="setHeroSlide(2)" aria-label="Slide 3"></button>
+        <button class="hero-dot" onclick="setHeroSlide(3)" aria-label="Slide 4"></button>
+    </div>
+</section>
 
 <!-- Main Store Body -->
 <main class="store-main">
@@ -186,7 +320,7 @@
     async function loadCatalog() {
         try {
             const baseUrl = window.API_BASE_URL || "https://krishi-ai-2-4j3k.onrender.com";
-            const res = await fetch(`${baseUrl}/api/store/products?limit=50`);
+            const res = await fetch(`${baseUrl}/api/store/products?limit=150`);
             if (res.ok) {
                 const data = await res.json();
                 if (Array.isArray(data) && data.length > 0) {
@@ -244,7 +378,7 @@
                     <div class="store-empty-icon">🔍</div>
                     <h3>कोई उत्पाद नहीं मिला</h3>
                     <p>कृपया दूसरा शब्द खोजें या श्रेणी बदलें।</p>
-                    <button class="store-add-btn" onclick="resetFilters()" style="margin: 0 auto;">
+                    <button class="store-add-btn" onclick="resetFilters()" style="margin: 12px auto 0;">
                         सभी उत्पाद देखें
                     </button>
                 </div>
@@ -254,11 +388,11 @@
 
         const cart = getCart();
 
-        grid.innerHTML = filtered.map(p => {
+        grid.innerHTML = filtered.map((p, idx) => {
             const cartItem = cart.find(item => item.id === p.id);
             const inCartQty = cartItem ? cartItem.quantity : 0;
-            const discount = (p.original_price && p.original_price > p.price) 
-                ? Math.round(((p.original_price - p.price) / p.original_price) * 100) 
+            const savings = (p.original_price && p.original_price > p.price) 
+                ? Math.round(p.original_price - p.price) 
                 : 0;
 
             let buttonHtml = '';
@@ -272,16 +406,18 @@
                 `;
             } else {
                 buttonHtml = `
-                    <button class="store-add-btn" onclick="handleAddToCart(${p.id})">
+                    <button class="store-add-btn ripple-effect" onclick="handleAddToCart(${p.id})">
                         <i class="fa-solid fa-plus"></i> जोड़ें
                     </button>
                 `;
             }
 
+            const animDelay = Math.min(idx * 0.03, 0.5);
+
             return `
-                <div class="store-card">
+                <div class="store-card" style="animation-delay: ${animDelay}s">
                     <div class="store-card-img-wrap">
-                        <a href="product.html?id=${p.id}">
+                        <a href="product.html?id=${p.id}" class="store-card-img-link">
                             <img 
                                 src="${p.image_url || p.image || SAFE_FALLBACK_IMG}" 
                                 class="store-card-img" 
@@ -290,13 +426,14 @@
                                 alt="${p.name}" 
                             />
                         </a>
-                        ${p.badge ? `<span class="store-card-badge">${p.badge}</span>` : ''}
+                        ${p.badge ? `<span class="store-card-badge pulse-badge">${p.badge}</span>` : ''}
+                        ${savings > 0 ? `<span class="store-savings-tag">बचत ₹${savings}</span>` : ''}
                     </div>
 
                     <div class="store-card-body">
                         <div class="store-card-meta">
-                            <span>${p.brand || 'Krishi AI'}</span>
-                            <span>${p.weight || ''}</span>
+                            <span class="store-card-brand"><i class="fa-solid fa-certificate"></i> ${p.brand || 'Krishi Certified'}</span>
+                            <span class="store-card-weight">${p.weight || ''}</span>
                         </div>
 
                         <h3 class="store-card-title">
@@ -306,13 +443,18 @@
                         <div class="store-card-rating">
                             <i class="fa-solid fa-star"></i>
                             <strong>${p.rating ? p.rating.toFixed(1) : '4.6'}</strong>
-                            <span>(${p.reviews_count || 48})</span>
+                            <span>(${p.reviews_count || 48} किसान समीक्षाएं)</span>
+                        </div>
+
+                        <div class="store-card-perks">
+                            <span class="store-perk"><i class="fa-solid fa-truck"></i> Pay on Delivery</span>
+                            <span class="store-perk"><i class="fa-solid fa-rotate-left"></i> आसान वापसी</span>
                         </div>
 
                         <div class="store-card-footer">
                             <div class="store-price-col">
                                 <span class="store-current-price">₹${p.price}</span>
-                                ${p.original_price ? `<span class="store-mrp-price">₹${p.original_price}</span>` : ''}
+                                ${p.original_price ? `<span class="store-mrp-price">एमआरपी: ₹${p.original_price}</span>` : ''}
                             </div>
                             <div>
                                 ${buttonHtml}
@@ -344,11 +486,14 @@
 
         const titleMap = {
             'all': 'सभी उत्पाद (All Products)',
-            'vegetable-seeds': 'प्रमाणित बीज (Seeds)',
+            'vegetable-seeds': 'प्रमाणित बीज (Certified Seeds)',
             'organic-fertilizers': 'जैविक खाद व उर्वरक (Fertilizers)',
-            'crop-protection': 'फसल सुरक्षा व कीटनाशक (Protection)',
-            'farming-tools': 'कृषि यंत्र व औजार (Tools)',
-            'irrigation': 'सिंचाई उपकरण (Irrigation)'
+            'crop-protection': 'फसल सुरक्षा व कीटनाशक (Crop Protection)',
+            'farming-tools': 'कृषि यंत्र व औजार (Farming Tools)',
+            'irrigation': 'सिंचाई उपकरण (Irrigation Systems)',
+            'farm-utility': 'तिरपाल व खेत सुरक्षा (Farm Utility)',
+            'cattle-care': 'पशु आहार व देखभाल (Cattle Care)',
+            'organic-bio': 'जैविक उत्पाद (Organic Bio Inputs)'
         };
         const titleEl = document.getElementById('catalogTitle');
         if (titleEl) {
@@ -356,6 +501,15 @@
         }
 
         renderGrid();
+    }
+
+    function quickFilterCategory(cat) {
+        const chip = document.querySelector(`.store-category-chip[data-category="${cat}"]`);
+        filterCategory(cat, chip);
+        const grid = document.getElementById('productGrid');
+        if (grid) {
+            grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
 
     function handleSearch(e) {
@@ -388,7 +542,74 @@
         renderGrid();
     }
 
+    // ===== HERO CAROUSEL ENGINE =====
+    let currentHeroSlide = 0;
+    let heroAutoTimer = null;
+    const HERO_INTERVAL = 4500;
+
+    function showHeroSlide(index) {
+        const slides = document.querySelectorAll('.hero-slide');
+        const dots = document.querySelectorAll('.hero-dot');
+        if (!slides.length) return;
+
+        slides[currentHeroSlide].classList.remove('active');
+        if (dots[currentHeroSlide]) dots[currentHeroSlide].classList.remove('active');
+
+        currentHeroSlide = (index + slides.length) % slides.length;
+
+        slides[currentHeroSlide].classList.add('active');
+        if (dots[currentHeroSlide]) dots[currentHeroSlide].classList.add('active');
+        resetHeroTimer();
+    }
+
+    function nextHeroSlide() {
+        showHeroSlide(currentHeroSlide + 1);
+    }
+
+    function prevHeroSlide() {
+        showHeroSlide(currentHeroSlide - 1);
+    }
+
+    function setHeroSlide(index) {
+        showHeroSlide(index);
+    }
+
+    function resetHeroTimer() {
+        if (heroAutoTimer) clearInterval(heroAutoTimer);
+        heroAutoTimer = setInterval(nextHeroSlide, HERO_INTERVAL);
+    }
+
+    // Touch swipe support for mobile
+    (function initHeroTouch() {
+        const carousel = document.getElementById('heroCarousel');
+        if (!carousel) return;
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        carousel.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        carousel.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) {
+                nextHeroSlide();
+            } else if (touchEndX - touchStartX > 50) {
+                prevHeroSlide();
+            }
+        }, { passive: true });
+
+        // Pause on mouse hover
+        carousel.addEventListener('mouseenter', () => {
+            if (heroAutoTimer) clearInterval(heroAutoTimer);
+        });
+        carousel.addEventListener('mouseleave', resetHeroTimer);
+    })();
+
     document.addEventListener('DOMContentLoaded', () => {
+        resetHeroTimer();
+
         const urlParams = new URLSearchParams(window.location.search);
         const catParam = urlParams.get('category') || urlParams.get('cat');
         if (catParam) {
@@ -412,5 +633,16 @@
         loadCatalog();
     });
 </script>
+
+<!-- Floating WhatsApp Helpline Button for Farmers -->
+<a href="https://wa.me/911800123456?text=नमस्ते%20Krishi%20AI,%20मुझे%20कृषि%20उत्पाद%20के%20बारे%20में%20जानकारी%20चाहिए" 
+   target="_blank" 
+   rel="noopener noreferrer" 
+   class="floating-help-btn" 
+   title="किसान हेल्पलाइन — WhatsApp पर सहायता" 
+   aria-label="WhatsApp Helpline">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="floating-help-label">किसान सहायता</span>
+</a>
 </body>
 </html>
