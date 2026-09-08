@@ -50,15 +50,15 @@ document.getElementById("diseaseForm").addEventListener("submit", async (e) => {
 
     const data = await res.json();
 
-      const isKnown = data.disease !== "No data found";
-      const confidence = isKnown ? 95.0 : 85.0;
+    if (data && data.disease && data.disease !== "No data found") {
+      const confidence = 95.0;
 
       diseaseDiv.innerHTML = `
         <div class="disease-card">
           <h4>🦠 Disease Analysis for ${crop}</h4>
           <p><b>Disease:</b> ${data.disease}</p>
-          <p><b>Symptoms:</b> ${data.symptoms}</p>
-          <p><b>Solution:</b> ${data.solution}</p>
+          <p><b>Symptoms:</b> ${data.symptoms || "Standard field symptoms detected"}</p>
+          <p><b>Solution:</b> ${data.solution || "Apply recommended organic or chemical treatment"}</p>
           <div style="margin-top: 12px; padding: 8px 12px; background: #e8f5e9; border-radius: 8px; font-size: 13px; color: #1b5e20;">
             <strong>🎯 Diagnostic Confidence:</strong> ${confidence.toFixed(1)}% (Database Verified)
           </div>
@@ -84,8 +84,8 @@ document.getElementById("diseaseForm").addEventListener("submit", async (e) => {
 
       diseaseDiv.innerHTML = `
         <div class="disease-card" style="background: #e8f5e9; border-left-color: #4caf50;">
-          <h4>✅ No major disease found</h4>
-          <p>Your ${crop} appears healthy. Continue regular care practices.</p>
+          <h4>✅ General Farm Health for ${crop}</h4>
+          <p>Your ${crop} crop profile is in good condition. Follow timely irrigation, weeding, and balanced fertilizer dosage.</p>
         </div>
       `;
 

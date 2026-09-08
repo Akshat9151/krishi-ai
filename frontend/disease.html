@@ -3,46 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <title>Disease & Fertilizer | Krishi AI</title>
-  <link rel="stylesheet" href="style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
- <header class="main-header">
-
-  <div class="header-left">
-    <img src="statics/images/logo.jpg" alt="Krishi AI Logo" class="header-logo" />
-    <div class="header-title">
-      <h1>Krishi AI</h1>
-      <span>Your Smart Agriculture Assistant</span>
-    </div>
-  </div>
-
-  <!-- ☰ Hamburger -->
-  <button class="menu-toggle" id="menuToggle">☰</button>
-
-  <!-- Navigation -->
-  <nav class="header-nav" id="mobileMenu">
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="disease.html">Disease</a>
-    <a href="contact.html">Contact</a>
-    
-  </nav>
-
-</header>
-<!-- 🌍 LANGUAGE BAR -->
-<div class="language-bar">
-  <div id="google_translate_element"></div>
-</div>
-
-
-
-
- <!-- 🌍 LANGUAGE BAR -->
-<div class="language-bar">
-  <div id="google_translate_element"></div>
-</div>
+  <!-- Unified Topbar Placeholder (Populated by header.js) -->
+  <div id="ka-header-mount"></div>
 
   <!-- 🧠 MAIN CONTENT -->
   <main>
@@ -138,19 +106,8 @@
 
   <!-- 🔁 JS Logic -->
   <script src="config.js"></script>
+  <script src="i18n.js"></script>
+  <script src="header.js"></script>
   <script src="disease.js"></script>
-
-  <!-- 🌐 GOOGLE TRANSLATE -->
-  <script>
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement(
-        { pageLanguage: 'en' },
-        'google_translate_element'
-      );
-    }
-  </script>
-  <script type="text/javascript"
-    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-  </script>
 </body>
 </html>

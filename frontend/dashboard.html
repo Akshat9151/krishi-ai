@@ -819,103 +819,162 @@
       <section id="view-dashboard" class="content-view active-view">
         
         <!-- Welcoming Daily Farm Greeting & Advisory Banner -->
-        <div style="background: linear-gradient(135deg, #e8f5ec 0%, #f4fbf5 100%); border: 1.5px solid #cce5d2; border-radius: 16px; padding: 22px 26px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div style="background: linear-gradient(135deg, #e8f5ec 0%, #f4fbf5 100%); border: 1.5px solid #cce5d2; border-radius: 16px; padding: 20px 24px; margin-bottom: 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
           <div style="display: flex; align-items: center; gap: 16px;">
-            <div style="font-size: 42px; line-height: 1;">🌱</div>
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: #ffffff; border: 1px solid #cce5d2; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 2px 8px rgba(11, 122, 58, 0.06);">🌱</div>
             <div>
-              <h2 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: var(--primary-green);" data-i18n="welcomeFarmer">नमस्ते किसान भाई! / Welcome to Your Farm</h2>
-              <p style="margin: 0; font-size: 14px; color: var(--text-muted);" data-i18n="welcomeDesc">आज का मौसम फसल देखभाल और सिंचाई के लिए उत्तम है। / Today is suitable for field care.</p>
+              <h2 style="margin: 0 0 3px 0; font-size: 19px; font-weight: 800; color: var(--primary-green);" data-i18n="welcomeFarmer">नमस्ते किसान भाई! / Welcome to Your Farm</h2>
+              <p style="margin: 0; font-size: 13.5px; color: var(--text-muted);" data-i18n="welcomeDesc">आज का मौसम फसल देखभाल और सिंचाई के लिए उत्तम है। / Live smart farming intelligence active.</p>
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 10px;">
-            <div style="background: #ffffff; border: 1px solid #cce5d2; border-radius: 24px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: var(--primary-green); display: flex; align-items: center; gap: 6px;">
+            <div style="background: #ffffff; border: 1px solid #cce5d2; border-radius: 20px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; color: var(--primary-green); display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.02);">
               <span>📍</span> <span id="statWeatherLocation">Connected</span>
             </div>
-            <div style="background: #ffffff; border: 1px solid #cce5d2; border-radius: 24px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: var(--primary-green); display: flex; align-items: center; gap: 6px;">
+            <div style="background: #ffffff; border: 1px solid #cce5d2; border-radius: 20px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; color: var(--primary-green); display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.02);">
               <span>🗓️</span> <span>Day <span id="statDaysActive">1</span></span>
             </div>
           </div>
         </div>
 
-        <!-- 3 Primary Quick Action Cards (High visual clarity, big targets) -->
-        <div style="margin-bottom: 24px;">
-          <h3 style="font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--primary-green); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
-            <span data-i18n="quickActions">⚡ मुख्य सेवाएँ (Quick Farm Actions)</span>
-          </h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px;">
-            
-            <!-- Card 1: Crop Prediction -->
-            <div onclick="switchSection('view-crop', 'Crop Recommendation', 'Predict optimal crop yields based on soil and real-time weather')" style="background: #ffffff; border: 1.5px solid #d4ebd9; border-radius: 16px; padding: 22px; cursor: pointer; transition: all 0.2s ease; display: flex; gap: 16px; align-items: center; box-shadow: 0 2px 8px rgba(11, 122, 58, 0.04);" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#0b7a3a'; this.style.boxShadow='0 8px 20px rgba(11, 122, 58, 0.12)';" onmouseout="this.style.transform='none'; this.style.borderColor='#d4ebd9'; this.style.boxShadow='0 2px 8px rgba(11, 122, 58, 0.04)';">
-              <div style="width: 58px; height: 58px; min-width: 58px; border-radius: 14px; background: #e8f5ec; display: flex; align-items: center; justify-content: center; font-size: 28px;">
-                🌾
-              </div>
-              <div style="flex: 1;">
-                <h4 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 800; color: #192a1e;">फसल चयन (Crop Guide)</h4>
-                <p style="margin: 0; font-size: 13px; color: #5c6f60; line-height: 1.4;">अपनी मिट्टी और मौसम अनुसार सर्वोत्तम फसल जानें</p>
-                <div style="margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--primary-green); display: flex; align-items: center; gap: 4px;">
-                  शुरू करें (Predict) ➔
-                </div>
+        <!-- 3 StatCards (VoteVictory Pattern: UPPERCASE title, tinted soft icon box, big number, subtext) -->
+        <div class="ka-stat-grid">
+          
+          <!-- StatCard 1: Crop Predictions -->
+          <div class="ka-stat-card" onclick="switchSection('view-crop', 'Crop Recommendation', 'Predict optimal crop yields based on soil and real-time weather')" style="cursor: pointer;">
+            <div class="ka-stat-top">
+              <span class="ka-stat-label">फसल मार्गदर्शन / Predictions</span>
+              <div class="ka-stat-icon-box green">
+                <i class="fa-solid fa-seedling"></i>
               </div>
             </div>
-
-            <!-- Card 2: Plant Doctor / Disease Detection -->
-            <div onclick="switchSection('view-disease', 'Disease Detection', 'Identify crop diseases and recommended remedies')" style="background: #ffffff; border: 1.5px solid #fee2e2; border-radius: 16px; padding: 22px; cursor: pointer; transition: all 0.2s ease; display: flex; gap: 16px; align-items: center; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.04);" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#dc2626'; this.style.boxShadow='0 8px 20px rgba(220, 38, 38, 0.12)';" onmouseout="this.style.transform='none'; this.style.borderColor='#fee2e2'; this.style.boxShadow='0 2px 8px rgba(220, 38, 38, 0.04)';">
-              <div style="width: 58px; height: 58px; min-width: 58px; border-radius: 14px; background: #fef2f2; display: flex; align-items: center; justify-content: center; font-size: 28px;">
-                📷
-              </div>
-              <div style="flex: 1;">
-                <h4 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 800; color: #192a1e;">फसल डॉक्टर (Plant Doctor)</h4>
-                <p style="margin: 0; font-size: 13px; color: #5c6f60; line-height: 1.4;">पत्ते की फोटो से बीमारी और सही इलाज पाएं</p>
-                <div style="margin-top: 8px; font-size: 12px; font-weight: 700; color: #dc2626; display: flex; align-items: center; gap: 4px;">
-                  जाँच करें (Diagnose) ➔
-                </div>
-              </div>
+            <div class="ka-stat-value" id="statPredictions">0</div>
+            <div class="ka-stat-subtext">
+              <i class="fa-solid fa-circle-check" style="color: #0b7a3a; font-size: 10px;"></i> AI Soil & Weather Model verified
             </div>
-
-            <!-- Card 3: AgriStore -->
-            <a href="store/index.html" style="text-decoration: none; background: #ffffff; border: 1.5px solid #d4ebd9; border-radius: 16px; padding: 22px; cursor: pointer; transition: all 0.2s ease; display: flex; gap: 16px; align-items: center; box-shadow: 0 2px 8px rgba(11, 122, 58, 0.04);" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#0b7a3a'; this.style.boxShadow='0 8px 20px rgba(11, 122, 58, 0.12)';" onmouseout="this.style.transform='none'; this.style.borderColor='#d4ebd9'; this.style.boxShadow='0 2px 8px rgba(11, 122, 58, 0.04)';">
-              <div style="width: 58px; height: 58px; min-width: 58px; border-radius: 14px; background: #e8f5ec; display: flex; align-items: center; justify-content: center; font-size: 28px;">
-                🌱
-              </div>
-              <div style="flex: 1;">
-                <h4 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 800; color: #192a1e;">कृषि स्टोर (AgriStore)</h4>
-                <p style="margin: 0; font-size: 13px; color: #5c6f60; line-height: 1.4;">प्रमाणित बीज, खाद व कीटनाशक सीधे खेत तक</p>
-                <div style="margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--primary-green); display: flex; align-items: center; gap: 4px;">
-                  दुकान खोलें (Shop Now) ➔
-                </div>
-              </div>
-            </a>
-
           </div>
+
+          <!-- StatCard 2: Plant Doctor Checks -->
+          <div class="ka-stat-card" onclick="switchSection('view-disease', 'Disease Detection', 'Identify crop diseases and recommended remedies')" style="cursor: pointer;">
+            <div class="ka-stat-top">
+              <span class="ka-stat-label">रोग निदान / Health Checks</span>
+              <div class="ka-stat-icon-box amber">
+                <i class="fa-solid fa-microscope"></i>
+              </div>
+            </div>
+            <div class="ka-stat-value" id="statDiseases">0</div>
+            <div class="ka-stat-subtext">
+              <i class="fa-solid fa-shield-halved" style="color: #d97706; font-size: 10px;"></i> Crop diagnoses logged
+            </div>
+          </div>
+
+          <!-- StatCard 3: Farm Monitoring & Weather -->
+          <div class="ka-stat-card" onclick="switchSection('view-weather', 'Weather Insights', 'Local meteorological conditions and farming tips')" style="cursor: pointer;">
+            <div class="ka-stat-top">
+              <span class="ka-stat-label">मौसम स्थिति / Farm Weather</span>
+              <div class="ka-stat-icon-box blue">
+                <i class="fa-solid fa-cloud-sun"></i>
+              </div>
+            </div>
+            <div class="ka-stat-value" id="statWeatherCondition">Live</div>
+            <div class="ka-stat-subtext">
+              <i class="fa-solid fa-satellite-dish" style="color: #0284c7; font-size: 10px;"></i> Station updated in real-time
+            </div>
+          </div>
+
         </div>
 
-        <!-- Clean Two-Column Cards: Live Weather Glance & Recent Activity -->
+        <!-- Two-Column Section: Left (Live Weather & Activity) | Right (Quick Actions List) -->
         <div class="split-grid">
           
-          <div class="minimal-card" style="margin-bottom: 0;">
-            <div class="card-title-row">
-              <h3><i class="fa-solid fa-cloud-sun" style="color: #0284c7;"></i> मौसम व खेत सलाह (Live Weather Snapshot)</h3>
+          <!-- Left Column: Weather Snapshot & Recent Logs -->
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="minimal-card" style="margin-bottom: 0;">
+              <div class="card-title-row">
+                <h3><i class="fa-solid fa-cloud-sun" style="color: #0284c7;"></i> मौसम व खेत सलाह (Live Weather Snapshot)</h3>
+              </div>
+              <div id="overviewWeatherCard" style="line-height: 1.7; color: var(--text-muted); font-size: 13.5px;">
+                <p>Fetching local meteorological station data...</p>
+              </div>
             </div>
-            <div id="overviewWeatherCard" style="line-height: 1.7; color: var(--text-muted); font-size: 14px;">
-              <p>Fetching local weather station data...</p>
+
+            <div class="minimal-card" style="margin-bottom: 0;">
+              <div class="card-title-row">
+                <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-green);"></i> हाल की गतिविधियाँ (Recent Activity)</h3>
+              </div>
+              <div id="overviewRecentCrops" style="line-height: 1.6; color: var(--text-muted); font-size: 13.5px;">
+                <p>No recent crop predictions. Run your first recommendation below!</p>
+              </div>
             </div>
           </div>
 
+          <!-- Right Column: Quick Farm Actions (VoteVictory Vertical List Pattern) -->
           <div class="minimal-card" style="margin-bottom: 0;">
             <div class="card-title-row">
-              <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-green);"></i> हाल की गतिविधियाँ (Recent Activity)</h3>
+              <h3><i class="fa-solid fa-bolt" style="color: #eab308;"></i> त्वरित सेवाएँ (Quick Farm Actions)</h3>
             </div>
-            <div id="overviewRecentCrops" style="line-height: 1.6; color: var(--text-muted); font-size: 14px;">
-              <p>No recent prediction logs.</p>
+            
+            <div class="ka-action-list">
+              
+              <!-- Action 1: Crop Guide -->
+              <div class="ka-action-btn" onclick="switchSection('view-crop', 'Crop Recommendation', 'Predict optimal crop yields based on soil and real-time weather')">
+                <div class="ka-action-btn-left">
+                  <div class="ka-action-icon" style="background: #e8f5ec; border-color: #cce5d2; color: #0b7a3a;">
+                    🌾
+                  </div>
+                  <div>
+                    <div class="ka-action-title">फसल चयन (Crop Guide)</div>
+                    <div class="ka-action-desc">मिट्टी व मौसम अनुसार सर्वोत्तम फसल जानें</div>
+                  </div>
+                </div>
+                <div class="ka-action-arrow">&rarr;</div>
+              </div>
+
+              <!-- Action 2: Plant Doctor -->
+              <div class="ka-action-btn" onclick="switchSection('view-disease', 'Disease Detection', 'Identify crop diseases and recommended remedies')">
+                <div class="ka-action-btn-left">
+                  <div class="ka-action-icon" style="background: #fef2f2; border-color: #fecaca; color: #dc2626;">
+                    🔬
+                  </div>
+                  <div>
+                    <div class="ka-action-title">फसल डॉक्टर (Plant Doctor)</div>
+                    <div class="ka-action-desc">पत्ते की जांच और सटीक उपचार पाएं</div>
+                  </div>
+                </div>
+                <div class="ka-action-arrow">&rarr;</div>
+              </div>
+
+              <!-- Action 3: AI Assistant -->
+              <div class="ka-action-btn" onclick="switchSection('view-assistant', 'AI Assistant', 'Consult Krishi AI in Hindi or Hinglish')">
+                <div class="ka-action-btn-left">
+                  <div class="ka-action-icon" style="background: #faf5ff; border-color: #f3e8ff; color: #7c3aed;">
+                    🤖
+                  </div>
+                  <div>
+                    <div class="ka-action-title">कृषि AI सहायक (Ask Assistant)</div>
+                    <div class="ka-action-desc">हिंदी/Hinglish में खेती के सवाल पूछें</div>
+                  </div>
+                </div>
+                <div class="ka-action-arrow">&rarr;</div>
+              </div>
+
+              <!-- Action 4: AgriStore -->
+              <a href="store/index.html" class="ka-action-btn" style="text-decoration: none;">
+                <div class="ka-action-btn-left">
+                  <div class="ka-action-icon" style="background: #fff7ed; border-color: #fed7aa; color: #ea580c;">
+                    🛒
+                  </div>
+                  <div>
+                    <div class="ka-action-title">कृषि स्टोर (AgriStore - 120+ Products)</div>
+                    <div class="ka-action-desc">IFFCO खाद, हाइब्रिड बीज व उपकरण</div>
+                  </div>
+                </div>
+                <div class="ka-action-arrow" style="color: #ea580c;">&rarr;</div>
+              </a>
+
             </div>
           </div>
 
-        </div>
-
-        <!-- Hidden counters preserved for script stats compatibility -->
-        <div style="display: none;">
-          <span id="statPredictions">0</span>
-          <span id="statDiseases">0</span>
         </div>
 
       </section>
@@ -1556,38 +1615,98 @@
   }
 
   // Overview Stats
-  function loadDashboardStats() {
+  async function loadDashboardStats() {
     const stats = JSON.parse(localStorage.getItem('krishi_stats')) || {};
-    document.getElementById('statPredictions').innerText = stats.predictions || 0;
-    document.getElementById('statDiseases').innerText = stats.diseases || 0;
+    const cropHistory = JSON.parse(localStorage.getItem('krishi_prediction_history')) || [];
+    const diseaseHistory = JSON.parse(localStorage.getItem('krishi_disease_history')) || [];
 
-    const firstUse = localStorage.getItem('krishi_first_use');
-    if (firstUse) {
-      const days = Math.floor((Date.now() - parseInt(firstUse)) / (1000 * 60 * 60 * 24)) || 1;
-      document.getElementById('statDaysActive').innerText = days;
+    const predCount = cropHistory.length || stats.predictions || 0;
+    const diseaseCount = diseaseHistory.length || stats.diseases || 0;
+
+    const statPredEl = document.getElementById('statPredictions');
+    if (statPredEl) statPredEl.innerText = predCount;
+
+    const statDisEl = document.getElementById('statDiseases');
+    if (statDisEl) statDisEl.innerText = diseaseCount;
+
+    const firstUse = localStorage.getItem('krishi_first_use') || Date.now();
+    if (!localStorage.getItem('krishi_first_use')) {
+      localStorage.setItem('krishi_first_use', firstUse);
+    }
+    const days = Math.floor((Date.now() - parseInt(firstUse)) / (1000 * 60 * 60 * 24)) + 1;
+    const statDaysEl = document.getElementById('statDaysActive');
+    if (statDaysEl) statDaysEl.innerText = days;
+
+    // Load User Profile info
+    const token = localStorage.getItem("accessToken");
+    const loggedUser = localStorage.getItem("loggedInUser");
+    const userTextEl = document.getElementById("topbarUserText");
+    const userAvatarEl = document.getElementById("topbarUserAvatar");
+    if (loggedUser) {
+      if (userTextEl) userTextEl.innerText = loggedUser;
+      if (userAvatarEl) userAvatarEl.innerText = loggedUser.charAt(0).toUpperCase();
     }
 
-    const lastW = JSON.parse(localStorage.getItem('krishi_last_weather'));
+    let lastW = JSON.parse(localStorage.getItem('krishi_last_weather'));
     const wCard = document.getElementById("overviewWeatherCard");
-    if (lastW) {
-      document.getElementById("statWeatherLocation").innerText = lastW.location;
-      wCard.innerHTML = `
-        <div style="margin-bottom: 6px;"><strong>📍 ${lastW.location}</strong> — 🌡️ ${lastW.temperature}°C • 💧 ${lastW.humidity}% humidity</div>
-        <p style="margin: 0; color: #6b7280; font-size: 13px;">${lastW.recommendations.split('\n')[0]}</p>
-      `;
-    } else {
-      wCard.innerHTML = "<p style='color:#6b7280;'>No weather station connected. Check live weather in the Weather section.</p>";
+    const statWeatherCond = document.getElementById("statWeatherCondition");
+    const statLoc = document.getElementById("statWeatherLocation");
+
+    // If no weather cached yet, auto-fetch from backend API
+    if (!lastW) {
+      try {
+        const defaultCity = localStorage.getItem("lastCity") || "Jaipur";
+        const res = await fetch(getApiUrl("/api/weather"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ location: defaultCity })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          lastW = {
+            location: data.location,
+            temperature: data.temperature,
+            humidity: data.humidity,
+            rainfall: data.rainfall,
+            wind_speed: data.wind_speed,
+            recommendations: data.recommendations
+          };
+          localStorage.setItem("krishi_last_weather", JSON.stringify(lastW));
+        }
+      } catch (e) {
+        console.warn("Could not auto-fetch weather on dashboard load:", e);
+      }
     }
 
-    const history = JSON.parse(localStorage.getItem('krishi_prediction_history')) || [];
+    if (lastW) {
+      if (statLoc) statLoc.innerText = lastW.location;
+      if (statWeatherCond) statWeatherCond.innerText = `${lastW.temperature}°C`;
+      if (wCard) {
+        wCard.innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <strong style="color: #192a1e; font-size: 14.5px;">📍 ${lastW.location}</strong>
+            <span style="background: #e0f2fe; color: #0284c7; padding: 3px 10px; border-radius: 12px; font-weight: 700; font-size: 12px;">🌡️ ${lastW.temperature}°C • 💧 ${lastW.humidity}%</span>
+          </div>
+          <p style="margin: 0; color: #4b5e50; font-size: 13px; line-height: 1.5;">${lastW.recommendations ? lastW.recommendations.split('\n')[0] : 'Suitable meteorological conditions for field activities.'}</p>
+        `;
+      }
+    } else {
+      if (wCard) wCard.innerHTML = "<p style='color:#6b7280;'>Live weather station ready. Check current conditions in Weather section.</p>";
+    }
+
     const rList = document.getElementById("overviewRecentCrops");
-    if (history.length > 0) {
-      rList.innerHTML = history.slice(-3).reverse().map(h => `
-        <div style="padding: 6px 0; border-bottom: 1px dashed #f3f4f6;">
-          <strong>🌾 ${h.crop}</strong> (${h.location}) • ${h.season}
-          <span style="font-size: 11px; color: #9ca3af; margin-left: 8px;">${new Date(h.timestamp).toLocaleDateString()}</span>
+    if (cropHistory.length > 0 && rList) {
+      rList.innerHTML = cropHistory.slice(-3).reverse().map(h => `
+        <div style="padding: 8px 0; border-bottom: 1px dashed #e2ede4; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <strong style="color: #0b7a3a;">🌾 ${h.crop}</strong>
+            <span style="font-size: 12px; color: #5c6f60; margin-left: 6px;">(${h.location || 'Your Field'}) • ${h.season || 'Current Season'}</span>
+          </div>
+          <span style="font-size: 11px; color: #889988;">${new Date(h.timestamp).toLocaleDateString()}</span>
         </div>
       `).join("");
+    } else if (rList) {
+      rList.innerHTML = "<p style='color:#6b7280;'>No recent crop predictions. Run your first recommendation to log history.</p>";
     }
   }
 
