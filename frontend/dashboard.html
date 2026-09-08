@@ -13,14 +13,21 @@
     =================================================== */
     :root {
       --sidebar-width: 250px;
-      --primary-green: #2e7d32;
-      --primary-dark: #1b5e20;
-      --sidebar-bg: #143818;
-      --sidebar-card-bg: #1a451f;
-      --bg-workspace: #ffffff;
-      --border-color: #e5e7eb;
-      --text-main: #111827;
-      --text-muted: #6b7280;
+      --primary-green: #0b7a3a;
+      --primary-dark: #085a2b;
+      --primary-light: #e8f5ec;
+      --primary-tint: #f2f9f4;
+      --sidebar-bg: #f4f8f4;
+      --sidebar-card-bg: #ffffff;
+      --sidebar-border: #e2ede4;
+      --bg-workspace: #fbfdfb;
+      --card-bg: #ffffff;
+      --border-color: #e6eee6;
+      --text-main: #192a1e;
+      --text-muted: #5c6f60;
+      --accent-yellow: #f59e0b;
+      --accent-blue: #0284c7;
+      --accent-orange: #ea580c;
     }
 
     * {
@@ -43,48 +50,50 @@
       overflow: hidden;
     }
 
-    /* 1. Left Vertical Persistent Sidebar */
+    /* 1. Left Vertical Persistent Sidebar - Light, Fresh Natural Green/Off-White */
     .app-sidebar {
       width: var(--sidebar-width);
       min-width: var(--sidebar-width);
       background: var(--sidebar-bg);
-      color: #ffffff;
+      color: var(--text-main);
       display: flex;
       flex-direction: column;
       height: 100%;
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      border-right: 1.5px solid var(--sidebar-border);
       z-index: 1000;
       transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* Brand Header */
     .sidebar-brand {
-      padding: 24px 20px 20px 20px;
+      padding: 22px 20px 18px 20px;
       display: flex;
       align-items: center;
       gap: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--sidebar-border);
     }
 
     .sidebar-brand img {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
       background: #ffffff;
       padding: 2px;
+      box-shadow: 0 2px 6px rgba(11, 122, 58, 0.12);
+      border: 1px solid var(--sidebar-border);
     }
 
     .sidebar-brand-text h2 {
       margin: 0;
       font-size: 18px;
       font-weight: 800;
-      color: #ffffff;
-      letter-spacing: 0.2px;
+      color: var(--primary-green);
+      letter-spacing: -0.2px;
     }
 
     .sidebar-brand-text span {
       font-size: 10.5px;
-      color: #81c784;
+      color: var(--text-muted);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.8px;
@@ -93,7 +102,7 @@
     /* Clean Navigation Group */
     .sidebar-nav-container {
       flex: 1;
-      padding: 20px 14px;
+      padding: 18px 12px;
       overflow-y: auto;
       scrollbar-width: none;
     }
@@ -101,14 +110,15 @@
       display: none;
     }
 
-    /* VoteVictory Category Header */
+    /* Category Header */
     .nav-category-header {
       font-size: 11px;
       font-weight: 800;
-      color: #81c784;
+      color: var(--primary-green);
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
       padding: 8px 12px 10px 12px;
+      opacity: 0.85;
     }
 
     .nav-list {
@@ -121,43 +131,44 @@
       margin-bottom: 3px;
     }
 
-    /* VoteVictory Active Solid Colored Pill */
+    /* Active Solid Colored Pill */
     .nav-link {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 10px 16px;
-      color: #c8e6c9;
+      gap: 13px;
+      padding: 10px 14px;
+      color: #374151;
       text-decoration: none;
       font-size: 13.5px;
       font-weight: 600;
-      border-radius: 8px;
+      border-radius: 9px;
       transition: all 0.18s ease;
       cursor: pointer;
     }
 
     .nav-link i {
       font-size: 16px;
-      width: 20px;
+      width: 22px;
       text-align: center;
-      color: #a5d6a7;
+      color: #0b7a3a;
       transition: transform 0.15s ease;
     }
 
     .nav-link:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #ffffff;
+      background: #eaf3ec;
+      color: var(--primary-green);
     }
 
     .nav-link:hover i {
-      color: #ffffff;
+      color: var(--primary-green);
+      transform: scale(1.08);
     }
 
     .nav-link.active {
       background: var(--primary-green);
       color: #ffffff;
       font-weight: 700;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 3px 10px rgba(11, 122, 58, 0.25);
     }
 
     .nav-link.active i {
@@ -166,9 +177,9 @@
 
     /* User Profile Card & Sign Out at Bottom */
     .sidebar-footer {
-      padding: 16px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(0, 0, 0, 0.15);
+      padding: 14px 16px;
+      border-top: 1px solid var(--sidebar-border);
+      background: #edf5ee;
     }
 
     .user-profile-card {
@@ -176,17 +187,18 @@
       align-items: center;
       gap: 12px;
       padding: 10px 12px;
-      background: var(--sidebar-card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #ffffff;
+      border: 1px solid var(--sidebar-border);
       border-radius: 10px;
       margin-bottom: 10px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     }
 
     .user-avatar {
       width: 36px;
       height: 36px;
-      border-radius: 8px;
-      background: #4caf50;
+      border-radius: 50%;
+      background: var(--primary-green);
       color: #ffffff;
       display: flex;
       align-items: center;
@@ -204,7 +216,7 @@
       margin: 0;
       font-size: 13px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--text-main);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -215,15 +227,15 @@
     .user-role-label {
       margin: 2px 0 0 0;
       font-size: 11px;
-      color: #a5d6a7;
+      color: var(--primary-green);
       font-weight: 600;
     }
 
     .btn-signout {
       width: 100%;
-      background: transparent;
-      color: #fca5a5;
-      border: 1px solid rgba(239, 68, 68, 0.25);
+      background: #ffffff;
+      color: #dc2626;
+      border: 1px solid #fecaca;
       padding: 8px 12px;
       border-radius: 8px;
       font-size: 12.5px;
@@ -242,20 +254,20 @@
       border-color: #ef4444;
     }
 
-    /* 2. Main Right Content Area (Clean White Workspace) */
+    /* 2. Main Right Content Area */
     .app-main-area {
       flex: 1;
       display: flex;
       flex-direction: column;
       overflow-y: auto;
       height: 100vh;
-      background: #ffffff;
+      background: var(--bg-workspace);
     }
 
-    /* Minimal Topbar: user info + language + store shortcut icon */
+    /* Minimal Fresh Topbar */
     .minimal-topbar {
-      height: 60px;
-      min-height: 60px;
+      height: 62px;
+      min-height: 62px;
       background: #ffffff;
       border-bottom: 1px solid var(--border-color);
       display: flex;
@@ -294,54 +306,56 @@
     }
 
     .topbar-store-icon-link {
-      background: #f1f8ed;
+      background: var(--primary-light);
       color: var(--primary-green);
-      border: 1px solid #c8e6c9;
-      padding: 6px 14px;
+      border: 1px solid #c8e6ce;
+      padding: 7px 16px;
       border-radius: 20px;
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 700;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      transition: all 0.15s ease;
+      gap: 7px;
+      transition: all 0.18s ease;
     }
 
     .topbar-store-icon-link:hover {
       background: var(--primary-green);
       color: #ffffff;
       border-color: var(--primary-green);
+      box-shadow: 0 3px 8px rgba(11, 122, 58, 0.25);
     }
 
     .topbar-user-badge {
-      font-size: 13px;
+      font-size: 13.5px;
       color: var(--text-muted);
       font-weight: 600;
     }
 
     .topbar-user-badge strong {
       color: var(--text-main);
+      font-weight: 700;
     }
 
-    /* Main Workspace Container with Generous White Space */
+    /* Main Workspace Container with Generous Breathing Space */
     .workspace-container {
-      padding: 36px 40px;
-      max-width: 1180px;
+      padding: 32px 40px 60px 40px;
+      max-width: 1140px;
       width: 100%;
       margin: 0 auto;
       box-sizing: border-box;
     }
 
     .page-heading-block {
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .page-heading-block h1 {
-      margin: 0 0 6px 0;
+      margin: 0 0 4px 0;
       font-size: 24px;
       font-weight: 800;
-      color: #111827;
+      color: var(--text-main);
       letter-spacing: -0.3px;
     }
 
@@ -366,14 +380,14 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Minimal White Cards */
+    /* Minimal Clean White Cards with Nature-Soft Borders */
     .minimal-card {
       background: #ffffff;
       border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      margin-bottom: 22px;
+      box-shadow: 0 2px 6px rgba(11, 122, 58, 0.03);
     }
 
     .card-title-row {
@@ -382,39 +396,40 @@
       justify-content: space-between;
       margin-bottom: 18px;
       padding-bottom: 12px;
-      border-bottom: 1px solid #f3f4f6;
+      border-bottom: 1px solid #f0f5f0;
     }
 
     .card-title-row h3 {
       margin: 0;
       font-size: 16px;
       font-weight: 700;
-      color: #111827;
+      color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 9px;
     }
 
-    /* Evenly-Spaced Minimalist Stat Cards (VoteVictory Pattern) */
+    /* Clean Evenly-Spaced Stat Cards */
     .minimal-stat-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-      margin-bottom: 28px;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
     }
 
     .minimal-stat-box {
       background: #ffffff;
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      padding: 20px 22px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      padding: 18px 20px;
+      box-shadow: 0 2px 6px rgba(11, 122, 58, 0.03);
+      transition: all 0.2s ease;
     }
 
     .minimal-stat-box:hover {
-      border-color: #cbd5e1;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      border-color: #b5d9be;
+      box-shadow: 0 4px 14px rgba(11, 122, 58, 0.08);
+      transform: translateY(-2px);
     }
 
     .minimal-stat-label {
@@ -427,7 +442,7 @@
     .minimal-stat-num {
       font-size: 28px;
       font-weight: 800;
-      color: #111827;
+      color: var(--text-main);
       line-height: 1.1;
     }
 
@@ -436,6 +451,30 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
+    }
+
+    /* Farmer Friendly Buttons */
+    .predict-btn {
+      background: var(--primary-green);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 24px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 3px 10px rgba(11, 122, 58, 0.25);
+      transition: all 0.2s ease;
+    }
+
+    .predict-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 15px rgba(11, 122, 58, 0.32);
     }
 
     @media (max-width: 900px) {
@@ -613,83 +652,194 @@
         <p id="pageSubtitleText">Overview and farm health metrics</p>
       </div>
 
-      <!-- ================= VIEW 1: DASHBOARD (CLEAN & MINIMAL) ================= -->
+      <!-- ================= VIEW 1: DASHBOARD (FARMER-FRIENDLY OVERVIEW) ================= -->
       <section id="view-dashboard" class="content-view active-view">
         
-        <!-- Clean Evenly-Spaced Stat Cards -->
-        <div class="minimal-stat-grid">
-          <div class="minimal-stat-box">
-            <div class="minimal-stat-label" data-i18n="statCropsRecommended">Crops Recommended</div>
-            <div class="minimal-stat-num" id="statPredictions">0</div>
+        <!-- Welcoming Daily Farm Greeting & Advisory Banner -->
+        <div style="background: linear-gradient(135deg, #e8f5ec 0%, #f4fbf5 100%); border: 1.5px solid #cce5d2; border-radius: 16px; padding: 22px 26px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="font-size: 42px; line-height: 1;">🌱</div>
+            <div>
+              <h2 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: var(--primary-green);">नमस्ते किसान भाई! / Welcome to Your Farm</h2>
+              <p style="margin: 0; font-size: 14px; color: var(--text-muted);">आज का मौसम फसल देखभाल और सिंचाई के लिए उत्तम है। / Today is suitable for field care.</p>
+            </div>
           </div>
-          <div class="minimal-stat-box">
-            <div class="minimal-stat-label" data-i18n="statDiseasesIdentified">Diseases Identified</div>
-            <div class="minimal-stat-num" id="statDiseases">0</div>
-          </div>
-          <div class="minimal-stat-box">
-            <div class="minimal-stat-label" data-i18n="statWeatherStation">Weather Station</div>
-            <div class="minimal-stat-num" id="statWeatherLocation" style="font-size: 20px; line-height: 1.5;">Connected</div>
-          </div>
-          <div class="minimal-stat-box">
-            <div class="minimal-stat-label" data-i18n="statDaysActive">Days Active</div>
-            <div class="minimal-stat-num" id="statDaysActive">1</div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="background: #ffffff; border: 1px solid #cce5d2; border-radius: 24px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: var(--primary-green); display: flex; align-items: center; gap: 6px;">
+              <span>📍</span> <span id="statWeatherLocation">Connected</span>
+            </div>
+            <div style="background: #ffffff; border: 1px solid #cce5d2; border-radius: 24px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: var(--primary-green); display: flex; align-items: center; gap: 6px;">
+              <span>🗓️</span> <span>Day <span id="statDaysActive">1</span></span>
+            </div>
           </div>
         </div>
 
-        <!-- Clean Two-Column Cards: Weather Snapshot & Recent Predictions -->
+        <!-- 3 Primary Quick Action Cards (High visual clarity, big targets) -->
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--primary-green); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+            <span>⚡ मुख्य सेवाएँ (Quick Farm Actions)</span>
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px;">
+            
+            <!-- Card 1: Crop Prediction -->
+            <div onclick="switchSection('view-crop', 'Crop Recommendation', 'Predict optimal crop yields based on soil and real-time weather')" style="background: #ffffff; border: 1.5px solid #d4ebd9; border-radius: 16px; padding: 22px; cursor: pointer; transition: all 0.2s ease; display: flex; gap: 16px; align-items: center; box-shadow: 0 2px 8px rgba(11, 122, 58, 0.04);" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#0b7a3a'; this.style.boxShadow='0 8px 20px rgba(11, 122, 58, 0.12)';" onmouseout="this.style.transform='none'; this.style.borderColor='#d4ebd9'; this.style.boxShadow='0 2px 8px rgba(11, 122, 58, 0.04)';">
+              <div style="width: 58px; height: 58px; min-width: 58px; border-radius: 14px; background: #e8f5ec; display: flex; align-items: center; justify-content: center; font-size: 28px;">
+                🌾
+              </div>
+              <div style="flex: 1;">
+                <h4 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 800; color: #192a1e;">फसल चयन (Crop Guide)</h4>
+                <p style="margin: 0; font-size: 13px; color: #5c6f60; line-height: 1.4;">अपनी मिट्टी और मौसम अनुसार सर्वोत्तम फसल जानें</p>
+                <div style="margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--primary-green); display: flex; align-items: center; gap: 4px;">
+                  शुरू करें (Predict) ➔
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Plant Doctor / Disease Detection -->
+            <div onclick="switchSection('view-disease', 'Disease Detection', 'Identify crop diseases and recommended remedies')" style="background: #ffffff; border: 1.5px solid #fee2e2; border-radius: 16px; padding: 22px; cursor: pointer; transition: all 0.2s ease; display: flex; gap: 16px; align-items: center; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.04);" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#dc2626'; this.style.boxShadow='0 8px 20px rgba(220, 38, 38, 0.12)';" onmouseout="this.style.transform='none'; this.style.borderColor='#fee2e2'; this.style.boxShadow='0 2px 8px rgba(220, 38, 38, 0.04)';">
+              <div style="width: 58px; height: 58px; min-width: 58px; border-radius: 14px; background: #fef2f2; display: flex; align-items: center; justify-content: center; font-size: 28px;">
+                📷
+              </div>
+              <div style="flex: 1;">
+                <h4 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 800; color: #192a1e;">फसल डॉक्टर (Plant Doctor)</h4>
+                <p style="margin: 0; font-size: 13px; color: #5c6f60; line-height: 1.4;">पत्ते की फोटो से बीमारी और सही इलाज पाएं</p>
+                <div style="margin-top: 8px; font-size: 12px; font-weight: 700; color: #dc2626; display: flex; align-items: center; gap: 4px;">
+                  जाँच करें (Diagnose) ➔
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: AgriStore 10-Min Fast -->
+            <a href="store/index.html" style="text-decoration: none; background: #ffffff; border: 1.5px solid #fef3c7; border-radius: 16px; padding: 22px; cursor: pointer; transition: all 0.2s ease; display: flex; gap: 16px; align-items: center; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.04);" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#f59e0b'; this.style.boxShadow='0 8px 20px rgba(245, 158, 11, 0.12)';" onmouseout="this.style.transform='none'; this.style.borderColor='#fef3c7'; this.style.boxShadow='0 2px 8px rgba(245, 158, 11, 0.04)';">
+              <div style="width: 58px; height: 58px; min-width: 58px; border-radius: 14px; background: #fffbeb; display: flex; align-items: center; justify-content: center; font-size: 28px;">
+                ⚡
+              </div>
+              <div style="flex: 1;">
+                <h4 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 800; color: #192a1e;">कृषि स्टोर (AgriStore Express)</h4>
+                <p style="margin: 0; font-size: 13px; color: #5c6f60; line-height: 1.4;">10 मिनट में बीज, खाद व कीटनाशक घर तक</p>
+                <div style="margin-top: 8px; font-size: 12px; font-weight: 700; color: #b45309; display: flex; align-items: center; gap: 4px;">
+                  दुकान खोलें (Shop Now) ➔
+                </div>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Clean Two-Column Cards: Live Weather Glance & Recent Activity -->
         <div class="split-grid">
           
-          <div class="minimal-card">
+          <div class="minimal-card" style="margin-bottom: 0;">
             <div class="card-title-row">
-              <h3><i class="fa-solid fa-cloud-sun" style="color: var(--primary-green);"></i> Weather Snapshot</h3>
+              <h3><i class="fa-solid fa-cloud-sun" style="color: #0284c7;"></i> मौसम व खेत सलाह (Live Weather Snapshot)</h3>
             </div>
-            <div id="overviewWeatherCard" style="line-height: 1.7; color: #4b5563; font-size: 14px;">
+            <div id="overviewWeatherCard" style="line-height: 1.7; color: var(--text-muted); font-size: 14px;">
               <p>Fetching local weather station data...</p>
             </div>
           </div>
 
-          <div class="minimal-card">
+          <div class="minimal-card" style="margin-bottom: 0;">
             <div class="card-title-row">
-              <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-green);"></i> Recent Predictions</h3>
+              <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-green);"></i> हाल की गतिविधियाँ (Recent Activity)</h3>
             </div>
-            <div id="overviewRecentCrops" style="line-height: 1.6; color: #4b5563; font-size: 14px;">
+            <div id="overviewRecentCrops" style="line-height: 1.6; color: var(--text-muted); font-size: 14px;">
               <p>No recent prediction logs.</p>
             </div>
           </div>
 
         </div>
 
+        <!-- Hidden counters preserved for script stats compatibility -->
+        <div style="display: none;">
+          <span id="statPredictions">0</span>
+          <span id="statDiseases">0</span>
+        </div>
+
       </section>
 
-      <!-- ================= VIEW 2: CROP RECOMMENDATION ================= -->
+      <!-- ================= VIEW 2: CROP RECOMMENDATION (GUIDED 3-STEP FLOW) ================= -->
       <section id="view-crop" class="content-view">
         <div class="minimal-card">
           <div class="card-title-row">
-            <h3><i class="fa-solid fa-seedling" style="color: var(--primary-green);"></i> Crop Prediction Form</h3>
+            <h3><i class="fa-solid fa-seedling" style="color: var(--primary-green);"></i> फसल चयन मार्गदर्शक (Smart Crop Guide)</h3>
+            <span style="font-size: 13px; font-weight: 700; color: var(--primary-green); background: #e8f5ec; padding: 4px 12px; border-radius: 20px;">
+              3 आसान चरण (3 Simple Steps)
+            </span>
           </div>
 
-          <form id="cropForm" style="max-width: 620px; margin-bottom: 24px;">
-            <div class="input-group">
-              <label data-i18n="soilType">Soil Type:</label>
-              <select id="soilType" required>
-                <option value="" data-i18n="selectSoilType">Select Soil Type</option>
-                <option value="alluvial">Alluvial (जलोढ़)</option>
+          <form id="cropForm" style="max-width: 720px; margin-bottom: 24px;">
+            
+            <!-- STEP 1: Soil Type -->
+            <div style="background: #fbfdfb; border: 1.5px solid #e2ede4; border-radius: 14px; padding: 18px 20px; margin-bottom: 18px;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                <span style="width: 28px; height: 28px; border-radius: 50%; background: var(--primary-green); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px;">1</span>
+                <div>
+                  <strong style="font-size: 15px; color: #192a1e;" data-i18n="soilType">अपने खेत की मिट्टी चुनें (Soil Type):</strong>
+                  <p style="margin: 0; font-size: 12.5px; color: #5c6f60;">खेत में किस प्रकार की मिट्टी है?</p>
+                </div>
+              </div>
+
+              <!-- Visual Quick Soil Chips -->
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+                <button type="button" class="farmer-chip" onclick="selectCropSoil('alluvial', this)">🟡 जलोढ़ (Alluvial)</button>
+                <button type="button" class="farmer-chip" onclick="selectCropSoil('black', this)">🟤 काली (Black)</button>
+                <button type="button" class="farmer-chip" onclick="selectCropSoil('loamy', this)">🌱 दोमट (Loamy)</button>
+                <button type="button" class="farmer-chip" onclick="selectCropSoil('clay', this)">🧱 चिकनी (Clay)</button>
+                <button type="button" class="farmer-chip" onclick="selectCropSoil('red', this)">🔴 लाल (Red)</button>
+                <button type="button" class="farmer-chip" onclick="selectCropSoil('sandy', this)">🏖️ बलुई (Sandy)</button>
+              </div>
+
+              <select id="soilType" required style="width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 14px; background: #ffffff; color: #192a1e; outline: none;">
+                <option value="" data-i18n="selectSoilType">या सूची से चुनें (Select from list)</option>
+                <option value="alluvial">Alluvial (जलोढ़ मिट्टी)</option>
                 <option value="black">Black (काली मिट्टी)</option>
                 <option value="clay">Clay (चिकनी मिट्टी)</option>
-                <option value="loamy">Loamy (दोमट)</option>
+                <option value="loamy">Loamy (दोमट मिट्टी)</option>
                 <option value="red">Red (लाल मिट्टी)</option>
                 <option value="sandy">Sandy (बलुई मिट्टी)</option>
               </select>
             </div>
 
-            <div class="input-group">
-              <label data-i18n="cityLocation">City / Location:</label>
-              <input type="text" id="city" required placeholder="e.g. Indore, Jaipur, Nashik" data-i18n-placeholder="cityPlaceholder" />
+            <!-- STEP 2: Location -->
+            <div style="background: #fbfdfb; border: 1.5px solid #e2ede4; border-radius: 14px; padding: 18px 20px; margin-bottom: 18px;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                <span style="width: 28px; height: 28px; border-radius: 50%; background: var(--primary-green); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px;">2</span>
+                <div>
+                  <strong style="font-size: 15px; color: #192a1e;" data-i18n="cityLocation">अपना जिला या शहर लिखें (Location):</strong>
+                  <p style="margin: 0; font-size: 12.5px; color: #5c6f60;">स्थान से वहां का वर्षा और तापमान स्वतः आ जाएगा</p>
+                </div>
+              </div>
+
+              <!-- Popular District Chips -->
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+                <button type="button" class="farmer-chip" onclick="selectCropCity('Indore', this)">📍 Indore</button>
+                <button type="button" class="farmer-chip" onclick="selectCropCity('Bhopal', this)">📍 Bhopal</button>
+                <button type="button" class="farmer-chip" onclick="selectCropCity('Jaipur', this)">📍 Jaipur</button>
+                <button type="button" class="farmer-chip" onclick="selectCropCity('Nashik', this)">📍 Nashik</button>
+                <button type="button" class="farmer-chip" onclick="selectCropCity('Ludhiana', this)">📍 Ludhiana</button>
+              </div>
+
+              <input type="text" id="city" required placeholder="अपना जिला / शहर लिखें (e.g. Indore, Bhopal, Nagpur)" data-i18n-placeholder="cityPlaceholder" style="width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 14px; background: #ffffff; color: #192a1e; outline: none; box-sizing: border-box;" />
             </div>
 
-            <div class="input-group">
-              <label data-i18n="season">Season:</label>
-              <select id="season" required>
+            <!-- STEP 3: Season -->
+            <div style="background: #fbfdfb; border: 1.5px solid #e2ede4; border-radius: 14px; padding: 18px 20px; margin-bottom: 22px;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                <span style="width: 28px; height: 28px; border-radius: 50%; background: var(--primary-green); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px;">3</span>
+                <div>
+                  <strong style="font-size: 15px; color: #192a1e;" data-i18n="season">बोवाई का मौसम चुनें (Sowing Season):</strong>
+                  <p style="margin: 0; font-size: 12.5px; color: #5c6f60;">आप किस मौसम में फसल बोना चाहते हैं?</p>
+                </div>
+              </div>
+
+              <!-- Season Visual Selector Chips -->
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+                <button type="button" class="farmer-chip" onclick="selectCropSeason('kharif', this)">🌧️ खरीफ (Kharif - मानसून)</button>
+                <button type="button" class="farmer-chip" onclick="selectCropSeason('rabi', this)">❄️ रबी (Rabi - सर्दी)</button>
+                <button type="button" class="farmer-chip" onclick="selectCropSeason('zaid', this)">☀️ जायद (Zaid - गर्मी)</button>
+              </div>
+
+              <select id="season" required style="width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 14px; background: #ffffff; color: #192a1e; outline: none;">
                 <option value="" data-i18n="selectSeason">Select Season</option>
                 <option value="kharif">Kharif (खरीफ - Monsoon)</option>
                 <option value="rabi">Rabi (रबी - Winter)</option>
@@ -700,8 +850,9 @@
               </select>
             </div>
 
-            <button type="submit" class="predict-btn" style="width: 100%;">
-              🌾 <span data-i18n="predictCropBtn">Predict Best Crops</span>
+            <!-- Big Submit Action Button -->
+            <button type="submit" class="predict-btn" style="width: 100%; padding: 16px; font-size: 17px; border-radius: 12px;">
+              🌾 <span data-i18n="predictCropBtn">सबसे अच्छी फसल खोजें (Predict Best Crops)</span> ➔
             </button>
           </form>
 
@@ -709,149 +860,235 @@
         </div>
       </section>
 
-      <!-- ================= VIEW 3: DISEASE DETECTION ================= -->
+      <!-- ================= VIEW 3: DISEASE DETECTION (FASAL DOCTOR) ================= -->
       <section id="view-disease" class="content-view">
         <div class="minimal-card">
           <div class="card-title-row">
-            <h3><i class="fa-solid fa-virus-covid" style="color: #dc2626;"></i> Plant Diagnosis</h3>
+            <h3><i class="fa-solid fa-camera-retro" style="color: var(--primary-green);"></i> फसल डॉक्टर (Plant Doctor & Diagnosis)</h3>
+            <span style="font-size: 13px; font-weight: 700; color: #dc2626; background: #fef2f2; padding: 4px 12px; border-radius: 20px;">
+              त्वरित जाँच (Instant Scan)
+            </span>
           </div>
 
-          <div style="background: #fafafa; border: 1.5px dashed var(--border-color); border-radius: 10px; padding: 20px; text-align: center; margin-bottom: 24px;">
+          <!-- Hero Friendly Upload Zone -->
+          <div style="background: linear-gradient(135deg, #fbfdfb 0%, #f4fbf5 100%); border: 2px dashed #b5d9be; border-radius: 16px; padding: 28px 20px; text-align: center; margin-bottom: 24px; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.borderColor='#0b7a3a';" onmouseout="this.style.borderColor='#b5d9be';">
             <label style="cursor: pointer; display: block;">
-              <span style="font-size: 28px; display: block; margin-bottom: 6px;">📷</span>
-              <strong style="color: #111827; font-size: 14px;" data-i18n="uploadPlantPhoto">Upload Plant Photo</strong>
-              <p style="margin: 2px 0 0 0; font-size: 12px; color: var(--text-muted);" data-i18n="uploadPlantDesc">Preview crop leaf or stem photo</p>
+              <div style="width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 50%; background: #e8f5ec; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 10px rgba(11, 122, 58, 0.1);">
+                📷
+              </div>
+              <strong style="color: #192a1e; font-size: 16px; font-weight: 800; display: block;" data-i18n="uploadPlantPhoto">पौधे / पत्ते की फोटो अपलोड करें (Upload Photo)</strong>
+              <p style="margin: 6px 0 0 0; font-size: 13px; color: #5c6f60;" data-i18n="uploadPlantDesc">कैमरे से सीधे फोटो खींचें या गैलरी से चुनें</p>
+              <div style="margin-top: 14px; display: inline-flex; align-items: center; gap: 8px; background: #ffffff; border: 1.5px solid #0b7a3a; color: #0b7a3a; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 700;">
+                <i class="fa-solid fa-upload"></i> फोटो चुनें (Choose File)
+              </div>
               <input type="file" id="cropImage" accept="image/*" style="display: none;" />
             </label>
-            <div id="imagePreview" style="display: none; margin-top: 14px;">
-              <img id="previewImg" style="max-width: 240px; max-height: 180px; border-radius: 8px;" />
-              <p id="imageName" style="margin-top: 6px; color: var(--primary-green); font-weight: bold; font-size: 12px;"></p>
+            <div id="imagePreview" style="display: none; margin-top: 18px; background: #ffffff; padding: 14px; border-radius: 12px; border: 1px solid #e2ede4; display: inline-block;">
+              <img id="previewImg" style="max-width: 260px; max-height: 200px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.08);" />
+              <p id="imageName" style="margin-top: 8px; color: var(--primary-green); font-weight: 700; font-size: 13px;"></p>
             </div>
           </div>
 
-          <form id="diseaseForm" style="max-width: 600px; margin-bottom: 24px;">
-            <div class="input-group">
-              <label data-i18n="cropName">Crop Name:</label>
-              <input type="text" id="diseaseCrop" required placeholder="e.g. wheat, rice, cotton, maize" data-i18n-placeholder="cropNamePlaceholder" />
+          <form id="diseaseForm" style="max-width: 680px; margin-bottom: 24px;">
+            <div style="margin-bottom: 16px;">
+              <label style="font-weight: 700; font-size: 14px; color: #192a1e; display: block; margin-bottom: 8px;" data-i18n="cropName">
+                फसल का नाम चुनें या लिखें (Crop Name):
+              </label>
+
+              <!-- One-click Crop Selection Chips -->
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+                <button type="button" class="farmer-chip" onclick="selectDiseaseCrop('wheat', this)">🌾 गेहूं (Wheat)</button>
+                <button type="button" class="farmer-chip" onclick="selectDiseaseCrop('rice', this)">🍚 चावल / धान (Rice)</button>
+                <button type="button" class="farmer-chip" onclick="selectDiseaseCrop('cotton', this)">🌿 कपास (Cotton)</button>
+                <button type="button" class="farmer-chip" onclick="selectDiseaseCrop('maize', this)">🌽 मक्का (Maize)</button>
+                <button type="button" class="farmer-chip" onclick="selectDiseaseCrop('potato', this)">🥔 आलू (Potato)</button>
+                <button type="button" class="farmer-chip" onclick="selectDiseaseCrop('tomato', this)">🍅 टमाटर (Tomato)</button>
+              </div>
+
+              <input type="text" id="diseaseCrop" required placeholder="जैसे: wheat, rice, cotton, potato..." data-i18n-placeholder="cropNamePlaceholder" style="width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 14px; background: #ffffff; color: #192a1e; outline: none; box-sizing: border-box;" />
             </div>
-            <button type="submit" class="predict-btn">
-              🔬 <span data-i18n="diagnoseBtn">Diagnose Disease & Remedies</span>
+
+            <button type="submit" class="predict-btn" style="width: 100%; padding: 15px; font-size: 16px; border-radius: 12px;">
+              🔬 <span data-i18n="diagnoseBtn">रोग का पता लगाएँ और समाधान देखें (Diagnose Now)</span> ➔
             </button>
           </form>
 
           <div id="diseaseResult"></div>
-          <div id="fertilizerResult" style="margin-top: 20px;"></div>
+          <div id="fertilizerResult" style="margin-top: 24px;"></div>
         </div>
       </section>
 
-      <!-- ================= VIEW 4: AI ASSISTANT ================= -->
+      <!-- ================= VIEW 4: AI ASSISTANT (KRISHI MITRA / SAHAYAK) ================= -->
       <section id="view-assistant" class="content-view">
         <div class="minimal-card">
           <div class="card-title-row">
-            <h3><i class="fa-solid fa-robot" style="color: var(--primary-green);"></i> Chat with Krishi AI</h3>
+            <h3><i class="fa-solid fa-comments" style="color: var(--primary-green);"></i> कृषि सहायक (Friendly Farm Assistant)</h3>
+            <span style="font-size: 13px; font-weight: 700; color: var(--primary-green); background: #e8f5ec; padding: 4px 12px; border-radius: 20px;">
+              24×7 सहायता (Always Ready)
+            </span>
           </div>
 
-          <div id="assistantChat" class="chat-box" style="height: 380px; overflow-y: auto; background: #fafafa; border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
-            <div class="chat bot">
-              Namaste! Main Krishi AI hoon. Fasal, mitti ya kheti se jude sawal pooch sakte hain.
+          <!-- Assistant Welcoming Header -->
+          <div style="background: linear-gradient(135deg, #f2f9f4 0%, #ffffff 100%); border: 1px solid #d4ebd9; border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px;">
+            <div style="width: 44px; height: 44px; border-radius: 50%; background: #e8f5ec; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+              👨‍🌾
+            </div>
+            <div>
+              <h4 style="margin: 0; font-size: 14.5px; font-weight: 700; color: #192a1e;">नमस्ते! खेती, खाद, बीज या कीड़े से जुड़ा कोई भी सवाल पूछें</h4>
+              <p style="margin: 2px 0 0 0; font-size: 12.5px; color: #5c6f60;">Ask any question in Hindi, Hinglish or English</p>
+            </div>
+          </div>
+
+          <div id="assistantChat" class="chat-box" style="height: 340px; overflow-y: auto; background: #fafdfa; border: 1.5px solid #e2ede4; border-radius: 14px; padding: 18px; margin-bottom: 16px;">
+            <div class="chat bot" style="background: #ffffff; border: 1px solid #cce5d2; border-radius: 12px; padding: 12px 16px; color: #192a1e; font-size: 14px; line-height: 1.6; max-width: 85%; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+              🙏 <strong>राम-राम किसान भाई!</strong> मैं आपका कृषि मित्र हूँ। अपनी फसल का नाम लिखें या नीचे दिए गए प्रश्नों पर टैप करें।
+            </div>
+          </div>
+
+          <!-- One-Tap Popular Farmer Prompts -->
+          <div style="margin-bottom: 14px;">
+            <strong style="font-size: 12.5px; color: #5c6f60; display: block; margin-bottom: 6px;">💡 तुरंत पूछें (Tap to Ask):</strong>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button type="button" class="farmer-chip" onclick="fillPrompt('गेहूं में पीला रतुआ का क्या इलाज है?')">🌾 गेहूं में पीला रतुआ इलाज</button>
+              <button type="button" class="farmer-chip" onclick="fillPrompt('धान की नर्सरी में यूरिया कब डालना चाहिए?')">🍚 धान में यूरिया का समय</button>
+              <button type="button" class="farmer-chip" onclick="fillPrompt('टमाटर में फल छेदक कीड़ा रोकने की दवा?')">🍅 टमाटर की दवा</button>
+              <button type="button" class="farmer-chip" onclick="fillPrompt('मक्के के लिए सबसे अच्छी हाइब्रिड वैरायटी?')">🌽 मक्का हाइब्रिड बीज</button>
             </div>
           </div>
 
           <form id="assistantForm" class="assistant-form">
             <div style="display: flex; gap: 10px;">
-              <textarea id="assistantMessage" rows="2" placeholder="Apna sawal likhiye (e.g. Gehu me peele daag aa rahe hain...)" required style="flex: 1; border-radius: 8px; padding: 10px; border: 1px solid var(--border-color); font-size: 14px;"></textarea>
-              <button type="submit" class="predict-btn" style="padding: 10px 22px; height: fit-content; align-self: center;">
-                Send
+              <input type="text" id="assistantMessage" placeholder="यहाँ अपना सवाल लिखें (Type your question here)..." required style="flex: 1; border-radius: 10px; padding: 14px 16px; border: 1.5px solid #cbd5e1; font-size: 15px; outline: none; background: #ffffff;" />
+              <button type="submit" class="predict-btn" style="padding: 12px 24px; font-size: 15px; border-radius: 10px;">
+                <i class="fa-solid fa-paper-plane"></i> पूछें (Send)
               </button>
             </div>
           </form>
 
           <div id="assistantStatus" style="margin-top: 8px; font-size: 13px; font-weight: 600;"></div>
-
-          <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #f3f4f6;">
-            <strong style="font-size: 13px; color: var(--text-muted);">Suggested Questions:</strong>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
-              <button class="prompt-pill" onclick="fillPrompt('Gehu me peele daag aa rahe hain, kya karun?')">🌾 Gehu me peele daag</button>
-              <button class="prompt-pill" onclick="fillPrompt('Rice ke liye best fertilizer kya hai?')">🍚 Rice ke liye fertilizer</button>
-              <button class="prompt-pill" onclick="fillPrompt('Mitti me paani kaise maintain karu?')">💧 Irrigation tips</button>
-            </div>
-          </div>
         </div>
       </section>
 
-      <!-- ================= VIEW 5: WEATHER ================= -->
+      <!-- ================= VIEW 5: WEATHER (GLANCEABLE FARM WEATHER) ================= -->
       <section id="view-weather" class="content-view">
         <div class="minimal-card">
           <div class="card-title-row">
-            <h3><i class="fa-solid fa-cloud-sun-rain" style="color: #0284c7;"></i> Weather Lookup</h3>
+            <h3><i class="fa-solid fa-cloud-sun-rain" style="color: #0284c7;"></i> मौसम और बारिश की जानकारी (Live Weather)</h3>
+            <span style="font-size: 13px; font-weight: 700; color: #0284c7; background: #e0f2fe; padding: 4px 12px; border-radius: 20px;">
+              खेत पूर्वानुमान (Field Forecast)
+            </span>
           </div>
 
-          <form id="dashboardWeatherForm" style="display: flex; gap: 10px; max-width: 480px; margin-bottom: 24px;">
-            <input type="text" id="weatherSearchCity" placeholder="Enter City (e.g. Bhopal, Jaipur, Pune)" required style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color);" />
-            <button type="submit" class="predict-btn" style="padding: 10px 20px;">Search</button>
+          <form id="dashboardWeatherForm" style="display: flex; gap: 10px; max-width: 580px; margin-bottom: 20px;">
+            <input type="text" id="weatherSearchCity" placeholder="अपना जिला / शहर लिखें (जैसे: Bhopal, Indore, Jaipur)..." required style="flex: 1; padding: 13px 16px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 14px; outline: none;" />
+            <button type="submit" class="predict-btn" style="padding: 13px 22px; font-size: 14px;">
+              <i class="fa-solid fa-magnifying-glass"></i> खोजें (Search)
+            </button>
           </form>
 
-          <div id="dashboardWeatherResult"></div>
+          <!-- Quick City Chips for Weather -->
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
+            <button type="button" class="farmer-chip" onclick="searchWeatherDirect('Indore')">📍 Indore</button>
+            <button type="button" class="farmer-chip" onclick="searchWeatherDirect('Bhopal')">📍 Bhopal</button>
+            <button type="button" class="farmer-chip" onclick="searchWeatherDirect('Jaipur')">📍 Jaipur</button>
+            <button type="button" class="farmer-chip" onclick="searchWeatherDirect('Nashik')">📍 Nashik</button>
+            <button type="button" class="farmer-chip" onclick="searchWeatherDirect('Ludhiana')">📍 Ludhiana</button>
+            <button type="button" class="farmer-chip" onclick="searchWeatherDirect('Patna')">📍 Patna</button>
+          </div>
+
+          <div id="dashboardWeatherResult">
+            <div style="background: #fbfdfb; border: 1.5px solid #e2ede4; border-radius: 14px; padding: 24px; text-align: center; color: #5c6f60;">
+              <div style="font-size: 38px; margin-bottom: 8px;">⛅</div>
+              <h4 style="margin: 0 0 4px 0; color: #192a1e; font-size: 16px;">मौसम की स्थिति देखने के लिए ऊपर अपना शहर खोजें</h4>
+              <p style="margin: 0; font-size: 13px;">Find temperature, humidity, rainfall and agronomic advice for your district</p>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- ================= VIEW 6: MY ORDERS ================= -->
+      <!-- ================= VIEW 6: MY ORDERS (SIMPLE STATUS-BASED LIST) ================= -->
       <section id="view-orders" class="content-view">
         <div class="minimal-card">
           <div class="card-title-row">
-            <h3><i class="fa-solid fa-box-open" style="color: #ea580c;"></i> Order Status</h3>
+            <h3><i class="fa-solid fa-box-open" style="color: #ea580c;"></i> ऑर्डर स्थिति व रसीद (Order Status)</h3>
+            <span style="font-size: 13px; font-weight: 700; color: #ea580c; background: #ffedd5; padding: 4px 12px; border-radius: 20px;">
+              ⚡ 10-15 मिनट डिलीवरी
+            </span>
           </div>
 
-          <div style="display: flex; gap: 10px; max-width: 460px; margin-bottom: 20px;">
-            <input type="text" id="trackOrderNumber" placeholder="Enter Order # (e.g. ORD1788812632933)" style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color);" />
-            <button onclick="trackOrderDirectly()" class="predict-btn" style="padding: 10px 20px;">Track</button>
+          <div style="display: flex; gap: 10px; max-width: 540px; margin-bottom: 20px;">
+            <input type="text" id="trackOrderNumber" placeholder="ऑर्डर नंबर लिखें (e.g. ORD1788812632933)" style="flex: 1; padding: 13px 16px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 14px; outline: none;" />
+            <button onclick="trackOrderDirectly()" class="predict-btn" style="padding: 13px 22px; font-size: 14px;">
+              <i class="fa-solid fa-location-crosshairs"></i> ट्रैक करें (Track)
+            </button>
           </div>
 
-          <div id="trackOrderResult"></div>
+          <div id="trackOrderResult">
+            <div style="background: #fbfdfb; border: 1.5px solid #e2ede4; border-radius: 14px; padding: 24px; text-align: center; color: #5c6f60;">
+              <div style="font-size: 36px; margin-bottom: 8px;">📦</div>
+              <h4 style="margin: 0 0 4px 0; color: #192a1e; font-size: 16px;">ऑर्डर ट्रैक करने के लिए अपना ऑर्डर नंबर डालें</h4>
+              <p style="margin: 0; font-size: 13px;">Check delivery progress, payment status, and ordered agricultural items</p>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- ================= VIEW 7: PROFILE ================= -->
+      <!-- ================= VIEW 7: PROFILE (MINIMAL ESSENTIAL FIELDS) ================= -->
       <section id="view-profile" class="content-view">
-        <div class="minimal-card" style="max-width: 600px;">
+        <div class="minimal-card" style="max-width: 620px;">
           <div class="card-title-row">
-            <h3><i class="fa-solid fa-circle-user" style="color: var(--primary-green);"></i> Account Details</h3>
+            <h3><i class="fa-solid fa-circle-user" style="color: var(--primary-green);"></i> किसान खाता (Farmer Account)</h3>
+            <span style="font-size: 12px; font-weight: 700; color: var(--primary-green); background: #e8f5ec; padding: 4px 10px; border-radius: 14px;">
+              ✓ सत्यापित (Verified)
+            </span>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
-            <div style="width: 56px; height: 56px; border-radius: 10px; background: var(--primary-green); color: white; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800;" id="profileAvatarBig">A</div>
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 22px; padding: 16px; background: #fbfdfb; border: 1px solid #e2ede4; border-radius: 14px;">
+            <div style="width: 58px; height: 58px; border-radius: 50%; background: var(--primary-green); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800;" id="profileAvatarBig">A</div>
             <div>
-              <h4 style="margin: 0; font-size: 18px; font-weight: 700; color: #111827;" id="profileUsernameFull">FARMER</h4>
-              <p style="margin: 2px 0 0 0; font-size: 13px; color: var(--text-muted);">Verified Account • JWT Protected</p>
+              <h4 style="margin: 0; font-size: 18px; font-weight: 800; color: #192a1e;" id="profileUsernameFull">FARMER</h4>
+              <p style="margin: 2px 0 0 0; font-size: 13px; color: var(--text-muted);">किसान / फार्म लीड • Krishi AI Member</p>
             </div>
           </div>
 
-          <div style="background: #fafafa; border-radius: 8px; padding: 16px; border: 1px solid var(--border-color); margin-bottom: 20px; font-size: 13.5px; line-height: 1.8;">
-            <p style="margin: 0;"><strong>Username:</strong> <span id="profileUsernameField">Loading...</span></p>
-            <p style="margin: 0;"><strong>Authentication:</strong> Active JWT Session</p>
-            <p style="margin: 0;"><strong>Database:</strong> SQLite Engine Connected</p>
+          <div style="background: #ffffff; border-radius: 12px; padding: 18px; border: 1.5px solid #e2ede4; margin-bottom: 22px; font-size: 14px; line-height: 2;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f5f0; padding-bottom: 6px;">
+              <span style="color: #5c6f60;"><strong>यूजरनेम (Username):</strong></span>
+              <strong style="color: #192a1e;" id="profileUsernameField">Loading...</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f5f0; padding-top: 6px; padding-bottom: 6px;">
+              <span style="color: #5c6f60;"><strong>खाता सुरक्षा (Security):</strong></span>
+              <span style="color: var(--primary-green); font-weight: 700;">सुरक्षित लॉगिन (Active Session)</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding-top: 6px;">
+              <span style="color: #5c6f60;"><strong>कृषि स्टोर डिलीवरी (Store Access):</strong></span>
+              <span style="color: #ea580c; font-weight: 700;">⚡ 10-Min Delivery Enabled</span>
+            </div>
           </div>
 
-          <button onclick="handleSignOut()" style="padding: 9px 20px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700;">
-            Sign Out
+          <button onclick="handleSignOut()" style="padding: 12px 24px; background: #ffffff; color: #dc2626; border: 1.5px solid #fecaca; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease;" onmouseover="this.style.background='#dc2626'; this.style.color='#fff';" onmouseout="this.style.background='#ffffff'; this.style.color='#dc2626';">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> लॉग आउट (Sign Out)
           </button>
         </div>
       </section>
 
-      <!-- ================= VIEW 8: SETTINGS ================= -->
+      <!-- ================= VIEW 8: SETTINGS (SIMPLE LANGUAGE & PREFERENCES) ================= -->
       <section id="view-settings" class="content-view">
-        <div class="minimal-card" style="max-width: 600px;">
+        <div class="minimal-card" style="max-width: 620px;">
           <div class="card-title-row">
-            <h3><i class="fa-solid fa-gear" style="color: #4b5563;"></i> Platform Settings</h3>
+            <h3><i class="fa-solid fa-gear" style="color: #4b5563;"></i> सेटिंग्स (Platform Settings)</h3>
           </div>
 
-          <div class="input-group" style="margin-bottom: 20px;">
-            <label data-i18n="langSelect">Language:</label>
-            <div id="settingsLangSelectorMount" style="margin-top: 6px;"></div>
+          <div style="background: #fbfdfb; border: 1px solid #e2ede4; border-radius: 14px; padding: 20px; margin-bottom: 20px;">
+            <label style="font-weight: 800; font-size: 14.5px; color: #192a1e; display: block; margin-bottom: 8px;" data-i18n="langSelect">
+              🌐 अपनी पसंदीदा भाषा चुनें (Select App Language):
+            </label>
+            <p style="margin: 0 0 12px 0; font-size: 13px; color: #5c6f60;">11 भारतीय भाषाओं में संपूर्ण सहायता उपलब्ध है</p>
+            <div id="settingsLangSelectorMount"></div>
           </div>
 
-          <button onclick="saveAppSettings()" class="predict-btn" style="padding: 9px 20px;">
-            Save Settings
+          <button onclick="saveAppSettings()" class="predict-btn" style="padding: 12px 24px;">
+            <i class="fa-solid fa-check"></i> सेव करें (Save Settings)
           </button>
         </div>
       </section>
@@ -862,19 +1099,50 @@
 </div>
 
 <style>
-  .prompt-pill {
-    background: #f1f8ed;
-    border: 1px solid #c8e6c9;
-    color: var(--primary-green);
-    padding: 5px 12px;
-    border-radius: 16px;
-    font-size: 12px;
-    font-weight: 600;
+  /* Farmer Chips for Visual One-Tap Selections */
+  .farmer-chip {
+    background: #f2f9f4;
+    border: 1.5px solid #c8e6ce;
+    color: #192a1e;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
+    transition: all 0.16s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .farmer-chip:hover {
+    background: #0b7a3a;
+    color: #ffffff;
+    border-color: #0b7a3a;
+    transform: translateY(-1px);
+  }
+
+  .farmer-chip.selected {
+    background: #0b7a3a;
+    color: #ffffff;
+    border-color: #0b7a3a;
+    box-shadow: 0 2px 8px rgba(11, 122, 58, 0.25);
+  }
+
+  .prompt-pill {
+    background: #f2f9f4;
+    border: 1px solid #c8e6ce;
+    color: var(--primary-green);
+    padding: 6px 14px;
+    border-radius: 18px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.16s ease;
   }
   .prompt-pill:hover {
     background: var(--primary-green);
-    color: #fff;
+    color: #ffffff;
   }
 </style>
 
@@ -1029,17 +1297,37 @@
       const data = await res.json();
 
       resDiv.innerHTML = `
-        <div style="background: #fafafa; border: 1px solid var(--border-color); padding: 18px; border-radius: 10px;">
-          <h4 style="margin: 0 0 10px 0; color: #111827;">🌍 Weather in ${city}</h4>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 12px; font-size: 13.5px;">
-            <div>🌡️ <strong>Temp:</strong> ${data.temperature} °C</div>
-            <div>💧 <strong>Humidity:</strong> ${data.humidity} %</div>
-            <div>🌧️ <strong>Rainfall:</strong> ${data.rainfall} mm</div>
-            <div>💨 <strong>Wind:</strong> ${data.wind_speed} km/h</div>
+        <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1.5px solid #bae6fd; padding: 22px; border-radius: 16px; margin-top: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <span style="font-size: 12px; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: 0.8px;">लाइव मौसम (Current Weather)</span>
+              <h3 style="margin: 2px 0 0 0; color: #0c4a6e; font-size: 22px;">📍 ${city}</h3>
+            </div>
+            <div style="font-size: 34px; font-weight: 800; color: #0284c7; background: #ffffff; padding: 6px 18px; border-radius: 20px; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.12);">
+              ${data.temperature}°C
+            </div>
           </div>
-          <div style="background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
-            <strong style="color: var(--primary-green); font-size: 13px;">Agronomic Tip:</strong>
-            <p style="white-space: pre-line; margin: 4px 0 0 0; color: #4b5563; font-size: 13px;">${data.recommendations}</p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 16px;">
+            <div style="background: #ffffff; padding: 12px 14px; border-radius: 10px; border: 1px solid #bae6fd;">
+              <span style="font-size: 12px; color: #5c6f60; font-weight: 600;">💧 नमी (Humidity)</span>
+              <div style="font-size: 18px; font-weight: 800; color: #192a1e; margin-top: 2px;">${data.humidity}%</div>
+            </div>
+            <div style="background: #ffffff; padding: 12px 14px; border-radius: 10px; border: 1px solid #bae6fd;">
+              <span style="font-size: 12px; color: #5c6f60; font-weight: 600;">🌧️ वर्षा (Rainfall)</span>
+              <div style="font-size: 18px; font-weight: 800; color: #192a1e; margin-top: 2px;">${data.rainfall} mm</div>
+            </div>
+            <div style="background: #ffffff; padding: 12px 14px; border-radius: 10px; border: 1px solid #bae6fd;">
+              <span style="font-size: 12px; color: #5c6f60; font-weight: 600;">💨 हवा की गति (Wind)</span>
+              <div style="font-size: 18px; font-weight: 800; color: #192a1e; margin-top: 2px;">${data.wind_speed} km/h</div>
+            </div>
+          </div>
+
+          <div style="background: #ffffff; padding: 16px; border-radius: 12px; border: 1.5px solid #a7f3d0;">
+            <strong style="color: var(--primary-green); font-size: 14px; display: flex; align-items: center; gap: 6px;">
+              🌱 खेत के लिए कृषि सलाह (Agronomic Advisory):
+            </strong>
+            <p style="white-space: pre-line; margin: 6px 0 0 0; color: #374151; font-size: 13.5px; line-height: 1.6;">${data.recommendations}</p>
           </div>
         </div>
       `;
@@ -1056,9 +1344,46 @@
 
       loadDashboardStats();
     } catch (err) {
-      resDiv.innerHTML = `<p style="color: #dc2626;">⚠️ Weather search failed for ${city}.</p>`;
+      resDiv.innerHTML = `<p style="color: #dc2626; font-weight: 700; padding: 12px;">⚠️ Weather search failed for ${city}. Please try another city.</p>`;
     }
   });
+
+  // Chip helpers for farmer-friendly single-tap selection
+  function selectCropSoil(val, btn) {
+    const sel = document.getElementById("soilType");
+    if (sel) sel.value = val;
+    btn.parentElement.querySelectorAll(".farmer-chip").forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+  }
+
+  function selectCropCity(val, btn) {
+    const input = document.getElementById("city");
+    if (input) input.value = val;
+    btn.parentElement.querySelectorAll(".farmer-chip").forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+  }
+
+  function selectCropSeason(val, btn) {
+    const sel = document.getElementById("season");
+    if (sel) sel.value = val;
+    btn.parentElement.querySelectorAll(".farmer-chip").forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+  }
+
+  function selectDiseaseCrop(val, btn) {
+    const input = document.getElementById("diseaseCrop");
+    if (input) input.value = val;
+    btn.parentElement.querySelectorAll(".farmer-chip").forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+  }
+
+  function searchWeatherDirect(cityName) {
+    const input = document.getElementById("weatherSearchCity");
+    if (input) {
+      input.value = cityName;
+      document.getElementById("dashboardWeatherForm").dispatchEvent(new Event("submit"));
+    }
+  }
 
   // Overview Stats
   function loadDashboardStats() {

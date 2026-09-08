@@ -7,23 +7,23 @@
 }
 
 :root {
-  --primary-green: #2d5016;
-  --secondary-green: #4a7c59;
-  --accent-green: #68a085;
-  --light-green: #e8f5e9;
-  --dark-text: #333;
-  --light-text: #fff;
-  --input-bg: white;
-  --input-border: #ccc;
-  --button-bg: #4CAF50;
-  --button-hover: #3e8e41;
-  --result-bg: #e8f5e9;
-  --nav-link: #c8e6c9;
-  --bg-color: #f5f5f5;
-  --text-color: #333;
-  --header-bg: #2d5016;
+  --primary-green: #0b7a3a;
+  --secondary-green: #2e7d32;
+  --accent-green: #4caf50;
+  --light-green: #e8f5ec;
+  --dark-text: #192a1e;
+  --light-text: #ffffff;
+  --input-bg: #ffffff;
+  --input-border: #c8e6ce;
+  --button-bg: #0b7a3a;
+  --button-hover: #085a2b;
+  --result-bg: #e8f5ec;
+  --nav-link: #374151;
+  --bg-color: #fbfdfb;
+  --text-color: #192a1e;
+  --header-bg: #0b7a3a;
   --header-text: white;
-  --card-bg: rgba(255, 255, 255, 0.15);
+  --card-bg: rgba(255, 255, 255, 0.85);
 }
 
 .dark-mode {
