@@ -79,7 +79,7 @@ async def get_products(
     min_price: Optional[float] = Query(None),
     max_price: Optional[float] = Query(None),
     fertilizer_type: Optional[str] = Query(None),
-    limit: int = Query(20, le=100),
+    limit: int = Query(50, le=500),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db)
 ):
