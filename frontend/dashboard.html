@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -823,8 +823,8 @@
           <div style="display: flex; align-items: center; gap: 16px;">
             <div style="font-size: 42px; line-height: 1;">🌱</div>
             <div>
-              <h2 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: var(--primary-green);">नमस्ते किसान भाई! / Welcome to Your Farm</h2>
-              <p style="margin: 0; font-size: 14px; color: var(--text-muted);">आज का मौसम फसल देखभाल और सिंचाई के लिए उत्तम है। / Today is suitable for field care.</p>
+              <h2 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: var(--primary-green);" data-i18n="welcomeFarmer">नमस्ते किसान भाई! / Welcome to Your Farm</h2>
+              <p style="margin: 0; font-size: 14px; color: var(--text-muted);" data-i18n="welcomeDesc">आज का मौसम फसल देखभाल और सिंचाई के लिए उत्तम है। / Today is suitable for field care.</p>
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 10px;">
@@ -840,7 +840,7 @@
         <!-- 3 Primary Quick Action Cards (High visual clarity, big targets) -->
         <div style="margin-bottom: 24px;">
           <h3 style="font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--primary-green); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
-            <span>⚡ मुख्य सेवाएँ (Quick Farm Actions)</span>
+            <span data-i18n="quickActions">⚡ मुख्य सेवाएँ (Quick Farm Actions)</span>
           </h3>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px;">
             
@@ -1097,20 +1097,20 @@
               👨‍🌾
             </div>
             <div>
-              <h4 style="margin: 0; font-size: 14.5px; font-weight: 700; color: #192a1e;">नमस्ते! खेती, खाद, बीज या कीड़े से जुड़ा कोई भी सवाल पूछें</h4>
-              <p style="margin: 2px 0 0 0; font-size: 12.5px; color: #5c6f60;">Ask any question in Hindi, Hinglish or English</p>
+              <h4 style="margin: 0; font-size: 14.5px; font-weight: 700; color: #192a1e;" data-i18n="assistantIntro">नमस्ते! खेती, खाद, बीज या कीड़े से जुड़ा कोई भी सवाल पूछें</h4>
+              <p style="margin: 2px 0 0 0; font-size: 12.5px; color: #5c6f60;" data-i18n="assistantHint">Ask any question in Hindi, Hinglish or English</p>
             </div>
           </div>
 
           <div id="assistantChat" class="chat-box" style="height: 340px; overflow-y: auto; background: #fafdfa; border: 1.5px solid #e2ede4; border-radius: 14px; padding: 18px; margin-bottom: 16px;">
-            <div class="chat bot" style="background: #ffffff; border: 1px solid #cce5d2; border-radius: 12px; padding: 12px 16px; color: #192a1e; font-size: 14px; line-height: 1.6; max-width: 85%; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+            <div class="chat bot" data-i18n-html="assistantWelcome" style="background: #ffffff; border: 1px solid #cce5d2; border-radius: 12px; padding: 12px 16px; color: #192a1e; font-size: 14px; line-height: 1.6; max-width: 85%; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
               🙏 <strong>राम-राम किसान भाई!</strong> मैं आपका कृषि मित्र हूँ। अपनी फसल का नाम लिखें या नीचे दिए गए प्रश्नों पर टैप करें।
             </div>
           </div>
 
           <!-- One-Tap Popular Farmer Prompts -->
           <div style="margin-bottom: 14px;">
-            <strong style="font-size: 12.5px; color: #5c6f60; display: block; margin-bottom: 6px;">💡 तुरंत पूछें (Tap to Ask):</strong>
+            <strong style="font-size: 12.5px; color: #5c6f60; display: block; margin-bottom: 6px;" data-i18n="tapToAsk">💡 तुरंत पूछें (Tap to Ask):</strong>
             <div style="display: flex; flex-wrap: wrap; gap: 8px;">
               <button type="button" class="farmer-chip" onclick="fillPrompt('गेहूं में पीला रतुआ का क्या इलाज है?')">🌾 गेहूं में पीला रतुआ इलाज</button>
               <button type="button" class="farmer-chip" onclick="fillPrompt('धान की नर्सरी में यूरिया कब डालना चाहिए?')">🍚 धान में यूरिया का समय</button>
@@ -1121,9 +1121,9 @@
 
           <form id="assistantForm" class="assistant-form">
             <div style="display: flex; gap: 10px;">
-              <input type="text" id="assistantMessage" placeholder="यहाँ अपना सवाल लिखें (Type your question here)..." required style="flex: 1; border-radius: 10px; padding: 14px 16px; border: 1.5px solid #cbd5e1; font-size: 15px; outline: none; background: #ffffff;" />
+              <input type="text" id="assistantMessage" placeholder="यहाँ अपना सवाल लिखें (Type your question here)..." data-i18n-placeholder="assistantPlaceholder" required style="flex: 1; border-radius: 10px; padding: 14px 16px; border: 1.5px solid #cbd5e1; font-size: 15px; outline: none; background: #ffffff;" />
               <button type="submit" class="predict-btn" style="padding: 12px 24px; font-size: 15px; border-radius: 10px;">
-                <i class="fa-solid fa-paper-plane"></i> पूछें (Send)
+                <i class="fa-solid fa-paper-plane"></i> <span data-i18n="sendBtn">पूछें (Send)</span>
               </button>
             </div>
           </form>
@@ -1143,9 +1143,9 @@
           </div>
 
           <form id="dashboardWeatherForm" style="display: flex; gap: 10px; max-width: 580px; margin-bottom: 20px;">
-            <input type="text" id="weatherSearchCity" placeholder="अपना जिला / शहर लिखें (जैसे: Bhopal, Indore, Jaipur)..." required style="flex: 1; padding: 13px 16px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 14px; outline: none;" />
+            <input type="text" id="weatherSearchCity" placeholder="अपना जिला / शहर लिखें (जैसे: Bhopal, Indore, Jaipur)..." data-i18n-placeholder="checkWeatherPlaceholder" required style="flex: 1; padding: 13px 16px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 14px; outline: none;" />
             <button type="submit" class="predict-btn" style="padding: 13px 22px; font-size: 14px;">
-              <i class="fa-solid fa-magnifying-glass"></i> खोजें (Search)
+              <i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="searchBtn">खोजें (Search)</span>
             </button>
           </form>
 
@@ -1162,8 +1162,8 @@
           <div id="dashboardWeatherResult">
             <div style="background: #fbfdfb; border: 1.5px solid #e2ede4; border-radius: 14px; padding: 24px; text-align: center; color: #5c6f60;">
               <div style="font-size: 38px; margin-bottom: 8px;">⛅</div>
-              <h4 style="margin: 0 0 4px 0; color: #192a1e; font-size: 16px;">मौसम की स्थिति देखने के लिए ऊपर अपना शहर खोजें</h4>
-              <p style="margin: 0; font-size: 13px;">Find temperature, humidity, rainfall and agronomic advice for your district</p>
+              <h4 style="margin: 0 0 4px 0; color: #192a1e; font-size: 16px;" data-i18n="weatherEmptyTitle">मौसम की स्थिति देखने के लिए ऊपर अपना शहर खोजें</h4>
+              <p style="margin: 0; font-size: 13px;" data-i18n="weatherEmptyDesc">Find temperature, humidity, rainfall and agronomic advice for your district</p>
             </div>
           </div>
         </div>
@@ -1180,17 +1180,17 @@
           </div>
 
           <div style="display: flex; gap: 10px; max-width: 540px; margin-bottom: 20px;">
-            <input type="text" id="trackOrderNumber" placeholder="ऑर्डर नंबर लिखें (e.g. ORD1788812632933)" style="flex: 1; padding: 13px 16px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 14px; outline: none;" />
+            <input type="text" id="trackOrderNumber" placeholder="ऑर्डर नंबर लिखें (e.g. ORD1788812632933)" data-i18n-placeholder="trackOrderPlaceholder" style="flex: 1; padding: 13px 16px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 14px; outline: none;" />
             <button onclick="trackOrderDirectly()" class="predict-btn" style="padding: 13px 22px; font-size: 14px;">
-              <i class="fa-solid fa-location-crosshairs"></i> ट्रैक करें (Track)
+              <i class="fa-solid fa-location-crosshairs"></i> <span data-i18n="trackBtn">ट्रैक करें (Track)</span>
             </button>
           </div>
 
           <div id="trackOrderResult">
             <div style="background: #fbfdfb; border: 1.5px solid #e2ede4; border-radius: 14px; padding: 24px; text-align: center; color: #5c6f60;">
               <div style="font-size: 36px; margin-bottom: 8px;">📦</div>
-              <h4 style="margin: 0 0 4px 0; color: #192a1e; font-size: 16px;">ऑर्डर ट्रैक करने के लिए अपना ऑर्डर नंबर डालें</h4>
-              <p style="margin: 0; font-size: 13px;">Check delivery progress, payment status, and ordered agricultural items</p>
+              <h4 style="margin: 0 0 4px 0; color: #192a1e; font-size: 16px;" data-i18n="orderEmptyTitle">ऑर्डर ट्रैक करने के लिए अपना ऑर्डर नंबर डालें</h4>
+              <p style="margin: 0; font-size: 13px;" data-i18n="orderEmptyDesc">Check delivery progress, payment status, and ordered agricultural items</p>
             </div>
           </div>
         </div>
@@ -1210,27 +1210,27 @@
             <div style="width: 58px; height: 58px; border-radius: 50%; background: var(--primary-green); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800;" id="profileAvatarBig">A</div>
             <div>
               <h4 style="margin: 0; font-size: 18px; font-weight: 800; color: #192a1e;" id="profileUsernameFull">FARMER</h4>
-              <p style="margin: 2px 0 0 0; font-size: 13px; color: var(--text-muted);">किसान / फार्म लीड • Krishi AI Member</p>
+              <p style="margin: 2px 0 0 0; font-size: 13px; color: var(--text-muted);" data-i18n="profileRole">किसान / फार्म लीड • Krishi AI Member</p>
             </div>
           </div>
 
           <div style="background: #ffffff; border-radius: 12px; padding: 18px; border: 1.5px solid #e2ede4; margin-bottom: 22px; font-size: 14px; line-height: 2;">
             <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f5f0; padding-bottom: 6px;">
-              <span style="color: #5c6f60;"><strong>यूजरनेम (Username):</strong></span>
+              <span style="color: #5c6f60;"><strong data-i18n="profileUsername">यूजरनेम (Username):</strong></span>
               <strong style="color: #192a1e;" id="profileUsernameField">Loading...</strong>
             </div>
             <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f0f5f0; padding-top: 6px; padding-bottom: 6px;">
-              <span style="color: #5c6f60;"><strong>खाता सुरक्षा (Security):</strong></span>
-              <span style="color: var(--primary-green); font-weight: 700;">सुरक्षित लॉगिन (Active Session)</span>
+              <span style="color: #5c6f60;"><strong data-i18n="profileSecurity">खाता सुरक्षा (Security):</strong></span>
+              <span style="color: var(--primary-green); font-weight: 700;" data-i18n="profileActiveSession">सुरक्षित लॉगिन (Active Session)</span>
             </div>
             <div style="display: flex; justify-content: space-between; padding-top: 6px;">
-              <span style="color: #5c6f60;"><strong>कृषि स्टोर डिलीवरी (Store Access):</strong></span>
-              <span style="color: #ea580c; font-weight: 700;">⚡ 10-Min Delivery Enabled</span>
+              <span style="color: #5c6f60;"><strong data-i18n="profileStore">कृषि स्टोर डिलीवरी (Store Access):</strong></span>
+              <span style="color: #ea580c; font-weight: 700;">✅ Certified Delivery</span>
             </div>
           </div>
 
           <button onclick="handleSignOut()" style="padding: 12px 24px; background: #ffffff; color: #dc2626; border: 1.5px solid #fecaca; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease;" onmouseover="this.style.background='#dc2626'; this.style.color='#fff';" onmouseout="this.style.background='#ffffff'; this.style.color='#dc2626';">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i> लॉग आउट (Sign Out)
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> <span data-i18n="signOutBtn">लॉग आउट (Sign Out)</span>
           </button>
         </div>
       </section>
@@ -1246,12 +1246,12 @@
             <label style="font-weight: 800; font-size: 14.5px; color: #192a1e; display: block; margin-bottom: 8px;" data-i18n="langSelect">
               🌐 अपनी पसंदीदा भाषा चुनें (Select App Language):
             </label>
-            <p style="margin: 0 0 12px 0; font-size: 13px; color: #5c6f60;">11 भारतीय भाषाओं में संपूर्ण सहायता उपलब्ध है</p>
+            <p style="margin: 0 0 12px 0; font-size: 13px; color: #5c6f60;" data-i18n="settingsDesc">11 भारतीय भाषाओं में संपूर्ण सहायता उपलब्ध है</p>
             <div id="settingsLangSelectorMount"></div>
           </div>
 
           <button onclick="saveAppSettings()" class="predict-btn" style="padding: 12px 24px;">
-            <i class="fa-solid fa-check"></i> सेव करें (Save Settings)
+            <i class="fa-solid fa-check"></i> <span data-i18n="saveSettingsBtn">सेव करें (Save Settings)</span>
           </button>
         </div>
       </section>
