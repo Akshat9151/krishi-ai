@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Krishi AgriStore Express - 10 मिनट किसान डिलीवरी</title>
+    <title>Krishi AgriStore — सत्यापित कृषि उत्पाद</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -859,7 +859,7 @@
 <!-- Header -->
 <header class="qc-header">
     <div class="qc-top-strip">
-        <span data-i18n="storeSubheader">⚡ 10 मिनट में कृषि उत्पाद आपके खेत / घर तक</span>
+        <span data-i18n="storeSubheader">🌾 सत्यापित बीज, खाद व उपकरण — सीधे आपके खेत तक</span>
         <span data-i18n="helpline">📞 हेल्पलाइन: 1800-123-4567 (टोल फ्री)</span>
     </div>
 
@@ -868,13 +868,13 @@
             <img src="../statics/images/krishi-logo.svg" alt="Krishi AI Logo" />
             <div class="qc-brand-title">
                 <h1>AgriStore</h1>
-                <span>Minutes ⚡ Fast</span>
+                <span>🌱 Certified Farm Products</span>
             </div>
         </a>
 
         <div class="qc-delivery-pill">
             <span class="dot"></span>
-            <span data-i18n="deliveryTime">डिलीवरी: 10-15 मिनट</span>
+            <span data-i18n="deliveryTime">🌱 सत्यापित कृषि डिलीवरी</span>
         </div>
 
         <div class="qc-search-wrap">
@@ -902,11 +902,11 @@
 <section class="qc-hero-express">
     <div class="qc-banner-card">
         <div class="qc-banner-text">
-            <h2>🌾 कृषि सुपर-फास्ट डिलीवरी एक्सप्रेस</h2>
-            <p>सत्यापित खाद, हाइब्रिड बीज और स्प्रेयर अब तुरंत उपलब्ध। कैश ऑन डिलीवरी (COD) उपलब्ध।</p>
+            <h2>🌾 सत्यापित कृषि उत्पाद</h2>
+            <p>प्रमाणित खाद, हाइब्रिड बीज और स्प्रेयर अब ऑनलाइन उपलब्ध। कैश ऑन डिलीवरी (COD) उपलब्ध।</p>
             <div class="qc-perks-row">
-                <div class="qc-perk">⚡ 10-Min Dispatch</div>
-                <div class="qc-perk">🌱 100% शुद्ध प्रमाणित बीज</div>
+                <div class="qc-perk">✅ 100% शुद्ध प्रमाणित बीज</div>
+                <div class="qc-perk">🌱 सरकार अनुमोदित उत्पाद</div>
                 <div class="qc-perk">💵 Pay on Delivery</div>
             </div>
         </div>
@@ -1043,14 +1043,15 @@
         const grid = document.getElementById("qcProductGrid");
         let filtered = allProducts;
 
-        // Apply category filter
+        // Apply category filter — supports both API slugs & simple keys
         if (currentFilter !== 'all') {
             filtered = filtered.filter(p => {
                 const cat = (p.category || '').toLowerCase();
-                if (currentFilter === 'seeds') return cat.includes('seed') || cat.includes('बीज');
-                if (currentFilter === 'fertilizers') return cat.includes('fertilizer') || cat.includes('खाद') || cat.includes('उर्वरक');
-                if (currentFilter === 'tools') return cat.includes('tool') || cat.includes('उपकरण') || cat.includes('यंत्र');
-                if (currentFilter === 'bio') return cat.includes('bio') || cat.includes('organic') || cat.includes('जैविक');
+                const sub = (p.subcategory || '').toLowerCase();
+                if (currentFilter === 'seeds') return cat.includes('seed') || cat.includes('बीज') || sub.includes('seed');
+                if (currentFilter === 'fertilizers') return cat.includes('fertilizer') || cat.includes('खाद') || cat.includes('उर्वरक') || sub.includes('fertilizer') || sub.includes('compost') || sub.includes('bio-fertilizer');
+                if (currentFilter === 'tools') return cat.includes('tool') || cat.includes('उपकरण') || cat.includes('यंत्र') || cat.includes('irrigation') || sub.includes('spray-pump') || sub.includes('drip') || sub.includes('hand-tool');
+                if (currentFilter === 'bio') return cat.includes('bio') || cat.includes('organic') || cat.includes('जैविक') || cat.includes('protection') || sub.includes('bio') || sub.includes('organic') || sub.includes('bio-pesticide') || sub.includes('bio-control') || sub.includes('fungicide');
                 return true;
             });
         }
@@ -1058,7 +1059,7 @@
         // Apply search query
         if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();
-            filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q));
+            filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q));
         }
 
         document.getElementById("productCountBadge").innerText = `${filtered.length} उत्पाद`;
@@ -1073,10 +1074,12 @@
             return;
         }
 
+        const FALLBACK_IMG = "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500&q=80";
+
         grid.innerHTML = filtered.map(p => {
             const inCartItem = cart.find(c => c.id === p.id);
             const qty = inCartItem ? inCartItem.quantity : 0;
-            const img = p.image_url || p.image || "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500&q=80";
+            const img = p.image_url || p.image || FALLBACK_IMG;
 
             return `
                 <div class="qc-card" id="product-card-${p.id}">
@@ -1084,7 +1087,7 @@
                     
                     <a href="product.html?id=${p.id}" style="text-decoration: none; color: inherit;">
                         <div class="qc-card-img-wrap">
-                            <img src="${img}" alt="${p.name}" class="qc-card-img" loading="lazy" />
+                            <img src="${img}" alt="${p.name}" class="qc-card-img" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';" />
                         </div>
                         <div class="qc-card-weight">${p.weight || p.unit || '1 Pack'}</div>
                         <h3 class="qc-card-title">${p.name}</h3>
@@ -1209,7 +1212,7 @@
 
         drawerList.innerHTML = cart.map(item => `
             <div class="drawer-item">
-                <img src="${item.image || 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=100'}" class="drawer-item-img" />
+                <img src="${item.image || 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=100'}" class="drawer-item-img" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=100';" />
                 <div class="drawer-item-info">
                     <h4 class="drawer-item-title">${item.name}</h4>
                     <span class="drawer-item-price">₹${item.price}</span>
