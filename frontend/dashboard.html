@@ -264,25 +264,28 @@
       background: var(--bg-workspace);
     }
 
-    /* Minimal Fresh Topbar */
+    /* ─── Clean Topbar Header ─── */
     .minimal-topbar {
-      height: 62px;
-      min-height: 62px;
+      height: 60px;
+      min-height: 60px;
       background: #ffffff;
       border-bottom: 1px solid var(--border-color);
+      box-shadow: 0 1px 3px rgba(11, 122, 58, 0.04);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 32px;
+      padding: 0 28px;
       position: sticky;
       top: 0;
       z-index: 40;
     }
 
+    /* Left: hamburger + breadcrumb section title */
     .topbar-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
+      min-width: 0;
     }
 
     .mobile-nav-toggle {
@@ -290,52 +293,183 @@
       background: none;
       border: 1px solid var(--border-color);
       color: var(--text-main);
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
 
+    /* Breadcrumb / active section label */
+    .topbar-section-label {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+    .topbar-section-label .topbar-crumb {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--primary-green);
+      opacity: 0.7;
+      line-height: 1;
+    }
+    .topbar-section-label .topbar-page-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+
+    /* Right: controls cluster */
     .topbar-right-controls {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 8px;
+      flex-shrink: 0;
     }
 
-    .topbar-store-icon-link {
+    /* Ghost icon button (notification bell, etc.) */
+    .topbar-icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      position: relative;
+    }
+    .topbar-icon-btn:hover {
       background: var(--primary-light);
+      border-color: #d0e8d5;
       color: var(--primary-green);
-      border: 1px solid #c8e6ce;
-      padding: 7px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 700;
+    }
+
+    /* Lightweight AgriStore link — ghost style */
+    .topbar-store-icon-link {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      padding: 6px 13px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      transition: all 0.18s ease;
+      gap: 6px;
+      transition: all 0.16s ease;
+      white-space: nowrap;
+    }
+    .topbar-store-icon-link:hover {
+      background: var(--primary-light);
+      border-color: #c8e6ce;
+      color: var(--primary-green);
     }
 
-    .topbar-store-icon-link:hover {
+    /* User pill — name + avatar initials */
+    .topbar-user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px 5px 6px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--primary-tint);
+      cursor: default;
+      transition: background 0.15s ease;
+    }
+    .topbar-user-pill:hover {
+      background: var(--primary-light);
+      border-color: #c8e6ce;
+    }
+    .topbar-user-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
       background: var(--primary-green);
       color: #ffffff;
-      border-color: var(--primary-green);
-      box-shadow: 0 3px 8px rgba(11, 122, 58, 0.25);
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      text-transform: uppercase;
     }
-
-    .topbar-user-badge {
-      font-size: 13.5px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .topbar-user-badge strong {
-      color: var(--text-main);
+    .topbar-user-name {
+      font-size: 12.5px;
       font-weight: 700;
+      color: var(--text-main);
+      max-width: 120px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Language selector — ultra-minimal ghost */
+    .topbar-lang-wrap {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: transparent;
+      transition: all 0.15s ease;
+    }
+    .topbar-lang-wrap:hover {
+      background: var(--primary-light);
+      border-color: #c8e6ce;
+    }
+    .topbar-lang-wrap i {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    /* Override i18n picker styles inside topbar */
+    #dashboardTopLangSelector .krishi-lang-picker-wrap {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      gap: 5px;
+    }
+    #dashboardTopLangSelector .krishi-lang-select {
+      background: transparent;
+      border: none;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      outline: none;
+      cursor: pointer;
+      max-width: 90px;
+    }
+    #dashboardTopLangSelector .krishi-lang-select:hover,
+    #dashboardTopLangSelector .krishi-lang-select:focus {
+      color: var(--primary-green);
+    }
+    #dashboardTopLangSelector .krishi-lang-picker-wrap i {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* Keep backward compat */
+    .topbar-user-badge {
+      display: none; /* replaced by topbar-user-pill */
     }
 
     /* Main Workspace Container with Generous Breathing Space */
@@ -504,7 +638,13 @@
         display: block;
       }
       .minimal-topbar {
-        padding: 0 16px;
+        padding: 0 14px;
+      }
+      .topbar-store-icon-link span {
+        display: none; /* icon-only on mobile */
+      }
+      .topbar-user-name {
+        display: none; /* avatar-only on mobile */
       }
       .workspace-container {
         padding: 20px 16px;
@@ -625,21 +765,44 @@
   ============================================== -->
   <main class="app-main-area">
 
-    <!-- Minimalist Topbar Header -->
+    <!-- ─── Clean Topbar Header ─── -->
     <header class="minimal-topbar">
+      <!-- Left: mobile toggle + current section breadcrumb -->
       <div class="topbar-left">
         <button class="mobile-nav-toggle" onclick="toggleSidebar()" title="Toggle Navigation">
           <i class="fa-solid fa-bars"></i>
         </button>
-        <span class="topbar-user-badge">Logged in as: <strong id="topbarUserText">Farmer</strong></span>
+        <div class="topbar-section-label">
+          <span class="topbar-crumb">Krishi AI</span>
+          <span class="topbar-page-title" id="topbarPageTitle">Dashboard</span>
+        </div>
       </div>
 
+      <!-- Right: language, notifications, store link, user pill -->
       <div class="topbar-right-controls">
-        <div id="dashboardTopLangSelector"></div>
+
+        <!-- Language Selector (ghost pill) -->
+        <div class="topbar-lang-wrap">
+          <div id="dashboardTopLangSelector"></div>
+        </div>
+
+        <!-- Notification Bell (visual placeholder — no backend yet) -->
+        <button class="topbar-icon-btn" title="Notifications" aria-label="Notifications">
+          <i class="fa-regular fa-bell"></i>
+        </button>
+
+        <!-- AgriStore shortcut (ghost link) -->
         <a href="store/index.html" class="topbar-store-icon-link" title="Open AgriStore">
           <i class="fa-solid fa-store"></i>
           <span data-i18n="agriStore">AgriStore</span>
         </a>
+
+        <!-- User Pill -->
+        <div class="topbar-user-pill">
+          <div class="topbar-user-avatar" id="topbarUserAvatar">K</div>
+          <span class="topbar-user-name" id="topbarUserText">Farmer</span>
+        </div>
+
       </div>
     </header>
 
@@ -1166,9 +1329,12 @@
   document.getElementById("profileUsernameField").textContent = loggedUser;
   document.getElementById("topbarUserText").textContent = loggedUser;
 
+  // Avatar initials — topbar pill + sidebar
   const letter = loggedUser.charAt(0).toUpperCase();
   document.getElementById("sidebarAvatar").textContent = letter;
   document.getElementById("profileAvatarBig").textContent = letter;
+  const topbarAvatarEl = document.getElementById("topbarUserAvatar");
+  if (topbarAvatarEl) topbarAvatarEl.textContent = letter;
 
   // Nav Item Switching
   document.querySelectorAll(".nav-link[data-view]").forEach(link => {
@@ -1195,9 +1361,13 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    // Update Header Text
+    // Update workspace heading
     if (title) document.getElementById("pageTitleText").textContent = title;
     if (subtitle) document.getElementById("pageSubtitleText").textContent = subtitle;
+
+    // Sync topbar breadcrumb page title
+    const topbarTitle = document.getElementById("topbarPageTitle");
+    if (topbarTitle && title) topbarTitle.textContent = title;
 
     closeSidebar();
   }
