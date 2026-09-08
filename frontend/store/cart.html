@@ -1,78 +1,157 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>मेरी कार्ट - Krishi AI Store</title>
-    <link rel="stylesheet" href="store.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>मेरी कार्ट – Krishi AI Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="store.css" />
 </head>
 <body>
-    <header class="store-header">
-        <div class="top-bar">
-            <div class="container" style="display: flex; justify-content: space-between; font-size: 13px;">
-                <span><i class="fas fa-seedling"></i> Krishi AI Store</span>
-                <a href="index.html" style="color: white; text-decoration: none;"><i class="fas fa-arrow-left"></i> स्टोर होम</a>
-            </div>
-        </div>
-    </header>
 
-    <main class="cart-page">
-        <div class="container">
-            <h1 class="page-title" style="margin: 20px 0; color: #1b5e20;">🛒 मेरी शॉपिंग कार्ट</h1>
-            
-            <div class="cart-content">
-                <div class="cart-table">
-                    <div class="cart-items" id="cart-items">
-                        <!-- Cart items loaded via JavaScript -->
+<!-- Header -->
+<header class="store-header">
+    <div class="store-header-inner">
+        <a href="index.html" class="store-brand">
+            <div class="store-brand-icon"><i class="fa-solid fa-seedling"></i></div>
+            <div class="store-brand-text">
+                <h1>AgriStore</h1>
+                <span>Krishi AI Farmer Marketplace</span>
+            </div>
+        </a>
+
+        <div class="store-header-actions">
+            <div id="storeLangSelector"></div>
+            <a href="index.html" class="store-header-btn">
+                <i class="fa-solid fa-arrow-left"></i> शॉपिंग जारी रखें
+            </a>
+        </div>
+    </div>
+</header>
+
+<main class="store-container-sm" style="padding-top: 28px;">
+    <h1 style="font-size: 22px; font-weight: 800; color: var(--text-primary); margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-basket-shopping" style="color: var(--brand-green);"></i> आपकी शॉपिंग कार्ट
+    </h1>
+
+    <div id="cartPageContainer">
+        <!-- Injected via JavaScript -->
+    </div>
+</main>
+
+<footer class="store-footer">
+    <p>© Krishi AI Store. भारत के किसानों का विश्वसनीय साथी।</p>
+</footer>
+
+<script src="../config.js"></script>
+<script src="../i18n.js"></script>
+<script src="store.js"></script>
+<script>
+    function renderFullCartPage() {
+        const container = document.getElementById('cartPageContainer');
+        if (!container) return;
+
+        const cart = getCart();
+
+        if (cart.length === 0) {
+            container.innerHTML = `
+                <div class="store-empty">
+                    <div class="store-empty-icon">🛒</div>
+                    <h3>आपकी कार्ट खाली है</h3>
+                    <p>आपने अभी तक कोई उत्पाद नहीं जोड़ा है।</p>
+                    <a href="index.html" class="store-add-btn" style="display: inline-flex; margin: 0 auto; text-decoration: none;">
+                        <i class="fa-solid fa-arrow-left"></i> उत्पाद कैटलॉग देखें
+                    </a>
+                </div>
+            `;
+            return;
+        }
+
+        const total = getCartTotal();
+
+        container.innerHTML = `
+            <div class="checkout-grid">
+                <!-- Cart Items List -->
+                <div class="checkout-card" style="padding: 16px 20px;">
+                    <h3 class="checkout-card-title">
+                        <span>कार्ट में आइटम (${getCartCount()})</span>
+                        <button onclick="clearCart(); renderFullCartPage();" style="font-size: 12.5px; color: #dc2626; margin-left: auto; cursor: pointer;">
+                            <i class="fa-solid fa-trash"></i> कार्ट खाली करें
+                        </button>
+                    </h3>
+
+                    <div>
+                        ${cart.map(item => `
+                            <div class="cart-item" style="padding: 16px 0;">
+                                <img src="${item.image}" class="cart-item-img" style="width: 64px; height: 64px;" onerror="handleImageError(this)" alt="${item.name}" />
+                                <div class="cart-item-info">
+                                    <a href="product.html?id=${item.id}" class="cart-item-title" style="font-size: 14.5px; display: block;">${item.name}</a>
+                                    <div style="font-size: 12.5px; color: var(--text-muted);">${item.brand || 'Krishi AI'} • ${item.weight || ''}</div>
+                                    <div class="cart-item-price" style="font-size: 14px;">₹${item.price} प्रति यूनिट</div>
+                                </div>
+                                <div class="cart-item-actions">
+                                    <div class="store-qty-control">
+                                        <button class="store-qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1}); renderFullCartPage();">-</button>
+                                        <span class="store-qty-num">${item.quantity}</span>
+                                        <button class="store-qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity + 1}); renderFullCartPage();">+</button>
+                                    </div>
+                                    <div style="font-weight: 800; color: var(--brand-green); min-width: 60px; text-align: right;">
+                                        ₹${item.price * item.quantity}
+                                    </div>
+                                    <button onclick="removeFromCart(${item.id}); renderFullCartPage();" style="color: #dc2626; font-size: 15px; margin-left: 8px;" title="हटाएं">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div style="margin-top: 16px; display: flex; justify-content: space-between; align-items: center;">
+                        <a href="index.html" style="font-size: 13.5px; font-weight: 600; color: var(--brand-green);">
+                            <i class="fa-solid fa-arrow-left"></i> और उत्पाद जोड़ें
+                        </a>
                     </div>
                 </div>
-                
-                <div class="cart-summary" style="background: #f9f9f9; padding: 20px; border-radius: 12px; margin-top: 20px; border: 1px solid #eee;">
-                    <h2>ऑर्डर सारांश</h2>
-                    <div class="price-breakdown">
-                        <div class="price-row" style="display: flex; justify-content: space-between; margin: 10px 0;">
-                            <span>सबटोटल</span>
-                            <span id="cart-subtotal">₹0</span>
+
+                <!-- Order Summary Card -->
+                <div>
+                    <div class="checkout-card">
+                        <h3 class="checkout-card-title"><i class="fa-solid fa-receipt"></i> ऑर्डर सारांश</h3>
+
+                        <div class="cart-summary-line">
+                            <span>कुल मूल्य (${getCartCount()} आइटम):</span>
+                            <span>₹${total.toFixed(0)}</span>
                         </div>
-                        <div class="price-row" style="display: flex; justify-content: space-between; margin: 10px 0;">
-                            <span>शिपिंग</span>
-                            <span class="free" style="color: #2e7d32; font-weight: bold;">मुफ्त</span>
+                        <div class="cart-summary-line">
+                            <span>डिलीवरी शुल्क:</span>
+                            <span style="color: var(--brand-green); font-weight: 700;">मुफ्त (FREE)</span>
                         </div>
-                        <hr />
-                        <div class="price-row total" style="display: flex; justify-content: space-between; margin: 10px 0; font-size: 18px;">
-                            <span><strong>कुल राशि</strong></span>
-                            <span><strong id="cart-total" style="color: #1b5e20;">₹0</strong></span>
+                        <div class="cart-summary-line">
+                            <span>कैश ऑन डिलीवरी शुल्क:</span>
+                            <span style="color: var(--brand-green); font-weight: 700;">₹0</span>
                         </div>
-                    </div>
-                    
-                    <div class="cart-actions" style="display: flex; gap: 12px; margin-top: 20px;">
-                        <a href="index.html" class="btn-primary btn-continue-shopping" style="padding: 10px 16px; background: #e8f5e9; color: #1b5e20; border-radius: 8px; text-decoration: none; font-weight: bold;">
-                            <i class="fas fa-arrow-left"></i> शॉपिंग जारी रखें
+
+                        <div class="cart-summary-line total" style="margin-top: 12px;">
+                            <span>कुल देय राशि:</span>
+                            <span style="color: var(--brand-green); font-size: 20px;">₹${total.toFixed(0)}</span>
+                        </div>
+
+                        <a href="checkout.html" class="cart-checkout-btn" style="margin-top: 16px;">
+                            <span>चेकआउट पर आगे बढ़ें</span>
+                            <i class="fa-solid fa-arrow-right"></i>
                         </a>
-                        <a href="checkout.html" class="btn-primary btn-checkout" style="padding: 10px 20px; background: #2e7d32; color: white; border-radius: 8px; text-decoration: none; font-weight: bold;">
-                            चेकआउट <i class="fas fa-arrow-right"></i>
-                        </a>
+
+                        <div style="margin-top: 16px; font-size: 12px; color: var(--text-muted); text-align: center;">
+                            🔒 सुरक्षित चेकआउट • पे ऑन डिलीवरी (COD) उपलब्ध
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        `;
+    }
 
-    <footer class="store-footer">
-        <div class="container" style="padding: 20px 0; text-align: center; color: #666; font-size: 14px;">
-            <p>© 2024 Krishi AI Store. सर्वाधिकार सुरक्षित।</p>
-        </div>
-    </footer>
-
-    <script src="../config.js"></script>
-    <script src="store.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof updateCartDisplay === 'function') {
-                updateCartDisplay();
-            }
-        });
-    </script>
+    document.addEventListener('DOMContentLoaded', renderFullCartPage);
+</script>
 </body>
 </html>

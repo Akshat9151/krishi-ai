@@ -1,247 +1,309 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>उत्पाद विवरण - Krishi AI Store</title>
-    <link rel="stylesheet" href="store.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>उत्पाद विवरण – Krishi AI Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="store.css" />
 </head>
 <body>
-    <!-- Same Header as index.html -->
-    <header class="store-header">
-        <!-- Copy header from index.html -->
-    </header>
 
-    <main class="product-detail-page">
-        <div class="container">
-            <!-- Breadcrumb -->
-            <div class="breadcrumb">
-                <a href="index.html">होम</a>
-                <i class="fas fa-chevron-right"></i>
-                <a href="category.html">बीज</a>
-                <i class="fas fa-chevron-right"></i>
-                <span id="product-name">टमाटर बीज</span>
+<!-- Top Information Strip -->
+<div class="store-top-strip">
+    <div class="store-top-strip-inner">
+        <div>
+            <span>🌱 <strong>सत्यापित कृषि उत्पाद:</strong> शुद्ध बीज, खाद व कीटनाशक</span>
+        </div>
+        <div style="display: flex; gap: 16px; align-items: center;">
+            <span><i class="fa-solid fa-phone"></i> किसान हेल्पलाइन: <strong>1800-123-4567</strong></span>
+            <a href="index.html"><i class="fa-solid fa-arrow-left"></i> स्टोर होम</a>
+        </div>
+    </div>
+</div>
+
+<!-- Header -->
+<header class="store-header">
+    <div class="store-header-inner">
+        <a href="index.html" class="store-brand">
+            <div class="store-brand-icon">
+                <i class="fa-solid fa-seedling"></i>
+            </div>
+            <div class="store-brand-text">
+                <h1>AgriStore</h1>
+                <span>Krishi AI Marketplace</span>
+            </div>
+        </a>
+
+        <div class="store-header-actions">
+            <div id="storeLangSelector"></div>
+
+            <a href="cart.html" class="store-header-btn">
+                <i class="fa-solid fa-cart-shopping"></i> कार्ट
+            </a>
+
+            <button class="store-header-btn store-cart-btn" onclick="openCartDrawer()" aria-label="Cart Drawer">
+                <i class="fa-solid fa-basket-shopping"></i>
+                <span class="store-cart-total-text">₹0</span>
+                <span class="store-cart-badge" style="display: none;">0</span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Product Detail Container -->
+<main class="store-container-sm">
+    <!-- Breadcrumb -->
+    <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;">
+        <a href="index.html" style="color: var(--brand-green); font-weight: 600;">स्टोर</a> &gt; 
+        <span id="breadcrumbCategory">कृषि उत्पाद</span> &gt; 
+        <span id="breadcrumbTitle" style="color: var(--text-primary); font-weight: 700;">विवरण</span>
+    </div>
+
+    <div class="product-detail-grid">
+        <!-- Product Image -->
+        <div>
+            <div style="position: relative; border-radius: var(--radius-lg); overflow: hidden; background: #f4f6f4; border: 1px solid var(--border-color);">
+                <img 
+                    id="detailImage" 
+                    src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&q=80" 
+                    class="product-detail-img" 
+                    onerror="handleImageError(this)" 
+                    alt="Product" 
+                />
+                <span id="detailBadge" class="store-card-badge" style="display: none;"></span>
+            </div>
+        </div>
+
+        <!-- Product Information -->
+        <div style="display: flex; flex-direction: column;">
+            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;" id="detailBrand">Krishi AI</div>
+            <h1 id="detailName" style="font-size: 22px; font-weight: 800; color: var(--text-primary); line-height: 1.3; margin-bottom: 10px;">
+                उत्पाद नाम लोड हो रहा है...
+            </h1>
+
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
+                <div style="color: var(--brand-accent-yellow); font-size: 13px;">
+                    <i class="fa-solid fa-star"></i>
+                    <strong id="detailRating">4.7</strong>
+                </div>
+                <span style="color: var(--text-muted); font-size: 13px;" id="detailReviews">(120 समीक्षाएं)</span>
+                <span style="color: var(--border-color);">|</span>
+                <span style="background: var(--brand-green-light); color: var(--brand-green); padding: 2px 8px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 700;">
+                    ✓ स्टॉक में उपलब्ध
+                </span>
             </div>
 
-            <div class="product-detail">
-                <!-- Product Images -->
-                <div class="product-images">
-                    <div class="main-image">
-                        <img id="main-img" src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Product">
-                    </div>
-                    <div class="image-thumbnails">
-                        <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Thumb 1">
-                        <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Thumb 2">
-                        <img src="https://images.unsplash.com/photo-1513530176992-0cf39c4cbed4?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Thumb 3">
-                    </div>
+            <!-- Price & Discounts -->
+            <div style="background: var(--brand-green-tint); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 18px; display: flex; align-items: baseline; gap: 12px;">
+                <span id="detailPrice" style="font-size: 26px; font-weight: 800; color: var(--brand-green);">₹0</span>
+                <span id="detailMrp" style="font-size: 16px; color: var(--text-muted); text-decoration: line-through;">₹0</span>
+                <span id="detailDiscount" style="background: var(--brand-accent-yellow); color: #192a1e; padding: 2px 8px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 800;"></span>
+            </div>
+
+            <!-- Description -->
+            <div style="margin-bottom: 20px;">
+                <h3 style="font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">उत्पाद विवरण:</h3>
+                <p id="detailDescription" style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+                    उच्च गुणवत्ता वाला कृषि उत्पाद।
+                </p>
+            </div>
+
+            <!-- Product Specs -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; font-size: 13px;">
+                <div style="background: var(--bg-body); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <span style="color: var(--text-muted);">वजन / पैक:</span>
+                    <strong style="display: block; color: var(--text-primary);" id="detailWeight">-</strong>
                 </div>
-
-                <!-- Product Info -->
-                <div class="product-info">
-                    <h1 id="product-title">हाइब्रिड टमाटर बीज</h1>
-                    
-                    <div class="product-meta">
-                        <div class="rating">
-                            <div class="stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </div>
-                            <span>(128 Reviews)</span>
-                        </div>
-                        <div class="sku">SKU: KRISHI-TOM-001</div>
-                    </div>
-
-                    <div class="product-price-large">
-                        <span class="current-price">₹199</span>
-                        <span class="original-price">₹249</span>
-                        <span class="discount-badge">20% OFF</span>
-                    </div>
-
-                    <div class="product-description">
-                        <p>उच्च उत्पादन वाले हाइब्रिड टमाटर के बीज जो 60-70 दिनों में फल देने लगते हैं। ये बीज 90%+ अंकुरण दर के साथ आते हैं और रोग प्रतिरोधी किस्म के हैं।</p>
-                        
-                        <h3>विशेषताएं:</h3>
-                        <ul>
-                            <li>90%+ अंकुरण दर</li>
-                            <li>रोग प्रतिरोधी किस्म</li>
-                            <li>उच्च उत्पादन क्षमता</li>
-                            <li>जैविक प्रमाणित</li>
-                            <li>भारतीय जलवायु के अनुकूल</li>
-                        </ul>
-                    </div>
-
-                    <div class="product-options">
-                        <div class="quantity-selector">
-                            <label>मात्रा:</label>
-                            <div class="quantity-control">
-                                <button class="qty-btn" onclick="decreaseQty()">-</button>
-                                <input type="number" id="quantity" value="1" min="1" max="10">
-                                <button class="qty-btn" onclick="increaseQty()">+</button>
-                            </div>
-                        </div>
-
-                        <div class="delivery-info">
-                            <p><i class="fas fa-shipping-fast"></i> <strong>मुफ्त डिलीवरी</strong> 500₹+ ऑर्डर पर</p>
-                            <p><i class="fas fa-undo"></i> 7 दिन रिटर्न पॉलिसी</p>
-                        </div>
-                    </div>
-
-                    <div class="product-actions-large">
-                        <button class="btn-primary btn-add-to-cart" onclick="addToCartDetail()">
-                            <i class="fas fa-shopping-cart"></i> कार्ट में जोड़ें
-                        </button>
-                        <button class="btn-secondary btn-buy-now">
-                            <i class="fas fa-bolt"></i> अभी खरीदें
-                        </button>
-                        <button class="btn-wishlist-large" onclick="toggleWishlistDetail()">
-                            <i class="far fa-heart"></i>
-                        </button>
-                    </div>
-
-                    <div class="product-specs">
-                        <h3>विवरण</h3>
-                        <table>
-                            <tr>
-                                <td>बीज प्रकार</td>
-                                <td>हाइब्रिड</td>
-                            </tr>
-                            <tr>
-                                <td>अंकुरण दर</td>
-                                <td>90%+</td>
-                            </tr>
-                            <tr>
-                                <td>फसल अवधि</td>
-                                <td>60-70 दिन</td>
-                            </tr>
-                            <tr>
-                                <td>पैकेट में बीज</td>
-                                <td>50 बीज</td>
-                            </tr>
-                            <tr>
-                                <td>उपयुक्त मौसम</td>
-                                <td>सभी मौसम</td>
-                            </tr>
-                        </table>
-                    </div>
+                <div style="background: var(--bg-body); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <span style="color: var(--text-muted);">SKU कोड:</span>
+                    <strong style="display: block; color: var(--text-primary);" id="detailSku">-</strong>
                 </div>
             </div>
-            
 
-            <!-- Related Products -->
-            <section class="related-products">
-                <h2>संबंधित उत्पाद</h2>
-                <div class="products-grid" id="related-products">
-                    <!-- Related products loaded via JavaScript -->
+            <!-- Quantity & Actions -->
+            <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; border: 1.5px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden;">
+                    <button onclick="changeDetailQty(-1)" style="padding: 10px 14px; font-size: 16px; font-weight: 700; background: var(--bg-body);">-</button>
+                    <span id="detailQty" style="padding: 0 16px; font-weight: 700; font-size: 15px;">1</span>
+                    <button onclick="changeDetailQty(1)" style="padding: 10px 14px; font-size: 16px; font-weight: 700; background: var(--bg-body);">+</button>
                 </div>
-            </section>
+
+                <button onclick="handleDetailAddToCart()" class="store-add-btn" style="padding: 12px 24px; font-size: 14px; flex: 1; justify-content: center;">
+                    <i class="fa-solid fa-basket-shopping"></i> कार्ट में जोड़ें
+                </button>
+
+                <button onclick="handleDetailBuyNow()" style="background: var(--brand-green); color: #ffffff; padding: 12px 24px; font-size: 14px; font-weight: 700; border-radius: var(--radius-md); flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fa-solid fa-bolt"></i> अभी खरीदें
+                </button>
+            </div>
+
+            <!-- Guarantee Features -->
+            <div style="border-top: 1px solid var(--border-color); padding-top: 14px; display: flex; gap: 20px; font-size: 12.5px; color: var(--text-secondary); flex-wrap: wrap;">
+                <div><i class="fa-solid fa-shield-check" style="color: var(--brand-green);"></i> 100% प्रमाणित उत्पाद</div>
+                <div><i class="fa-solid fa-truck-fast" style="color: var(--brand-green);"></i> मुफ्त होम डिलीवरी</div>
+                <div><i class="fa-solid fa-hand-holding-dollar" style="color: var(--brand-green);"></i> Pay on Delivery (COD)</div>
+            </div>
         </div>
-    </main>
+    </div>
 
-    <!-- Same Footer as index.html -->
-    <footer class="store-footer">
-        <div class="container" style="padding: 20px 0; text-align: center; color: #666; font-size: 14px;">
-            <p>© 2024 Krishi AI Store. सर्वाधिकार सुरक्षित।</p>
+    <!-- Related Products -->
+    <div style="margin-top: 40px;">
+        <h2 style="font-size: 18px; font-weight: 800; color: var(--text-primary); margin-bottom: 16px;">
+            संबंधित कृषि उत्पाद (Related Products)
+        </h2>
+        <div class="store-grid" id="relatedGrid">
+            <!-- Populated by JS -->
         </div>
-    </footer>
+    </div>
+</main>
 
-    <script src="../config.js"></script>
-    <script src="store.js"></script>
-    <script>
-        let currentProduct = null;
+<!-- Cart Drawer -->
+<div class="cart-overlay" id="cartDrawerOverlay" onclick="closeCartDrawer()"></div>
+<aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-head">
+        <h3><i class="fa-solid fa-basket-shopping"></i> आपकी शॉपिंग कार्ट</h3>
+        <button class="cart-drawer-close" onclick="closeCartDrawer()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="cart-drawer-body" id="cartDrawerBody"></div>
+    <div class="cart-drawer-foot" id="cartDrawerFooter" style="display: none;">
+        <div class="cart-summary-line">
+            <span>आइटम कुल:</span>
+            <span id="drawerSubtotal">₹0</span>
+        </div>
+        <div class="cart-summary-line">
+            <span>डिलीवरी शुल्क:</span>
+            <span style="color: var(--brand-green); font-weight: 700;">मुफ्त (FREE)</span>
+        </div>
+        <div class="cart-summary-line total">
+            <span>कुल देय राशि:</span>
+            <span id="drawerTotal">₹0</span>
+        </div>
+        <a href="checkout.html" class="cart-checkout-btn">
+            <span>चेकआउट करें</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+</aside>
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            const params = new URLSearchParams(window.location.search);
-            const productId = params.get('id') || 1;
+<!-- Footer -->
+<footer class="store-footer">
+    <p>© Krishi AI Store. भारत के किसानों का विश्वसनीय साथी।</p>
+</footer>
 
-            try {
-                const baseUrl = window.API_BASE_URL || "https://krishi-ai-2-4j3k.onrender.com";
-                const res = await fetch(`${baseUrl}/api/store/products/${productId}`);
-                if (res.ok) {
-                    currentProduct = await res.json();
-                    renderProductPage(currentProduct);
-                }
-            } catch (e) {
-                console.warn("Product API load failed, using fallback:", e);
-            }
-        });
+<script src="../config.js"></script>
+<script src="../i18n.js"></script>
+<script src="store.js"></script>
+<script>
+    let activeProduct = null;
+    let detailQuantity = 1;
 
-        function renderProductPage(prod) {
-            if (!prod) return;
-            document.getElementById('product-name').textContent = prod.name;
-            document.getElementById('product-title').textContent = prod.name;
-            document.getElementById('main-img').src = prod.image_url || prod.image;
-            document.querySelector('.current-price').textContent = `₹${prod.price}`;
-            if (prod.original_price) {
-                document.querySelector('.original-price').textContent = `₹${prod.original_price}`;
-            }
-            if (prod.description) {
-                document.querySelector('.product-description p').textContent = prod.description;
-            }
-            document.querySelector('.sku').textContent = `SKU: ${prod.sku || 'KRISHI-PROD-' + prod.id}`;
-        }
+    function changeDetailQty(delta) {
+        detailQuantity = Math.max(1, Math.min(20, detailQuantity + delta));
+        document.getElementById('detailQty').textContent = detailQuantity;
+    }
 
-        function increaseQty() {
-            const qtyInput = document.getElementById('quantity');
-            if (qtyInput.value < 10) {
-                qtyInput.value = parseInt(qtyInput.value) + 1;
-            }
-        }
+    async function loadProduct() {
+        const params = new URLSearchParams(window.location.search);
+        const productId = parseInt(params.get('id')) || 1;
 
-        function decreaseQty() {
-            const qtyInput = document.getElementById('quantity');
-            if (qtyInput.value > 1) {
-                qtyInput.value = parseInt(qtyInput.value) - 1;
-            }
-        }
-
-        function addToCartDetail() {
-            const quantity = parseInt(document.getElementById('quantity').value) || 1;
-            const p = currentProduct || {
-                id: 1,
-                name: document.getElementById('product-title').textContent,
-                price: 199,
-                image: document.getElementById('main-img').src
-            };
-            
-            let cart = JSON.parse(localStorage.getItem('krishiCart')) || [];
-            let existing = cart.find(item => item.id === p.id);
-            if (existing) {
-                existing.quantity += quantity;
+        try {
+            const baseUrl = window.API_BASE_URL || "https://krishi-ai-2-4j3k.onrender.com";
+            const res = await fetch(`${baseUrl}/api/store/products/${productId}`);
+            if (res.ok) {
+                activeProduct = await res.json();
             } else {
-                cart.push({
-                    id: p.id,
-                    name: p.name,
-                    price: p.price,
-                    image: p.image_url || p.image,
-                    quantity: quantity
-                });
+                activeProduct = FALLBACK_PRODUCTS.find(p => p.id === productId) || FALLBACK_PRODUCTS[0];
             }
-            localStorage.setItem('krishiCart', JSON.stringify(cart));
-            if (typeof updateCartCount === 'function') updateCartCount();
-            showNotification(`✅ ${p.name} (${quantity}) कार्ट में जोड़ा गया`);
+        } catch (e) {
+            activeProduct = FALLBACK_PRODUCTS.find(p => p.id === productId) || FALLBACK_PRODUCTS[0];
         }
 
-        document.querySelector('.btn-buy-now').addEventListener('click', () => {
-            addToCartDetail();
+        renderDetails();
+        renderRelated();
+    }
+
+    function renderDetails() {
+        if (!activeProduct) return;
+        document.title = `${activeProduct.name} – Krishi AI Store`;
+        document.getElementById('breadcrumbTitle').textContent = activeProduct.name;
+        document.getElementById('breadcrumbCategory').textContent = activeProduct.category;
+
+        document.getElementById('detailName').textContent = activeProduct.name;
+        document.getElementById('detailBrand').textContent = activeProduct.brand || 'Krishi AI';
+        document.getElementById('detailPrice').textContent = `₹${activeProduct.price}`;
+        document.getElementById('detailImage').src = activeProduct.image_url || activeProduct.image || SAFE_FALLBACK_IMG;
+
+        if (activeProduct.original_price && activeProduct.original_price > activeProduct.price) {
+            document.getElementById('detailMrp').textContent = `₹${activeProduct.original_price}`;
+            const disc = Math.round(((activeProduct.original_price - activeProduct.price) / activeProduct.original_price) * 100);
+            document.getElementById('detailDiscount').textContent = `${disc}% छूट`;
+            document.getElementById('detailDiscount').style.display = 'inline-block';
+        } else {
+            document.getElementById('detailMrp').style.display = 'none';
+            document.getElementById('detailDiscount').style.display = 'none';
+        }
+
+        if (activeProduct.badge) {
+            const b = document.getElementById('detailBadge');
+            b.textContent = activeProduct.badge;
+            b.style.display = 'inline-block';
+        }
+
+        document.getElementById('detailDescription').textContent = activeProduct.description || 'शुद्ध व प्रमाणित कृषि उत्पाद।';
+        document.getElementById('detailWeight').textContent = activeProduct.weight || 'मानक पैक';
+        document.getElementById('detailSku').textContent = activeProduct.sku || `KRISHI-${activeProduct.id}`;
+        document.getElementById('detailRating').textContent = activeProduct.rating ? activeProduct.rating.toFixed(1) : '4.7';
+        document.getElementById('detailReviews').textContent = `(${activeProduct.reviews_count || 50} समीक्षाएं)`;
+    }
+
+    function renderRelated() {
+        const grid = document.getElementById('relatedGrid');
+        if (!grid) return;
+
+        const related = FALLBACK_PRODUCTS.filter(p => p.id !== activeProduct.id).slice(0, 4);
+        grid.innerHTML = related.map(p => `
+            <div class="store-card">
+                <div class="store-card-img-wrap">
+                    <a href="product.html?id=${p.id}">
+                        <img src="${p.image_url}" class="store-card-img" onerror="handleImageError(this)" alt="${p.name}" />
+                    </a>
+                </div>
+                <div class="store-card-body">
+                    <div class="store-card-meta">
+                        <span>${p.brand}</span>
+                        <span>${p.weight}</span>
+                    </div>
+                    <h3 class="store-card-title">
+                        <a href="product.html?id=${p.id}">${p.name}</a>
+                    </h3>
+                    <div class="store-card-footer">
+                        <span class="store-current-price">₹${p.price}</span>
+                        <button class="store-add-btn" onclick="addToCart(FALLBACK_PRODUCTS.find(x => x.id === ${p.id}), 1)">
+                            + जोड़ें
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function handleDetailAddToCart() {
+        if (activeProduct) {
+            addToCart(activeProduct, detailQuantity);
+            openCartDrawer();
+        }
+    }
+
+    function handleDetailBuyNow() {
+        if (activeProduct) {
+            addToCart(activeProduct, detailQuantity);
             window.location.href = 'checkout.html';
-        });
-
-        function toggleWishlistDetail() {
-            const btn = document.querySelector('.btn-wishlist-large i');
-            if (btn.classList.contains('far')) {
-                btn.classList.remove('far');
-                btn.classList.add('fas');
-                showNotification('विश लिस्ट में जोड़ा गया');
-            } else {
-                btn.classList.remove('fas');
-                btn.classList.add('far');
-                showNotification('विश लिस्ट से हटाया गया');
-            }
         }
-    </script>
+    }
+
+    document.addEventListener('DOMContentLoaded', loadProduct);
+</script>
 </body>
 </html>

@@ -1,653 +1,397 @@
-// Products Data
-const productsData = {
-    'featured': [
-        {
-            id: 1,
-            name: 'हाइब्रिड टमाटर बीज',
-            category: 'vegetable-seeds',
-            image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-            price: 199,
-            originalPrice: 249,
-            rating: 4.5,
-            reviews: 128,
-            description: 'उच्च उत्पादन वाले हाइब्रिड टमाटर के बीज',
-            badge: 'बेस्ट सेलर',
-            inStock: true
-        },
-        {
-            id: 2,
-            name: 'जैविक वर्मीकम्पोस्ट',
-            category: 'organic-fertilizers',
-            image: 'https://images.unsplash.com/photo-1585336261022-680e295ce3fe?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-            price: 399,
-            originalPrice: 499,
-            rating: 4.7,
-            reviews: 89,
-            description: 'शुद्ध जैविक खाद, 5kg पैक',
-            badge: 'ऑर्गेनिक',
-            inStock: true
-        },
-        {
-            id: 3,
-            name: 'स्टील खुरपी',
-            category: 'farming-tools',
-            image: 'https://images.unsplash.com/photo-1598257008754-b4d61c42d6d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-            price: 299,
-            originalPrice: 349,
-            rating: 4.3,
-            reviews: 56,
-            description: 'उच्च गुणवत्ता वाली स्टील खुरपी',
-            badge: 'नया',
-            inStock: true
-        },
-        {
-            id: 4,
-            name: 'ड्रिप इरिगेशन किट',
-            category: 'irrigation',
-            image: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-            price: 1299,
-            originalPrice: 1599,
-            rating: 4.8,
-            reviews: 42,
-            description: '100 वर्ग मीटर के लिए ड्रिप किट',
-            badge: '20% ऑफ',
-            inStock: true
-        },
-        {
-            id: 5,
-            name: 'आम के बीज (अल्फांसो)',
-            category: 'fruit-seeds',
-            image: 'https://images.unsplash.com/photo-1553279768-865429fa0078?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-            price: 299,
-            originalPrice: 399,
-            rating: 4.6,
-            reviews: 167,
-            description: 'अल्फांसो आम के उच्च गुणवत्ता वाले बीज',
-            badge: 'लोकप्रिय',
-            inStock: true
-        },
-        {
-            id: 6,
-            name: 'नेचुरल कीटनाशक',
-            category: 'crop-protection',
-            image: 'https://images.unsplash.com/photo-1584990347441-8c0a8c802f2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-            price: 249,
-            originalPrice: 299,
-            rating: 4.4,
-            reviews: 78,
-            description: 'जैविक कीट नियंत्रण स्प्रे',
-            badge: 'सेफ',
-            inStock: true
-        },
-        {
-            id: 7,
-            name: 'हाइब्रिड मिर्च बीज',
-            category: 'vegetable-seeds',
-            image: 'https://images.unsplash.com/photo-1513530176992-0cf39c4cbed4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-            price: 149,
-            originalPrice: 199,
-            rating: 4.2,
-            reviews: 93,
-            description: 'तेज मिर्च के हाइब्रिड बीज',
-            badge: 'हॉट',
-            inStock: true
-        },
-        {
-            id: 8,
-            name: 'स्प्रे पंप (5 लीटर)',
-            category: 'farming-tools',
-            image: 'https://images.unsplash.com/photo-1589652043056-ba1a2c4830a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-            price: 599,
-            originalPrice: 699,
-            rating: 4.1,
-            reviews: 34,
-            description: 'पीठ पर ले जाने वाला स्प्रे पंप',
-            badge: 'बजट',
-            inStock: true
-        }
-    ]
-};
+/**
+ * KRISHI AI – AGRISTORE CORE SCRIPT (store.js)
+ * Clean, modular, lightweight client-side state & API communication.
+ */
 
-// Cart System
-let cart = JSON.parse(localStorage.getItem('krishiCart')) || [];
-let wishlist = JSON.parse(localStorage.getItem('krishiWishlist')) || [];
+// Fallback real products (synchronized with SQLite store_products database)
+const FALLBACK_PRODUCTS = [
+    {
+        id: 1,
+        name: "हाइब्रिड टमाटर बीज (Hybrid Tomato Seeds)",
+        category: "vegetable-seeds",
+        subcategory: "seeds",
+        description: "उच्च उत्पादन और रोग प्रतिरोधी हाइब्रिड टमाटर के बीज। 10 ग्राम पैक। 90%+ अंकुरण दर।",
+        image_url: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        price: 199.0,
+        original_price: 249.0,
+        rating: 4.8,
+        reviews_count: 128,
+        badge: "बेस्ट सेलर",
+        brand: "Krishi Gold",
+        weight: "10g",
+        in_stock: true
+    },
+    {
+        id: 2,
+        name: "जैविक वर्मीकम्पोस्ट (Organic Vermicompost 5kg)",
+        category: "organic-fertilizers",
+        subcategory: "fertilizers",
+        description: "100% शुद्ध केंचुआ खाद। मिट्टी की जलधारण क्षमता और पोषक तत्वों को बढ़ाता है।",
+        image_url: "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        price: 399.0,
+        original_price: 499.0,
+        rating: 4.7,
+        reviews_count: 89,
+        badge: "ऑर्गेनिक",
+        brand: "Krishi Bio",
+        weight: "5kg",
+        in_stock: true
+    },
+    {
+        id: 3,
+        name: "स्टील खुरपी (Heavy Duty Hand Weeder)",
+        category: "farming-tools",
+        subcategory: "tools",
+        description: "मजबूत फोर्ज्ड स्टील ब्लेड और लकड़ी की ग्रिप वाली प्रीमियम खुरपी।",
+        image_url: "https://images.unsplash.com/photo-1598257008754-b4d61c42d6d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        price: 299.0,
+        original_price: 349.0,
+        rating: 4.5,
+        reviews_count: 56,
+        badge: "नया",
+        brand: "AgriCraft",
+        weight: "450g",
+        in_stock: true
+    },
+    {
+        id: 4,
+        name: "ड्रिप इरिगेशन किट 100 वर्ग मीटर (Drip Irrigation Kit)",
+        category: "irrigation",
+        subcategory: "irrigation",
+        description: "100 वर्ग मीटर खेत या बगीचे के लिए पूर्ण ड्रिप किट। 70% पानी की बचत।",
+        image_url: "https://images.unsplash.com/photo-1560493676-04071c5f467b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        price: 1299.0,
+        original_price: 1599.0,
+        rating: 4.9,
+        reviews_count: 42,
+        badge: "20% ऑफ",
+        brand: "DropWise",
+        weight: "2.5kg",
+        in_stock: true
+    },
+    {
+        id: 5,
+        name: "संतुलित NPK 20-20-20 बायो फर्टिलाइजर (Balanced NPK 1L)",
+        category: "organic-fertilizers",
+        subcategory: "fertilizers",
+        description: "सभी फसलों के लिए संतुलित नाइट्रोजन, फास्फोरस व पोटाश युक्त तरल उर्वरक।",
+        image_url: "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        price: 349.0,
+        original_price: 420.0,
+        rating: 4.6,
+        reviews_count: 74,
+        badge: "प्रीमियम",
+        brand: "Krishi Bio",
+        weight: "1L",
+        in_stock: true
+    },
+    {
+        id: 6,
+        name: "नेचुरल नीम तेल स्प्रे (Pure Neem Oil Bio-Pesticide 500ml)",
+        category: "crop-protection",
+        subcategory: "protection",
+        description: "प्राकृतिक नीम सत्त से निर्मित सुरक्षित जैविक कीटनाशक। इल्ली, माहू व फफूंद से सुरक्षा।",
+        image_url: "https://images.unsplash.com/photo-1584990347441-8c0a8c802f2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        price: 249.0,
+        original_price: 299.0,
+        rating: 4.6,
+        reviews_count: 98,
+        badge: "सुरक्षित",
+        brand: "BioShield",
+        weight: "500ml",
+        in_stock: true
+    },
+    {
+        id: 7,
+        name: "डीएपी एवं यूरिया बूस्टर कॉम्बो (DAP & Urea Growth Booster 5kg)",
+        category: "organic-fertilizers",
+        subcategory: "fertilizers",
+        description: "शुरुआती वानस्पतिक वृद्धि और मजबूत जड़ों के लिए विशेष बूस्टर फॉर्मूलेशन।",
+        image_url: "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        price: 499.0,
+        original_price: 599.0,
+        rating: 4.7,
+        reviews_count: 112,
+        badge: "बेस्ट सेलर",
+        brand: "IFFCO Partner",
+        weight: "5kg",
+        in_stock: true
+    },
+    {
+        id: 8,
+        name: "मैनुअल स्प्रे पंप (5L Garden & Field Sprayer)",
+        category: "farming-tools",
+        subcategory: "tools",
+        description: "हल्का, टिकाऊ और ब्रास नोजल युक्त 5 लीटर प्रेशर स्प्रेयर पंप।",
+        image_url: "https://images.unsplash.com/photo-1589652043056-ba1a2c4830a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        price: 599.0,
+        original_price: 749.0,
+        rating: 4.4,
+        reviews_count: 65,
+        badge: "पॉपुलर",
+        brand: "AgriTech",
+        weight: "1.2kg",
+        in_stock: true
+    },
+    {
+        id: 9,
+        name: "गेहूं रस्ट केयर फंगीसाइड (Wheat Rust Care Spray 250g)",
+        category: "crop-protection",
+        subcategory: "protection",
+        description: "गेहूं में पीला, भूरा व काला रतुआ (Rust) रोग से त्वरित रोकथाम।",
+        image_url: "https://images.unsplash.com/photo-1584990347441-8c0a8c802f2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        price: 320.0,
+        original_price: 380.0,
+        rating: 4.8,
+        reviews_count: 49,
+        badge: "रोग रक्षक",
+        brand: "Krishi Care",
+        weight: "250g",
+        in_stock: true
+    },
+    {
+        id: 10,
+        name: "धान ब्लास्ट नियंत्रण किट (Rice Blast Protection Kit 500g)",
+        category: "crop-protection",
+        subcategory: "protection",
+        description: "धान की फसल में झुलसा और गर्दन तोड़ रोग के खिलाफ संपूर्ण सुरक्षा।",
+        image_url: "https://images.unsplash.com/photo-1584990347441-8c0a8c802f2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        price: 380.0,
+        original_price: 450.0,
+        rating: 4.7,
+        reviews_count: 36,
+        badge: "प्रमाणित",
+        brand: "Krishi Care",
+        weight: "500g",
+        in_stock: true
+    },
+    {
+        id: 11,
+        name: "कपास लीफ कर्ल डिफेंस (Cotton Leaf Curl Care 250ml)",
+        category: "crop-protection",
+        subcategory: "protection",
+        description: "कपास में पत्ती मरोड़ और सफेद मक्खी के प्रभाव को कम करने वाला विशेष टॉनिक।",
+        image_url: "https://images.unsplash.com/photo-1584990347441-8c0a8c802f2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        price: 350.0,
+        original_price: 420.0,
+        rating: 4.5,
+        reviews_count: 28,
+        badge: "बायो शील्ड",
+        brand: "Krishi Care",
+        weight: "250ml",
+        in_stock: true
+    },
+    {
+        id: 12,
+        name: "राइजोबियम कल्चर एवं पोटाश बूस्टर (Rhizobium & Potash Blend 1kg)",
+        category: "organic-fertilizers",
+        subcategory: "fertilizers",
+        description: "दलहनी फसलों में नाइट्रोजन स्थिरीकरण और दाने की चमक बढ़ाने वाला बायो-फर्टिलाइजर।",
+        image_url: "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        price: 279.0,
+        original_price: 330.0,
+        rating: 4.6,
+        reviews_count: 41,
+        badge: "विशेषज्ञ चयन",
+        brand: "Krishi Bio",
+        weight: "1kg",
+        in_stock: true
+    }
+];
 
-// DOM Elements
-const featuredProductsEl = document.getElementById('featured-products');
-const cartCountEl = document.querySelector('.cart-count');
+// Fallback image in case external images fail to load
+const SAFE_FALLBACK_IMG = "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500&q=80";
 
-// Initialize Store
-document.addEventListener('DOMContentLoaded', function() {
-    loadFeaturedProducts();
-    updateCartCount();
-    initHeroSlider();
-    initEventListeners();
-});
+function handleImageError(img) {
+    if (img.src !== SAFE_FALLBACK_IMG) {
+        img.src = SAFE_FALLBACK_IMG;
+    }
+}
 
-// Load Featured Products
-// Load Featured Products
-async function loadFeaturedProducts() {
-    if (!featuredProductsEl) return;
-    
+/* ===================================================
+   CART MANAGEMENT
+=================================================== */
+
+function getCart() {
     try {
-        const baseUrl = window.API_BASE_URL || "https://krishi-ai-2-4j3k.onrender.com";
-        const res = await fetch(`${baseUrl}/api/store/products`);
-        if (res.ok) {
-            const apiProducts = await res.json();
-            if (apiProducts && apiProducts.length > 0) {
-                window.liveStoreProducts = apiProducts;
-                renderProductGrid(apiProducts);
-                return;
-            }
-        }
+        return JSON.parse(localStorage.getItem('krishiCart')) || [];
     } catch (e) {
-        console.warn("Using local products fallback:", e);
+        return [];
     }
-    
-    renderProductGrid(productsData.featured);
 }
 
-function renderProductGrid(products) {
-    featuredProductsEl.innerHTML = products.map(product => `
-        <div class="product-card" data-id="${product.id}">
-            ${product.badge ? `<span class="product-badge">${product.badge}</span>` : ''}
-            <a href="product.html?id=${product.id}">
-              <img src="${product.image || product.image_url}" alt="${product.name}" class="product-img">
-            </a>
-            <div class="product-info">
-                <h3 class="product-title">
-                  <a href="product.html?id=${product.id}" style="text-decoration: none; color: inherit;">${product.name}</a>
-                </h3>
-                <div class="product-rating">
-                    ${getStarRating(product.rating || 4.5)}
-                    <span>(${product.reviews_count || product.reviews || 50})</span>
-                </div>
-                <div class="product-price">
-                    <span class="current-price">₹${product.price}</span>
-                    ${(product.original_price || product.originalPrice) ? `<span class="original-price">₹${product.original_price || product.originalPrice}</span>` : ''}
-                    ${product.discount_percentage ? `<span class="discount">${Math.round(product.discount_percentage)}% OFF</span>` : ''}
-                </div>
-                <div class="product-actions">
-                    <button class="action-btn btn-cart" onclick="addToCart(${product.id})">
-                        <i class="fas fa-shopping-cart"></i> कार्ट में
-                    </button>
-                    <button class="action-btn btn-wishlist" onclick="toggleWishlist(${product.id})">
-                        <i class="fas fa-heart"></i> विश लिस्ट
-                    </button>
-                </div>
-            </div>
-        </div>
-    `).join('');
+function saveCart(cart) {
+    localStorage.setItem('krishiCart', JSON.stringify(cart));
+    updateCartBadges();
+    renderCartDrawer();
 }
 
-// Star Rating Helper
-function getStarRating(rating) {
-    let stars = '';
-    for (let i = 1; i <= 5; i++) {
-        if (i <= Math.floor(rating)) {
-            stars += '<i class="fas fa-star"></i>';
-        } else if (i === Math.ceil(rating) && !Number.isInteger(rating)) {
-            stars += '<i class="fas fa-star-half-alt"></i>';
-        } else {
-            stars += '<i class="far fa-star"></i>';
-        }
-    }
-    return stars;
-}
-
-// Calculate Discount
-function calculateDiscount(current, original) {
-    return Math.round(((original - current) / original) * 100);
-}
-
-// Cart Functions
-function addToCart(productId) {
-    let product = (window.liveStoreProducts || []).find(p => p.id === productId);
-    if (!product) {
-        product = productsData.featured.find(p => p.id === productId);
-    }
+function addToCart(product, quantity = 1) {
     if (!product) return;
-    
-    const existingItem = cart.find(item => item.id === productId);
-    
-    if (existingItem) {
-        existingItem.quantity += 1;
+    const cart = getCart();
+    const existing = cart.find(item => item.id === product.id);
+
+    if (existing) {
+        existing.quantity += quantity;
     } else {
         cart.push({
             id: product.id,
             name: product.name,
-            price: product.price,
-            image: product.image || product.image_url,
-            quantity: 1
+            price: Number(product.price) || 0,
+            original_price: Number(product.original_price) || 0,
+            image: product.image_url || product.image || SAFE_FALLBACK_IMG,
+            brand: product.brand || "Krishi AI",
+            weight: product.weight || "",
+            category: product.category || "",
+            quantity: quantity
         });
     }
-    
-    saveCart();
-    updateCartCount();
-    showNotification(`${product.name} कार्ट में जोड़ा गया`);
+
+    saveCart(cart);
+    showToast(`✅ ${product.name.split('(')[0].trim()} जोड़ा गया (${quantity})`);
+}
+
+function updateQuantity(productId, newQty) {
+    let cart = getCart();
+    const item = cart.find(i => i.id === productId);
+
+    if (item) {
+        if (newQty > 0) {
+            item.quantity = newQty;
+        } else {
+            cart = cart.filter(i => i.id !== productId);
+        }
+        saveCart(cart);
+    }
 }
 
 function removeFromCart(productId) {
-    cart = cart.filter(item => item.id !== productId);
-    saveCart();
-    updateCartCount();
-    if (typeof updateCartDisplay === 'function') updateCartDisplay();
+    let cart = getCart();
+    cart = cart.filter(i => i.id !== productId);
+    saveCart(cart);
+    showToast("आइटम कार्ट से हटाया गया");
 }
 
-function updateCartCount() {
-    if (cartCountEl) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCountEl.textContent = totalItems;
-        cartCountEl.classList.remove('cart-bump');
-        void cartCountEl.offsetWidth;
-        cartCountEl.classList.add('cart-bump');
-    }
+function clearCart() {
+    localStorage.removeItem('krishiCart');
+    updateCartBadges();
+    renderCartDrawer();
 }
 
-function saveCart() {
-    localStorage.setItem('krishiCart', JSON.stringify(cart));
+function getCartTotal() {
+    const cart = getCart();
+    return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 }
 
-function updateCartDisplay() {
-    const cartItemsContainer = document.getElementById('cart-items');
-    const subtotalEl = document.getElementById('cart-subtotal');
-    const totalEl = document.getElementById('cart-total');
-    if (!cartItemsContainer) return;
-
-    let cartData = JSON.parse(localStorage.getItem('krishiCart')) || [];
-    if (cartData.length === 0) {
-        cartItemsContainer.innerHTML = `
-            <div style="padding: 40px; text-align: center; color: #666; font-size: 16px;">
-                🛒 आपकी कार्ट खाली है। <a href="index.html" style="color: #2e7d32; font-weight: bold;">खरीदारी शुरू करें</a>
-            </div>
-        `;
-        if (subtotalEl) subtotalEl.textContent = '₹0';
-        if (totalEl) totalEl.textContent = '₹0';
-        return;
-    }
-
-    let subtotal = 0;
-    cartItemsContainer.innerHTML = cartData.map(item => {
-        const itemTotal = item.price * item.quantity;
-        subtotal += itemTotal;
-        return `
-            <div class="cart-item-row" style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 50px; align-items: center; padding: 12px; border-bottom: 1px solid #eee; gap: 10px;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;" />
-                    <strong>${item.name}</strong>
-                </div>
-                <div>₹${item.price}</div>
-                <div>
-                    <button onclick="changeCartQty(${item.id}, -1)" style="padding: 2px 8px; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px;">-</button>
-                    <span style="margin: 0 6px; font-weight: bold;">${item.quantity}</span>
-                    <button onclick="changeCartQty(${item.id}, 1)" style="padding: 2px 8px; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px;">+</button>
-                </div>
-                <div style="font-weight: bold; color: #2e7d32;">₹${itemTotal}</div>
-                <div>
-                    <button onclick="changeCartQty(${item.id}, -${item.quantity})" style="color: #d32f2f; background: none; border: none; cursor: pointer; font-size: 16px;">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-    }).join('');
-
-    if (subtotalEl) subtotalEl.textContent = `₹${subtotal.toFixed(2)}`;
-    if (totalEl) totalEl.textContent = `₹${subtotal.toFixed(2)}`;
+function getCartCount() {
+    const cart = getCart();
+    return cart.reduce((count, item) => count + item.quantity, 0);
 }
 
-window.changeCartQty = function(id, delta) {
-    let cartData = JSON.parse(localStorage.getItem('krishiCart')) || [];
-    let item = cartData.find(i => i.id === id);
-    if (item) {
-        item.quantity += delta;
-        if (item.quantity <= 0) {
-            cartData = cartData.filter(i => i.id !== id);
-        }
-    }
-    localStorage.setItem('krishiCart', JSON.stringify(cartData));
-    cart = cartData;
-    updateCartCount();
-    updateCartDisplay();
-};
+function updateCartBadges() {
+    const count = getCartCount();
+    document.querySelectorAll('.store-cart-badge').forEach(badge => {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'inline-block' : 'none';
+    });
 
-// Wishlist Functions
-function toggleWishlist(productId) {
-    const index = wishlist.indexOf(productId);
-    
-    if (index === -1) {
-        wishlist.push(productId);
-        showNotification('विश लिस्ट में जोड़ा गया');
-    } else {
-        wishlist.splice(index, 1);
-        showNotification('विश लिस्ट से हटाया गया');
-    }
-    
-    localStorage.setItem('krishiWishlist', JSON.stringify(wishlist));
+    const total = getCartTotal();
+    document.querySelectorAll('.store-cart-total-text').forEach(el => {
+        el.textContent = `₹${total.toFixed(0)}`;
+    });
 }
 
-// Hero Slider
-function initHeroSlider() {
-    const slides = document.querySelectorAll('.slide');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
-    
-    if (!slides.length) return;
-    
-    let currentSlide = 0;
-    
-    function showSlide(index) {
-        slides.forEach(slide => slide.classList.remove('active'));
-        slides[index].classList.add('active');
-        currentSlide = index;
-    }
-    
-    function nextSlide() {
-        let next = currentSlide + 1;
-        if (next >= slides.length) next = 0;
-        showSlide(next);
-    }
-    
-    function prevSlide() {
-        let prev = currentSlide - 1;
-        if (prev < 0) prev = slides.length - 1;
-        showSlide(prev);
-    }
-    
-    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-    
-    // Auto slide
-    setInterval(nextSlide, 5000);
+/* ===================================================
+   DRAWER UI & TOAST
+=================================================== */
+
+function openCartDrawer() {
+    renderCartDrawer();
+    const overlay = document.getElementById('cartDrawerOverlay');
+    const drawer = document.getElementById('cartDrawer');
+    if (overlay) overlay.classList.add('active');
+    if (drawer) drawer.classList.add('active');
 }
 
-// Event Listeners
-function initEventListeners() {
-    // Search functionality
-    const searchInput = document.querySelector('.search-bar input');
-    const searchBtn = document.querySelector('.search-bar button');
-    
-    if (searchBtn) {
-        searchBtn.addEventListener('click', performSearch);
-    }
-    
-    if (searchInput) {
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') performSearch();
-        });
-    }
+function closeCartDrawer() {
+    const overlay = document.getElementById('cartDrawerOverlay');
+    const drawer = document.getElementById('cartDrawer');
+    if (overlay) overlay.classList.remove('active');
+    if (drawer) drawer.classList.remove('active');
 }
 
-function performSearch() {
-    const searchInput = document.querySelector('.search-bar input');
-    const query = searchInput.value.trim();
-    
-    if (query) {
-        window.location.href = `category.html?search=${encodeURIComponent(query)}`;
-    }
-}
+function renderCartDrawer() {
+    const body = document.getElementById('cartDrawerBody');
+    const footer = document.getElementById('cartDrawerFooter');
+    if (!body) return;
 
-// Notification System
-function showNotification(message) {
-    // Remove existing notification
-    const existingNotification = document.querySelector('.notification');
-    if (existingNotification) {
-        existingNotification.remove();
-    }
-    
-    // Create new notification
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.innerHTML = `
-        <div class="notification-content">
-            <i class="fas fa-check-circle"></i>
-            <span>${message}</span>
-        </div>
-    `;
-    
-    // Add styles
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #2d5a27;
-        color: white;
-        padding: 15px 25px;
-        border-radius: 5px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        z-index: 10000;
-        animation: slideIn 0.3s ease;
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
+    const cart = getCart();
 
-// Add CSS for animations
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-    
-    .notification-content {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .notification-content i {
-        font-size: 20px;
-    }
-`;
-document.head.appendChild(style);
-
-// Export functions for use in other pages
-window.addToCart = addToCart;
-window.toggleWishlist = toggleWishlist;
-window.removeFromCart = removeFromCart;
-// Add these to store.js after cart functions
-
-// Payment Methods Data
-const paymentMethods = [
-    {
-        id: 'cod',
-        name: 'Cash on Delivery',
-        icon: 'fas fa-money-bill-wave',
-        description: 'Pay when you receive the order'
-    },
-    {
-        id: 'upi',
-        name: 'UPI',
-        icon: 'fas fa-mobile-alt',
-        description: 'Google Pay, PhonePe, Paytm'
-    },
-    {
-        id: 'card',
-        name: 'Credit/Debit Card',
-        icon: 'fas fa-credit-card',
-        description: 'Visa, Mastercard, RuPay'
-    },
-    {
-        id: 'netbanking',
-        name: 'Net Banking',
-        icon: 'fas fa-university',
-        description: 'All major banks'
-    },
-    {
-        id: 'wallet',
-        name: 'Digital Wallet',
-        icon: 'fas fa-wallet',
-        description: 'Paytm Wallet, Amazon Pay'
-    }
-];
-
-// Add Razorpay Integration
-function initRazorpay() {
-    const script = document.createElement('script');
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    document.head.appendChild(script);
-}
-
-// Initialize Razorpay when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    initRazorpay();
-    // ... existing code
-});
-// Add these functions to store.js for cart management
-
-function showCartPage() {
-    // This function would be called from a cart page
-    updateCartDisplay();
-}
-
-function updateCartDisplay() {
-    const cart = JSON.parse(localStorage.getItem('krishiCart')) || [];
-    const cartItemsEl = document.getElementById('cart-items');
-    const cartTotalEl = document.getElementById('cart-total');
-    const cartCountEl = document.querySelector('.cart-count');
-    
-    if (!cartItemsEl) return;
-    
     if (cart.length === 0) {
-        cartItemsEl.innerHTML = `
-            <div class="empty-cart">
-                <i class="fas fa-shopping-cart"></i>
-                <h3>आपकी कार्ट खाली है</h3>
-                <p>कुछ उत्पाद खरीदने के लिए ब्राउज़ करें</p>
-                <a href="index.html" class="btn-primary">शॉपिंग जारी रखें</a>
+        body.innerHTML = `
+            <div style="text-align: center; padding: 40px 10px; color: var(--text-secondary);">
+                <div style="font-size: 40px; margin-bottom: 8px;">🛒</div>
+                <h4 style="font-size: 15px; color: var(--text-primary); margin-bottom: 4px;">आपकी कार्ट खाली है</h4>
+                <p style="font-size: 13px;">अपनी खेती के लिए आवश्यक बीज, खाद व दवाइयां जोड़ें।</p>
             </div>
         `;
-        if (cartTotalEl) cartTotalEl.textContent = '₹0';
-        if (cartCountEl) cartCountEl.textContent = '0';
+        if (footer) footer.style.display = 'none';
         return;
     }
-    
-    let total = 0;
-    
-    cartItemsEl.innerHTML = cart.map(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        
-        return `
-            <div class="cart-item" data-id="${item.id}">
-                <div class="item-info">
-                    <img src="${item.image}" alt="${item.name}">
-                    <div>
-                        <div class="item-name">${item.name}</div>
-                        <div class="item-category">${item.category}</div>
-                    </div>
+
+    if (footer) footer.style.display = 'block';
+
+    body.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <img src="${item.image}" class="cart-item-img" onerror="handleImageError(this)" alt="${item.name}" />
+            <div class="cart-item-info">
+                <div class="cart-item-title" title="${item.name}">${item.name}</div>
+                <div class="cart-item-price">₹${item.price} × ${item.quantity} = ₹${item.price * item.quantity}</div>
+            </div>
+            <div class="cart-item-actions">
+                <div class="store-qty-control">
+                    <button class="store-qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                    <span class="store-qty-num">${item.quantity}</span>
+                    <button class="store-qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
                 </div>
-                <div class="item-price">₹${item.price}</div>
-                <div class="quantity-control">
-                    <button class="qty-btn" onclick="updateItemQuantity(${item.id}, ${item.quantity - 1})">-</button>
-                    <span>${item.quantity}</span>
-                    <button class="qty-btn" onclick="updateItemQuantity(${item.id}, ${item.quantity + 1})">+</button>
-                </div>
-                <div class="item-total">₹${itemTotal}</div>
-                <button class="remove-item" onclick="removeFromCart(${item.id})">
-                    <i class="fas fa-trash"></i>
+                <button onclick="removeFromCart(${item.id})" style="color: #dc2626; font-size: 14px; padding: 4px 6px;" title="हटाएं">
+                    <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
-        `;
-    }).join('');
-    
-    if (cartTotalEl) cartTotalEl.textContent = `₹${total.toFixed(2)}`;
-    if (cartCountEl) cartCountEl.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+        </div>
+    `).join('');
+
+    const total = getCartTotal();
+    const subtotalEl = document.getElementById('drawerSubtotal');
+    const totalEl = document.getElementById('drawerTotal');
+    if (subtotalEl) subtotalEl.textContent = `₹${total.toFixed(0)}`;
+    if (totalEl) totalEl.textContent = `₹${total.toFixed(0)}`;
 }
 
-function updateItemQuantity(productId, newQuantity) {
-    if (newQuantity < 1) {
-        removeFromCart(productId);
-        return;
+function showToast(msg) {
+    let toast = document.getElementById('storeToast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'storeToast';
+        toast.className = 'store-toast';
+        document.body.appendChild(toast);
     }
-    
-    const cart = JSON.parse(localStorage.getItem('krishiCart')) || [];
-    const item = cart.find(item => item.id === productId);
-    
-    if (item) {
-        item.quantity = newQuantity;
-        localStorage.setItem('krishiCart', JSON.stringify(cart));
-        updateCartDisplay();
-        showNotification('मात्रा अपडेट की गई');
-    }
-}
-
-// Add empty cart CSS
-const emptyCartCSS = `
-    .empty-cart {
-        text-align: center;
-        padding: 60px 20px;
-    }
-    
-    .empty-cart i {
-        font-size: 80px;
-        color: #ddd;
-        margin-bottom: 20px;
-    }
-    
-    .empty-cart h3 {
-        color: #666;
-        margin-bottom: 10px;
-    }
-    
-    .empty-cart p {
-        color: #999;
-        margin-bottom: 30px;
-    }
-`;
-
-// Inject empty cart CSS
-const style = document.createElement('style');
-style.textContent = emptyCartCSS;
-document.head.appendChild(style);
-function buyNow(productId) {
-    const product = productsData.featured.find(p => p.id === productId);
-    if (!product) return;
-    
-    // Add to cart and redirect to checkout
-    addToCart(productId);
+    toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #4ade80;"></i> <span>${msg}</span>`;
+    toast.classList.add('show');
     setTimeout(() => {
-        window.location.href = 'checkout.html';
-    }, 500);
+        toast.classList.remove('show');
+    }, 2400);
 }
-// इस function को complete करें:
-function processOnlinePayment(paymentMethod) {
-    const totalAmount = calculateTotal();
-    
-    if (window.Razorpay) {
-        const options = {
-            "key": "rzp_test_YOUR_ACTUAL_KEY_HERE", // 🔴 यहाँ अपना key डालें
-            "amount": totalAmount * 100,
-            "currency": "INR",
-            "name": "Krishi AI Store",
-            // ... rest of options
-        };
-        
-        const rzp = new Razorpay(options);
-        rzp.open();
+
+// Global initialization
+document.addEventListener('DOMContentLoaded', () => {
+    updateCartBadges();
+
+    // Mount language selector if container exists
+    if (window.krishiI18n) {
+        if (document.getElementById('storeLangSelector')) {
+            window.krishiI18n.renderSelector('storeLangSelector', { compact: true });
+        }
+        window.krishiI18n.translatePage();
     }
-}
+});
