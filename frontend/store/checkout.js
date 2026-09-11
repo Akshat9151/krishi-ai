@@ -147,122 +147,83 @@ function placeOrder() {
 
 async function processCODOrder() {
     const cart = JSON.parse(localStorage.getItem('krishiCart')) || [];
-    if (cart.length === 0) return;
+    if (cart.length === 0) {
+        showNotification('कार्ट खाली है। पहले उत्पाद जोड़ें।');
+        return;
+    }
 
-    showNotification('ऑर्डर कन्फर्म किया जा रहा है...');
+    const customerName = document.getElementById('name')?.value.trim();
+    const phone = document.getElementById('phone')?.value.trim();
+    const address = document.getElementById('address')?.value.trim();
 
-    const customerName = document.getElementById('name')?.value || "किसान भाई";
-    const phone = document.getElementById('phone')?.value || "9876543210";
-    const address = document.getElementById('address')?.value || "ग्राम सोनपुर, बिहार";
-    const totalAmount = calculateTotal();
+    if (!customerName || !/^[A-Za-zÀ-ÿ\u0900-\u097F\s.'-]{2,80}$/.test(customerName)) {
+        showNotification('कृपया अपना सही नाम लिखें।');
+        document.getElementById('name')?.focus();
+        return;
+    }
+    if (!/^\d{10}$/.test(phone)) {
+        showNotification('कृपया 10 अंकों का मोबाइल नंबर लिखें।');
+        document.getElementById('phone')?.focus();
+        return;
+    }
+    if (!address || address.length < 8) {
+        showNotification('कृपया पूरा डिलीवरी पता लिखें।');
+        document.getElementById('address')?.focus();
+        return;
+    }
+
+    const submitButton = document.querySelector('.place-order-btn');
+    const originalText = submitButton?.textContent;
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'ऑर्डर भेजा जा रहा है...';
+    }
 
     const orderPayload = {
         customer_name: customerName,
-        phone: phone,
-        address: address,
+        phone,
+        address,
         items: cart.map(item => ({
-            product_id: item.id || 1,
+            product_id: item.id || null,
             name: item.name,
-            price: item.price,
-            quantity: item.quantity
+            price: Number(item.price),
+            quantity: Number(item.quantity)
         })),
-        total_amount: totalAmount,
-        payment_method: "cod"
+        total_amount: calculateTotal(),
+        payment_method: 'cod'
     };
 
     try {
-        const baseUrl = window.API_BASE_URL || "https://krishi-ai-2-4j3k.onrender.com";
-        const res = await fetch(`${baseUrl}/api/store/orders`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+        const response = await fetch(window.getApiUrl('/api/store/orders'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderPayload)
         });
-
-        if (res.ok) {
-            const data = await res.json();
-            showNotification('✅ ' + data.message);
-            localStorage.removeItem('krishiCart');
-            setTimeout(() => {
-                window.location.href = `order-confirmation.html?order=${data.order_number}`;
-            }, 1000);
-            return;
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || !payload.order_number) {
+            throw new Error(payload.detail || 'Order could not be confirmed');
         }
-    } catch (e) {
-        console.warn("Backend order creation error, using fallback:", e);
-    }
 
-    completeOrder("COD");
+        localStorage.removeItem('krishiCart');
+        window.location.assign('order-confirmation.html?order=' + encodeURIComponent(payload.order_number));
+    } catch (error) {
+        console.error('Order creation failed:', error);
+        showNotification('ऑर्डर सेव नहीं हुआ। इंटरनेट जाँचकर फिर कोशिश करें।');
+    } finally {
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = originalText || 'ऑर्डर कन्फर्म करें';
+        }
+    }
 }
 
-function processOnlinePayment(paymentMethod) {
-    const totalAmount = calculateTotal();
-    
-    if (window.Razorpay) {
-        const options = {
-            "key": "rzp_test_YOUR_KEY_ID", // Replace with your Razorpay Key
-            "amount": totalAmount * 100, // Amount in paise
-            "currency": "INR",
-            "name": "Krishi AI Store",
-            "description": "कृषि उत्पाद खरीद",
-            "image": "https://your-logo-url.com/logo.png",
-            "handler": function(response) {
-                // Payment success
-                showNotification('पेमेंट सफल! ऑर्डर कन्फर्म किया जा रहा है...');
-                completeOrder(response.razorpay_payment_id);
-            },
-            "prefill": {
-                "name": "किसान नाम",
-                "email": "farmer@example.com",
-                "contact": "9876543210"
-            },
-            "notes": {
-                "address": "किसान का पता"
-            },
-            "theme": {
-                "color": "#2d5a27"
-            }
-        };
-        
-        const rzp = new Razorpay(options);
-        rzp.open();
-    } else {
-        // Fallback to manual payment form
-        showNotification(`Processing ${paymentMethod} payment...`);
-        setTimeout(() => {
-            showNotification('Payment successful!');
-            completeOrder();
-        }, 3000);
-    }
+function processOnlinePayment() {
+    showNotification('ऑनलाइन भुगतान अभी उपलब्ध नहीं है। कृपया कैश ऑन डिलीवरी चुनें।');
 }
 
 function calculateTotal() {
     const totalText = document.querySelector('.price-row.total span:last-child').textContent;
-    return parseFloat(totalText.replace('₹', ''));
-}
-
-function completeOrder(paymentId = null) {
-    // Save order to localStorage
-    const order = {
-        id: 'ORD' + Date.now(),
-        date: new Date().toLocaleDateString('hi-IN'),
-        items: JSON.parse(localStorage.getItem('krishiCart')),
-        total: calculateTotal(),
-        paymentId: paymentId,
-        status: 'processing'
-    };
-    
-    // Save order
-    let orders = JSON.parse(localStorage.getItem('krishiOrders')) || [];
-    orders.push(order);
-    localStorage.setItem('krishiOrders', JSON.stringify(orders));
-    
-    // Clear cart
-    localStorage.removeItem('krishiCart');
-    
-    // Redirect to confirmation
-    setTimeout(() => {
-        window.location.href = 'order-confirmation.html?order=' + order.id;
-    }, 1500);
+    return Number.parseFloat(totalText.replace(/[^0-9.]/g, '')) || 0;
 }
 
 // Add these functions to store.js for cart page
