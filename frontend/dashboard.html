@@ -311,47 +311,30 @@
       flex-shrink: 0;
     }
 
-    /* Global product brand — deliberately independent from the active workspace view */
-    .topbar-brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-      color: var(--text-main);
-      text-decoration: none;
-    }
-    .topbar-brand img {
-      width: 34px;
-      height: 34px;
-      flex-shrink: 0;
-      border-radius: 9px;
-      background: #ffffff;
-      border: 1px solid var(--sidebar-border);
-      padding: 2px;
-      box-shadow: 0 1px 4px rgba(11, 122, 58, 0.1);
-    }
-    .topbar-brand-copy {
+    /* Breadcrumb / active section label */
+    .topbar-section-label {
       display: flex;
       flex-direction: column;
       gap: 1px;
       min-width: 0;
     }
-    .topbar-brand-name {
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--primary-green);
-      letter-spacing: -0.2px;
-      line-height: 1.1;
-      white-space: nowrap;
-    }
-    .topbar-brand-tagline {
-      font-size: 9.5px;
+    .topbar-section-label .topbar-crumb {
+      font-size: 11px;
       font-weight: 700;
-      color: var(--text-muted);
-      letter-spacing: 0.75px;
-      line-height: 1.1;
       text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--primary-green);
+      opacity: 0.7;
+      line-height: 1;
+    }
+    .topbar-section-label .topbar-page-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-main);
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
     }
 
     /* Right: controls cluster */
@@ -670,19 +653,6 @@
       .minimal-topbar {
         padding: 0 14px;
       }
-      .topbar-brand {
-        gap: 8px;
-      }
-      .topbar-brand img {
-        width: 30px;
-        height: 30px;
-      }
-      .topbar-brand-name {
-        font-size: 15px;
-      }
-      .topbar-brand-tagline {
-        display: none;
-      }
       .topbar-store-icon-link span {
         display: none; /* icon-only on mobile */
       }
@@ -706,6 +676,15 @@
        VOTEVICTORY MINIMALIST LEFT SIDEBAR
   ============================================== -->
   <aside class="app-sidebar" id="appSidebar">
+
+    <!-- Brand Header -->
+    <div class="sidebar-brand">
+      <img src="statics/images/krishi-logo.svg" alt="Krishi AI Logo" />
+      <div class="sidebar-brand-text">
+        <h2>Krishi AI</h2>
+        <span>FARM MANAGEMENT</span>
+      </div>
+    </div>
 
     <!-- Navigation List with Clean Category Headers -->
     <div class="sidebar-nav-container">
@@ -799,20 +778,17 @@
   ============================================== -->
   <main class="app-main-area">
 
-    <!-- ─── Global fixed application header ─── -->
+    <!-- ─── Clean Topbar Header ─── -->
     <header class="minimal-topbar">
-      <!-- Global identity stays fixed; the workspace title lives in the content area below. -->
+      <!-- Left: mobile toggle + current section breadcrumb -->
       <div class="topbar-left">
         <button class="mobile-nav-toggle" onclick="toggleSidebar()" title="Toggle Navigation">
           <i class="fa-solid fa-bars"></i>
         </button>
-        <a class="topbar-brand" href="dashboard.html" aria-label="Krishi AI home">
-          <img src="statics/images/krishi-logo.svg" alt="Krishi AI Logo" />
-          <span class="topbar-brand-copy">
-            <span class="topbar-brand-name">कृषि AI</span>
-            <span class="topbar-brand-tagline">Smart Farming</span>
-          </span>
-        </a>
+        <div class="topbar-section-label">
+          <span class="topbar-crumb">Krishi AI</span>
+          <span class="topbar-page-title" id="topbarPageTitle">Dashboard</span>
+        </div>
       </div>
 
       <!-- Right: language, notifications, store link, user pill -->
