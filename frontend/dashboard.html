@@ -13,6 +13,7 @@
     =================================================== */
     :root {
       --sidebar-width: 250px;
+      --topbar-height: 60px;
       --primary-green: #0b7a3a;
       --primary-dark: #085a2b;
       --primary-light: #e8f5ec;
@@ -58,7 +59,8 @@
       color: var(--text-main);
       display: flex;
       flex-direction: column;
-      height: 100%;
+      height: calc(100vh - var(--topbar-height));
+      margin-top: var(--topbar-height);
       border-right: 1.5px solid var(--sidebar-border);
       z-index: 1000;
       transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
@@ -261,13 +263,17 @@
       flex-direction: column;
       overflow-y: auto;
       height: 100vh;
+      padding-top: var(--topbar-height);
       background: var(--bg-workspace);
     }
 
     /* ─── Clean Topbar Header ─── */
     .minimal-topbar {
-      height: 60px;
-      min-height: 60px;
+      height: var(--topbar-height);
+      min-height: var(--topbar-height);
+      width: 100%;
+      margin: 0;
+      border-radius: 0;
       background: #ffffff;
       border-bottom: 1px solid var(--border-color);
       box-shadow: 0 1px 3px rgba(11, 122, 58, 0.04);
@@ -275,9 +281,11 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 28px;
-      position: sticky;
+      position: fixed;
       top: 0;
-      z-index: 40;
+      left: 0;
+      right: 0;
+      z-index: 1200;
     }
 
     /* Left: hamburger + breadcrumb section title */
@@ -618,8 +626,10 @@
       .app-sidebar {
         position: fixed;
         left: calc(-1 * var(--sidebar-width));
-        top: 0;
+        top: var(--topbar-height);
         bottom: 0;
+        height: auto;
+        margin-top: 0;
       }
       .app-sidebar.open {
         transform: translateX(var(--sidebar-width));
@@ -630,7 +640,10 @@
       .mobile-drawer-overlay {
         display: none;
         position: fixed;
-        inset: 0;
+        top: var(--topbar-height);
+        right: 0;
+        bottom: 0;
+        left: 0;
         background: rgba(0, 0, 0, 0.4);
         z-index: 999;
       }
