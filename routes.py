@@ -199,41 +199,53 @@ def health_check():
 
 
 # -------------------------------------------------
-# 🚧 Legacy `/predict/crop` endpoint (no /api prefix)
+# Backward-compatible crop prediction endpoints
 # -------------------------------------------------
-
-# create a separate router without prefix so path is exactly /predict/crop
+# Older frontends may still call /predict or /predict/crop. Keep those URLs,
+# but route them through the production recommender—never a static demo result.
 legacy_router = APIRouter()
 
-# attempt to load model, but keep server running if file is invalid
-model = None
-try:
-    model = joblib.load("backend/model.pkl")
-except Exception as e:
-    # log warning; model will not be used until fixed
-    print(f"[WARN] could not load legacy model: {e}")
+def _legacy_crop_prediction(data: dict):
+    soil_type = data.get("soil_type") or data.get("soil")
+    location = data.get("location") or data.get("city")
+    season = data.get("season")
+
+    if not all(isinstance(value, str) and value.strip() for value in (soil_type, location, season)):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="soil_type, location, and season are required"
+        )
+
+    try:
+        weather = get_weather(location.strip())
+        recommendations = predict_crop_ml(
+            soil_type=soil_type.strip(),
+            season=season.strip(),
+            location=location.strip(),
+            weather=weather,
+            top_n=3,
+        )
+        return {
+            "location": location.strip(),
+            "temperature": weather["temperature"],
+            "humidity": weather["humidity"],
+            "rainfall": weather["rainfall"],
+            "recommended_crops": recommendations,
+        }
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.log_error(exc, "Legacy Crop Prediction API")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Crop prediction is temporarily unavailable. Please try again."
+        )
 
 @legacy_router.post("/predict/crop")
 def legacy_predict_crop(data: dict):
-    soil = data.get("soil")
-    city = data.get("city")
-    season = data.get("season")
+    return _legacy_crop_prediction(data)
 
-    # dummy logic (temporary)
-    crop = "Wheat"
-    # real logic could use model if loaded:
-    # if model is not None:
-    #     crop = model.predict(...)
-
-    return {
-        "location": city,
-        "temperature": 28,
-        "humidity": 60,
-        "crop": crop
-    }
-
-# some clients (and old frontend) hit /predict directly; alias it to the same handler
 @legacy_router.post("/predict")
 def legacy_predict_alias(data: dict):
-    # simply defer to the existing implementation for /predict/crop
-    return legacy_predict_crop(data)
+    return _legacy_crop_prediction(data)
+\n
