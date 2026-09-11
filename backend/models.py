@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Index
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Index, DateTime, Text
+from datetime import datetime
 from backend.database import Base
 
 
@@ -101,4 +102,21 @@ class Order(Base):
         Index('idx_order_user', 'user_id'),
         Index('idx_order_product', 'product_id'),
         Index('idx_user_product', 'user_id', 'product_id'),
+    )
+
+# Farmer-scoped real activity feed for the dashboard. This is deliberately
+# separate from model-output tables so it can evolve without changing ML data.
+class FarmActivity(Base):
+    __tablename__ = "farm_activities"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, nullable=False, index=True)
+    activity_type = Column(String, nullable=False, index=True)
+    title = Column(String, nullable=False)
+    details = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+
+    __table_args__ = (
+        Index('idx_farm_activity_user_time', 'username', 'created_at'),
+        Index('idx_farm_activity_type_time', 'activity_type', 'created_at'),
     )
