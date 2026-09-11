@@ -1477,7 +1477,9 @@
     resultDiv.innerHTML = "<div class='loading-text'><span class='spinner'></span> Querying database...</div>";
 
     try {
-      const res = await fetch(getApiUrl(`/api/store/orders/${encodeURIComponent(orderNum)}`));
+      const res = await fetch(getApiUrl(`/api/store/orders/${encodeURIComponent(orderNum)}`), {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}` }
+      });
       if (!res.ok) throw new Error("Order not found.");
       const order = await res.json();
 
