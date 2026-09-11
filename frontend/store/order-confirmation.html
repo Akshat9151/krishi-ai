@@ -109,6 +109,7 @@
 
 <script src="../config.js"></script>
 <script src="../i18n.js"></script>
+<script src="../shared-header.js"></script>
 <script src="store.js"></script>
 <script>
     async function loadConfirmation() {
@@ -127,7 +128,9 @@
         // Try API fetch
         try {
             const baseUrl = window.API_BASE_URL || "https://krishi-ai-2-4j3k.onrender.com";
-            const res = await fetch(`${baseUrl}/api/store/orders/${orderNum}`);
+            const res = await fetch(`${baseUrl}/api/store/orders/${encodeURIComponent(orderNum)}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}` }
+            });
             if (res.ok) {
                 orderData = await res.json();
             }

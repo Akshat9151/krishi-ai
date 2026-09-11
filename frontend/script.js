@@ -122,26 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
       renderResult(data);
 
-      // Save prediction history with temperature & humidity
-      const predictionHistory = JSON.parse(localStorage.getItem('krishi_prediction_history')) || [];
-      predictionHistory.push({
-        crop: data.recommended_crops?.[0]?.crop || "Unknown",
-        location: data.location,
-        temperature: data.temperature,
-        humidity: data.humidity,
-        season,
-        soil_type: soilType,
-        timestamp: Date.now()
-      });
-      localStorage.setItem('krishi_prediction_history', JSON.stringify(predictionHistory));
-
-      const stats = JSON.parse(localStorage.getItem('krishi_stats')) || {};
-      stats.predictions = (stats.predictions || 0) + 1;
-      localStorage.setItem('krishi_stats', JSON.stringify(stats));
-
-      if (!localStorage.getItem('krishi_first_use')) {
-        localStorage.setItem('krishi_first_use', Date.now().toString());
-      }
+      // The server persists authenticated activity for the dashboard.
+      document.dispatchEvent(new CustomEvent('krishi:activity-updated'));
 
       // 🔥 Fetch matching products from AgriStore DB
       const topCropName = data.recommended_crops?.[0]?.crop;

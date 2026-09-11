@@ -43,49 +43,33 @@ document.getElementById("diseaseForm").addEventListener("submit", async (e) => {
     const res = await fetch(getApiUrl("/api/predict-disease"), {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        ...(localStorage.getItem("accessToken") ? { "Authorization": `Bearer ${localStorage.getItem("accessToken")}` } : {})
       },
       body: JSON.stringify({ crop })
     });
 
     const data = await res.json();
 
-      const isKnown = data.disease !== "No data found";
-      const confidence = isKnown ? 95.0 : 85.0;
-
+    if (data && data.disease && data.disease !== "No data found") {
       diseaseDiv.innerHTML = `
         <div class="disease-card">
           <h4>🦠 Disease Analysis for ${crop}</h4>
           <p><b>Disease:</b> ${data.disease}</p>
-          <p><b>Symptoms:</b> ${data.symptoms}</p>
-          <p><b>Solution:</b> ${data.solution}</p>
-          <div style="margin-top: 12px; padding: 8px 12px; background: #e8f5e9; border-radius: 8px; font-size: 13px; color: #1b5e20;">
-            <strong>🎯 Diagnostic Confidence:</strong> ${confidence.toFixed(1)}% (Database Verified)
-          </div>
+          <p><b>Symptoms:</b> ${data.symptoms || "Standard field symptoms detected"}</p>
+          <p><b>Solution:</b> ${data.solution || "Apply recommended organic or chemical treatment"}</p>
         </div>
       `;
 
-      // Save to disease history
-      const diseaseHistory = JSON.parse(localStorage.getItem('krishi_disease_history')) || [];
-      diseaseHistory.push({
-        crop: crop,
-        disease: data.disease,
-        solution: data.solution,
-        timestamp: Date.now()
-      });
-      localStorage.setItem('krishi_disease_history', JSON.stringify(diseaseHistory));
-
-      // Update stats
-      const stats = JSON.parse(localStorage.getItem('krishi_stats')) || {};
-      stats.diseases = (stats.diseases || 0) + 1;
-      localStorage.setItem('krishi_stats', JSON.stringify(stats));
+      // The server persists this authenticated activity for the dashboard.
+      document.dispatchEvent(new CustomEvent('krishi:activity-updated'));
 
     } else {
 
       diseaseDiv.innerHTML = `
-        <div class="disease-card" style="background: #e8f5e9; border-left-color: #4caf50;">
-          <h4>✅ No major disease found</h4>
-          <p>Your ${crop} appears healthy. Continue regular care practices.</p>
+        <div class="disease-card" style="background: #fffaf0; border-left-color: #eab308;">
+          <h4>कोई पक्का निदान नहीं मिला</h4>
+          <p>इस फसल के लिए अभी कोई मिलान रिकॉर्ड नहीं मिला। सही जांच के लिए कृषि विशेषज्ञ से संपर्क करें।</p>
         </div>
       `;
 
