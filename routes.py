@@ -10,6 +10,9 @@ from services.ai_assistant import krishi_ai_reply
 from services.validation import ValidationUtils
 from services.rate_limiter import limiter, RateLimitConfig, check_rate_limit
 from services.logger import logger
+from services.auth_utils import get_current_user_token
+from backend.database import SessionLocal
+from backend.models import FarmActivity
 
 # legacy prediction support
 import joblib
@@ -18,6 +21,65 @@ import numpy as np
 # router instances
 
 router = APIRouter(prefix="/api")
+
+def _request_username(request: Request) -> Optional[str]:
+    """Return the authenticated username when a valid bearer token is present."""
+    authorization = request.headers.get("authorization")
+    if not authorization:
+        return None
+    try:
+        return get_current_user_token(authorization)
+    except HTTPException:
+        return None
+
+def _record_activity(username: Optional[str], activity_type: str, title: str, details: str) -> None:
+    """Persist dashboard activity without breaking the primary user action on log failure."""
+    if not username:
+        return
+    db = SessionLocal()
+    try:
+        db.add(FarmActivity(
+            username=username,
+            activity_type=activity_type,
+            title=title[:120],
+            details=details[:500],
+        ))
+        db.commit()
+    except Exception as exc:
+        db.rollback()
+        logger.log_error(exc, "Farm Activity")
+    finally:
+        db.close()
+
+@router.get("/activities")
+def get_farm_activities(request: Request, limit: int = 12):
+    username = _request_username(request)
+    if not username:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Sign in to view your farm activity."
+        )
+
+    safe_limit = max(1, min(limit, 30))
+    db = SessionLocal()
+    try:
+        rows = (db.query(FarmActivity)
+                .filter(FarmActivity.username == username)
+                .order_by(FarmActivity.created_at.desc())
+                .limit(safe_limit)
+                .all())
+        return [
+            {
+                "id": row.id,
+                "type": row.activity_type,
+                "title": row.title,
+                "details": row.details,
+                "created_at": row.created_at.isoformat(),
+            }
+            for row in rows
+        ]
+    finally:
+        db.close()
 
 # =========================
 # 📦 REQUEST MODELS
@@ -146,6 +208,13 @@ def predict_crop(request: Request, data: CropRequest):
             {"location": data.location, "soil_type": data.soil_type, "season": data.season},
             recommended
         )
+        top_crop = recommended[0].get("crop", "Crop recommendation") if recommended else "Crop recommendation"
+        _record_activity(
+            _request_username(request),
+            "crop_recommendation",
+            f"Crop recommendation: {top_crop}",
+            f"{data.location} • {data.soil_type} soil • {data.season}"
+        )
 
         return {
             "location": data.location,
@@ -167,8 +236,15 @@ def predict_crop(request: Request, data: CropRequest):
 # =========================
 
 @router.post("/predict-disease")
-def disease_api(data: DiseaseRequest):
-    return predict_disease(data.crop)
+def disease_api(request: Request, data: DiseaseRequest):
+    result = predict_disease(data.crop)
+    _record_activity(
+        _request_username(request),
+        "disease_check",
+        f"Disease check: {data.crop.title()}",
+        result.get("disease", "Diagnosis completed")
+    )
+    return result
 
 
 # =========================
