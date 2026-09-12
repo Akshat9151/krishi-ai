@@ -6,6 +6,8 @@ from datetime import datetime
 
 from backend.database import get_db
 from backend.models_store import StoreProduct, ProductCategory, FertilizerRecommendation, StoreOrder
+from backend.models import User
+from services.auth import get_current_user
 from services.logger import logger
 from services.validation import ValidationUtils
 
@@ -328,7 +330,6 @@ class CreateOrderRequest(BaseModel):
     items: List[OrderItem]
     total_amount: float
     payment_method: Optional[str] = "cod"
-    user_id: Optional[int] = None
 
 class CreateOrderResponse(BaseModel):
     order_number: str
@@ -338,16 +339,27 @@ class CreateOrderResponse(BaseModel):
     created_at: datetime
 
 @router.post("/orders", response_model=CreateOrderResponse)
-async def create_store_order(order_data: CreateOrderRequest, db: Session = Depends(get_db)):
+async def create_store_order(
+    order_data: CreateOrderRequest,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
     """Create a new order in SQLite database"""
     try:
         import time, json
+        user = db.query(User).filter(User.username == current_user).first()
+        if not user:
+            raise HTTPException(status_code=401, detail="Sign in again to place an order")
+
+        if not order_data.items or order_data.total_amount <= 0:
+            raise HTTPException(status_code=422, detail="Your cart must contain at least one item")
+
         order_num = f"ORD{int(time.time() * 1000)}"
         
-        # Save to store_orders table
+        # Save one real, farmer-owned order record.
         store_order = StoreOrder(
             order_number=order_num,
-            user_id=order_data.user_id,
+            user_id=user.id,
             customer_name=order_data.customer_name,
             phone=order_data.phone,
             address=order_data.address,
@@ -358,16 +370,7 @@ async def create_store_order(order_data: CreateOrderRequest, db: Session = Depen
         )
         db.add(store_order)
         
-        # Also save items to existing Order table in backend.models
-        from backend.models import Order as LegacyOrder
-        for item in order_data.items:
-            legacy_order = LegacyOrder(
-                user_id=order_data.user_id,
-                product_id=item.product_id or 1,
-                quantity=item.quantity
-            )
-            db.add(legacy_order)
-            
+
         db.commit()
         db.refresh(store_order)
         
@@ -384,12 +387,18 @@ async def create_store_order(order_data: CreateOrderRequest, db: Session = Depen
         raise HTTPException(status_code=500, detail=f"Failed to place order: {str(e)}")
 
 @router.get("/orders/{order_number}")
-async def get_order_details(order_number: str, db: Session = Depends(get_db)):
+async def get_order_details(
+    order_number: str,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
     """Get order details by order number"""
     try:
         import json
+        user = db.query(User).filter(User.username == current_user).first()
         order = db.query(StoreOrder).filter(StoreOrder.order_number == order_number).first()
-        if not order:
+        if not order or not user or order.user_id != user.id:
+            # Do not reveal whether another farmer's order number exists.
             raise HTTPException(status_code=404, detail="Order not found")
         
         items = []
