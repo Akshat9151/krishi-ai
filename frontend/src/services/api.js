@@ -3,7 +3,7 @@
  * Connects to the existing Render FastAPI backend: https://krishi-ai-2-4j3k.onrender.com
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://krishi-ai-2-4j3k.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '' : 'https://krishi-ai-2-4j3k.onrender.com');
 
 export const getApiBaseUrl = () => API_BASE_URL;
 
@@ -186,10 +186,15 @@ export const storeApi = {
   },
 
   getFertilizerRecommendations: async ({ crop, season, soil_type }) => {
-    const params = new URLSearchParams({ crop });
-    if (season) params.append('season', season);
-    if (soil_type) params.append('soil_type', soil_type);
-    return request(`/api/store/fertilizers/recommend?${params.toString()}`);
+    try {
+      const params = new URLSearchParams({ crop });
+      if (season) params.append('season', season);
+      if (soil_type) params.append('soil_type', soil_type);
+      return await request(`/api/store/fertilizers/recommend?${params.toString()}`);
+    } catch {
+      // Graceful fallback to verified store fertilizers
+      return await request('/api/store/products?category=organic-fertilizers&limit=10');
+    }
   },
 
   createOrder: async (orderPayload) => {

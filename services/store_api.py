@@ -195,8 +195,9 @@ async def get_fertilizer_recommendations(
             
             # Convert to recommendation format
             recommendations = []
-            for product in fertilizer_products:
+            for idx, product in enumerate(fertilizer_products, start=1):
                 rec = FertilizerRecommendation(
+                    id=idx,
                     crop_name=crop,
                     fertilizer_type=product.fertilizer_type or "general",
                     product_id=product.id,
