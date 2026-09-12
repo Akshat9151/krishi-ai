@@ -25,6 +25,13 @@ function MainApp() {
   const { user } = useAuth();
   const [currentView, setCurrentView] = useState("dashboard");
   const [selectedCropForCalc, setSelectedCropForCalc] = useState("wheat");
+  const [isMobile, setIsMobile] = useState(() => (typeof window !== "undefined" ? window.innerWidth < 768 : false));
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // If on login/register view
   if (currentView === "login") {
@@ -47,6 +54,17 @@ function MainApp() {
 
   // Render Page Content
   const renderContent = () => {
+    // If on mobile and accessing any farm tool, present the unified tabbed FarmTools view
+    if (isMobile && ["tools", "crop", "disease", "weather", "mandi", "fertilizer"].includes(currentView)) {
+      const activeTool = currentView === "tools" ? (selectedCropForCalc ? "fertilizer" : "crop") : currentView;
+      return (
+        <FarmTools
+          setCurrentView={setCurrentView}
+          defaultTool={activeTool}
+        />
+      );
+    }
+
     switch (currentView) {
       case "dashboard":
         return <Dashboard setCurrentView={setCurrentView} />;

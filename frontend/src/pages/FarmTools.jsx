@@ -9,6 +9,10 @@ import FertilizerCalculator from "./FertilizerCalculator";
 export default function FarmTools({ setCurrentView, defaultTool = "crop" }) {
   const [activeTab, setActiveTab] = useState(defaultTool);
 
+  React.useEffect(() => {
+    if (defaultTool) setActiveTab(defaultTool);
+  }, [defaultTool]);
+
   const tabs = [
     { id: "crop", label: "Crop Advice", hindi: "फसल", icon: Sprout },
     { id: "disease", label: "Disease Scan", hindi: "रोग", icon: ScanSearch },
