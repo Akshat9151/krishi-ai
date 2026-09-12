@@ -3,11 +3,13 @@ import { X, Plus, Minus, Trash2, CheckCircle2, ShoppingBag, ArrowRight } from "l
 import confetti from "canvas-confetti";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "../context/LanguageContext";
 import { storeApi } from "../services/api";
 
 export default function CartDrawer({ onNavigateOrders }) {
   const { items, isCartOpen, setIsCartOpen, updateQuantity, removeFromCart, clearCart, totalAmount, recordOrder } = useCart();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const [customerName, setCustomerName] = useState(user ? user.username : "");
   const [phone, setPhone] = useState("");
@@ -119,7 +121,7 @@ export default function CartDrawer({ onNavigateOrders }) {
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <ShoppingBag size={20} color="var(--terracotta)" />
             <h3 style={{ fontSize: "17px", fontWeight: "700", margin: 0 }}>
-              Your AgriCart ({items.length})
+              {t("cart", "Your AgriCart")} ({items.length})
             </h3>
           </div>
           <button
@@ -195,10 +197,10 @@ export default function CartDrawer({ onNavigateOrders }) {
             <div style={{ textAlign: "center", padding: "60px 10px" }}>
               <span style={{ fontSize: "48px" }}>🌾</span>
               <h4 style={{ fontSize: "16px", marginTop: "12px", color: "var(--text-primary)" }}>
-                Your cart is empty
+                {t("cartEmpty", "Your cart is empty")}
               </h4>
               <p style={{ fontSize: "13px", color: "var(--text-secondary)", marginTop: "6px" }}>
-                Explore seeds, fertilizers, and farm equipment in the AgriStore.
+                {t("storeSubheader", "Explore seeds, fertilizers, and farm equipment in the AgriStore.")}
               </p>
             </div>
           ) : (
@@ -371,7 +373,7 @@ export default function CartDrawer({ onNavigateOrders }) {
               <span style={{ fontWeight: "700" }}>FREE (मुफ़्त)</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "14px", fontSize: "16px", fontWeight: "800", color: "var(--text-primary)" }}>
-              <span>Total Payable:</span>
+              <span>{t("total", "Total Payable")}:</span>
               <span style={{ color: "var(--terracotta)" }}>₹{totalAmount}</span>
             </div>
 
@@ -381,7 +383,7 @@ export default function CartDrawer({ onNavigateOrders }) {
               onClick={handleCheckout}
               disabled={loading}
             >
-              {loading ? "Placing Order..." : `Place Order (Cash on Delivery) • ₹${totalAmount}`}
+              {loading ? "Placing Order..." : `${t("checkout", "Place Order (Cash on Delivery)")} • ₹${totalAmount}`}
             </button>
             <p style={{ textAlign: "center", fontSize: "11px", color: "var(--text-muted)", marginTop: "8px" }}>
               Pay by cash or UPI when delivered at your doorstep.

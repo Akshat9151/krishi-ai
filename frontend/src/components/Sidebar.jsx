@@ -12,22 +12,25 @@ import {
   UserCheck,
   LogOut,
   ChevronRight,
+  LogIn,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "../context/LanguageContext";
 
 export default function Sidebar({ currentView, setCurrentView }) {
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
 
   const navItems = [
-    { id: "dashboard", label: "Dashboard", hindi: "डैशबोर्ड", icon: LayoutDashboard },
-    { id: "crop", label: "Crop Recommendation", hindi: "फसल सलाह", icon: Sprout },
-    { id: "disease", label: "Disease Detection", hindi: "रोग पहचान", icon: ScanSearch },
-    { id: "assistant", label: "AI Assistant", hindi: "कृषि मित्र (AI)", icon: BotMessageSquare },
-    { id: "weather", label: "Weather Insights", hindi: "मौसम जानकारी", icon: CloudSun },
-    { id: "mandi", label: "Mandi Bhav", hindi: "मंडी भाव", icon: TrendingUp, badge: "Live" },
-    { id: "fertilizer", label: "Fertilizer Calculator", hindi: "खाद कैलकुलेटर", icon: Calculator, badge: "New" },
-    { id: "store", label: "AgriStore", hindi: "कृषि बाज़ार", icon: Store },
-    { id: "orders", label: "My Orders", hindi: "मेरे ऑर्डर", icon: PackageCheck },
+    { id: "dashboard", labelKey: "dashTitle", fallback: "Dashboard", icon: LayoutDashboard },
+    { id: "crop", labelKey: "cropRecTitle", fallback: "Crop Recommendation", icon: Sprout },
+    { id: "disease", labelKey: "diseaseTitle", fallback: "Disease Detection", icon: ScanSearch },
+    { id: "assistant", labelKey: "assistantTitle", fallback: "AI Assistant", icon: BotMessageSquare },
+    { id: "weather", labelKey: "weatherTitle", fallback: "Weather Insights", icon: CloudSun },
+    { id: "mandi", labelKey: "mandiTitle", fallback: "Mandi Bhav", icon: TrendingUp, badge: "Live" },
+    { id: "fertilizer", labelKey: "fertilizerTitle", fallback: "Fertilizer Calculator", icon: Calculator, badge: "New" },
+    { id: "store", labelKey: "agriStore", fallback: "AgriStore", icon: Store },
+    { id: "orders", labelKey: "ordersTitle", fallback: "My Orders", icon: PackageCheck },
   ];
 
   return (
@@ -50,10 +53,10 @@ export default function Sidebar({ currentView, setCurrentView }) {
         </div>
         <div>
           <h2 style={{ fontSize: "19px", fontWeight: "800", color: "var(--text-primary)", lineHeight: "1.2" }}>
-            Krishi <span style={{ color: "var(--marigold)" }}>AI</span>
+            {t("brandTitle", "Krishi AI")}
           </h2>
           <p style={{ fontSize: "11.5px", color: "var(--text-secondary)", fontWeight: "500" }}>
-            Smart Farm Companion
+            {t("brandSubtitle", "Smart Farm Companion")}
           </p>
         </div>
       </div>
@@ -92,7 +95,7 @@ export default function Sidebar({ currentView, setCurrentView }) {
             >
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <Icon size={18} color={isActive ? "var(--terracotta)" : "var(--text-secondary)"} />
-                <span>{item.label}</span>
+                <span>{t(item.labelKey, item.fallback)}</span>
               </div>
               {item.badge && (
                 <span
@@ -113,7 +116,7 @@ export default function Sidebar({ currentView, setCurrentView }) {
         })}
       </nav>
 
-      {/* User / Profile & Logout Footer */}
+      {/* User / Profile & Sign In / Logout Footer */}
       <div style={{ borderTop: "1px solid var(--card-border)", paddingTop: "14px", display: "flex", flexDirection: "column", gap: "8px" }}>
         <button
           onClick={() => setCurrentView("profile")}
@@ -148,17 +151,17 @@ export default function Sidebar({ currentView, setCurrentView }) {
             </div>
             <div>
               <p style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-primary)", lineHeight: "1.2" }}>
-                {user ? user.username : "Guest Farmer"}
+                {user ? user.username : t("farmer", "Guest Farmer")}
               </p>
               <p style={{ fontSize: "11px", color: "var(--text-secondary)" }}>
-                Profile & Settings
+                {t("profileTitle", "Profile & Settings")}
               </p>
             </div>
           </div>
           <ChevronRight size={16} color="var(--text-muted)" />
         </button>
 
-        {user && (
+        {user ? (
           <button
             onClick={logout}
             style={{
@@ -177,7 +180,26 @@ export default function Sidebar({ currentView, setCurrentView }) {
             }}
           >
             <LogOut size={15} />
-            <span>Sign Out</span>
+            <span>{t("signOut", "Sign Out")}</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => setCurrentView("login")}
+            className="btn-primary"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              padding: "8px 10px",
+              borderRadius: "var(--radius-sm)",
+              fontSize: "12.5px",
+              width: "100%",
+              cursor: "pointer",
+            }}
+          >
+            <LogIn size={15} />
+            <span>{t("signIn", "Sign In / Register")}</span>
           </button>
         )}
       </div>

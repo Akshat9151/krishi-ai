@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { LanguageProvider } from "./context/LanguageContext";
 
 import Sidebar from "./components/Sidebar";
 import BottomNav from "./components/BottomNav";
@@ -23,14 +24,57 @@ import Register from "./pages/Register";
 
 function MainApp() {
   const { user } = useAuth();
-  const [currentView, setCurrentView] = useState("dashboard");
+
+  const getInitialView = () => {
+    if (typeof window !== "undefined") {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase().replace("#", "");
+
+      if (path === "/login" || hash === "login") return "login";
+      if (path === "/register" || hash === "register") return "register";
+      if (hash && ["dashboard", "crop", "disease", "assistant", "weather", "mandi", "fertilizer", "store", "orders", "profile", "tools"].includes(hash)) {
+        return hash;
+      }
+
+      // If user is not authenticated and has no active token, land on Login/Signup
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        return "login";
+      }
+    }
+    return "dashboard";
+  };
+
+  const [currentView, setCurrentViewState] = useState(getInitialView);
   const [selectedCropForCalc, setSelectedCropForCalc] = useState("wheat");
   const [isMobile, setIsMobile] = useState(() => (typeof window !== "undefined" ? window.innerWidth < 768 : false));
 
-  React.useEffect(() => {
+  const setCurrentView = (view) => {
+    setCurrentViewState(view);
+    if (typeof window !== "undefined") {
+      try {
+        window.history.replaceState(null, "", `#${view}`);
+      } catch {
+        window.location.hash = view;
+      }
+    }
+  };
+
+  useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleHashChange = () => {
+      const hash = window.location.hash.toLowerCase().replace("#", "");
+      if (hash && ["login", "register", "dashboard", "crop", "disease", "assistant", "weather", "mandi", "fertilizer", "store", "orders", "profile", "tools"].includes(hash)) {
+        setCurrentViewState(hash);
+      }
+    };
+
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("hashchange", handleHashChange);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("hashchange", handleHashChange);
+    };
   }, []);
 
   // If on login/register view
@@ -39,6 +83,7 @@ function MainApp() {
       <Login
         onSwitchToRegister={() => setCurrentView("register")}
         onLoginSuccess={() => setCurrentView("dashboard")}
+        onGuestContinue={() => setCurrentView("dashboard")}
       />
     );
   }
@@ -48,6 +93,7 @@ function MainApp() {
       <Register
         onSwitchToLogin={() => setCurrentView("login")}
         onRegisterSuccess={() => setCurrentView("login")}
+        onGuestContinue={() => setCurrentView("dashboard")}
       />
     );
   }
@@ -130,10 +176,12 @@ function MainApp() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <MainApp />
-      </CartProvider>
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <CartProvider>
+          <MainApp />
+        </CartProvider>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

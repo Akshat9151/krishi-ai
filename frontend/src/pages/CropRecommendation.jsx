@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Sprout, Droplets, Thermometer, Sparkles, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { coreApi } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "../context/LanguageContext";
 
 export default function CropRecommendation({ setCurrentView, setSelectedCropForCalc }) {
   const { preferences } = useAuth();
+  const { t } = useTranslation();
 
   const [location, setLocation] = useState(preferences?.farmLocation?.split(",")[0] || "Jaipur");
   const [soilType, setSoilType] = useState("alluvial");
@@ -72,10 +74,10 @@ export default function CropRecommendation({ setCurrentView, setSelectedCropForC
       {/* Title / Intro */}
       <div>
         <h2 style={{ fontSize: "22px", fontWeight: "800", color: "var(--text-primary)" }}>
-          Crop Recommendation (फसल चयन सलाह)
+          {t("cropRecTitle", "Crop Recommendation")}
         </h2>
         <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginTop: "4px" }}>
-          Anticipate the best crops to plant based on your district's real-time climate, soil type, and current season.
+          {t("cropRecSubtitle", "Anticipate the best crops to plant based on your district's real-time climate, soil type, and current season.")}
         </p>
       </div>
 
@@ -250,7 +252,7 @@ export default function CropRecommendation({ setCurrentView, setSelectedCropForC
             disabled={loading}
           >
             <Sparkles size={16} />
-            <span>{loading ? "Analyzing Field Data..." : "Recommend Best Crops (फसल सुझाव पाएं)"}</span>
+            <span>{loading ? t("predictingWait", "Analyzing Field Data...") : t("predictCropBtn", "Recommend Best Crops")}</span>
           </button>
         </form>
 

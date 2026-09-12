@@ -15,10 +15,12 @@ import {
   Thermometer,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "../context/LanguageContext";
 import { coreApi } from "../services/api";
 
 export default function Dashboard({ setCurrentView }) {
   const { user, preferences } = useAuth();
+  const { t } = useTranslation();
   const [weather, setWeather] = useState(null);
   const [activities, setActivities] = useState([]);
   const [loadingWeather, setLoadingWeather] = useState(true);
@@ -49,26 +51,23 @@ export default function Dashboard({ setCurrentView }) {
   const quickActions = [
     {
       id: "crop",
-      title: "Crop Recommendation",
-      hindi: "फसल सलाह",
-      desc: "Find optimal crops based on soil, season & local weather",
+      title: t("cropRecTitle", "Crop Recommendation"),
+      desc: t("cropRecSubtitle", "Find optimal crops based on soil, season & local weather"),
       icon: Sprout,
       color: "var(--growth-green)",
       bg: "var(--growth-green-light)",
     },
     {
       id: "disease",
-      title: "Disease Detection",
-      hindi: "रोग पहचान",
-      desc: "Diagnose crop symptoms and get instant remedy recommendations",
+      title: t("diseaseTitle", "Disease Detection"),
+      desc: t("diseaseSubtitle", "Diagnose crop symptoms and get instant remedy recommendations"),
       icon: ScanSearch,
       color: "var(--terracotta)",
       bg: "var(--terracotta-light)",
     },
     {
       id: "mandi",
-      title: "Live Mandi Bhav",
-      hindi: "मंडी भाव",
+      title: t("mandiTitle", "Live Mandi Bhav"),
       desc: "Check today's commodity market prices across Indian APMCs",
       icon: TrendingUp,
       color: "var(--marigold-hover)",
@@ -76,8 +75,7 @@ export default function Dashboard({ setCurrentView }) {
     },
     {
       id: "fertilizer",
-      title: "Fertilizer Calculator",
-      hindi: "खाद कैलकुलेटर",
+      title: t("fertilizerTitle", "Fertilizer Calculator"),
       desc: "Calculate exact Urea, DAP & Potash doses for your farm land",
       icon: Calculator,
       color: "var(--growth-green)",
@@ -85,18 +83,16 @@ export default function Dashboard({ setCurrentView }) {
     },
     {
       id: "store",
-      title: "AgriStore Village Market",
-      hindi: "कृषि बाज़ार",
-      desc: "Buy certified seeds, fertilizers & tools with home delivery",
+      title: t("agriStore", "AgriStore Village Market"),
+      desc: t("storeSubheader", "Buy certified seeds, fertilizers & tools with home delivery"),
       icon: ShoppingBag,
       color: "var(--terracotta)",
       bg: "var(--terracotta-light)",
     },
     {
       id: "assistant",
-      title: "Ask Krishi AI",
-      hindi: "कृषि मित्र (AI)",
-      desc: "Chat with your 24/7 AI farming advisor in Hindi & English",
+      title: t("assistantTitle", "Ask Krishi AI"),
+      desc: t("assistantSubtitle", "Chat with your 24/7 AI farming advisor in Hindi & English"),
       icon: BotMessageSquare,
       color: "var(--marigold)",
       bg: "var(--marigold-light)",
@@ -122,13 +118,13 @@ export default function Dashboard({ setCurrentView }) {
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
             <span style={{ fontSize: "22px" }}>🌾</span>
-            <span className="badge-marigold">Namaste, Farmer</span>
+            <span className="badge-marigold">{t("welcomeFarmer", "Namaste, Farmer")}</span>
           </div>
           <h2 style={{ fontSize: "24px", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
-            Welcome back, {user ? user.username : "Kisan Bhai"}!
+            {t("welcome", "Welcome back")}, {user ? user.username : t("farmer", "Kisan Bhai")}!
           </h2>
           <p style={{ color: "var(--text-secondary)", fontSize: "14px", maxWidth: "600px" }}>
-            Real-time advisory, market mandis, and smart crop planning for your farm in{" "}
+            {t("welcomeDesc", "Real-time advisory, market mandis, and smart crop planning for your farm")} in{" "}
             <strong>{preferences?.farmLocation || "Jaipur, Rajasthan"}</strong>.
           </p>
         </div>
@@ -139,7 +135,7 @@ export default function Dashboard({ setCurrentView }) {
           style={{ padding: "12px 20px" }}
         >
           <Sparkles size={16} />
-          <span>Ask Krishi AI</span>
+          <span>{t("featAssistant", "Ask Krishi AI")}</span>
         </button>
       </div>
 
@@ -211,7 +207,7 @@ export default function Dashboard({ setCurrentView }) {
               paddingTop: "14px",
             }}
           >
-            <span>Detailed 7-Day Forecast</span>
+            <span>{t("weatherTitle", "Detailed Forecast")}</span>
             <ArrowRight size={14} />
           </button>
         </div>
@@ -220,12 +216,12 @@ export default function Dashboard({ setCurrentView }) {
         <div className="ka-card" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
             <span style={{ fontSize: "13px", fontWeight: "600", color: "var(--text-secondary)" }}>
-              Farm Profile Status
+              {t("profileTitle", "Farm Profile Status")}
             </span>
             <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "10px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: "13.5px", color: "var(--text-secondary)" }}>Current Agro Season:</span>
-                <span style={{ fontWeight: "700", color: "var(--text-primary)" }}>Rabi Season (रबी)</span>
+                <span style={{ fontWeight: "700", color: "var(--text-primary)" }}>{t("seasonRabi", "Rabi Season (रबी)")}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: "13.5px", color: "var(--text-secondary)" }}>Primary Crop:</span>
@@ -245,7 +241,7 @@ export default function Dashboard({ setCurrentView }) {
             style={{ marginTop: "14px", width: "100%", fontSize: "13px" }}
           >
             <Calculator size={15} />
-            <span>Calculate Fertilizer Dose</span>
+            <span>{t("fertilizerTitle", "Calculate Fertilizer Dose")}</span>
           </button>
         </div>
       </div>
@@ -253,7 +249,7 @@ export default function Dashboard({ setCurrentView }) {
       {/* Quick Action Grid */}
       <div>
         <h3 style={{ fontSize: "17px", fontWeight: "700", marginBottom: "14px" }}>
-          Farm Advisory & Tools
+          {t("quickActions", "Farm Advisory & Tools")}
         </h3>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "16px" }}>
           {quickActions.map((action) => {
@@ -312,7 +308,7 @@ export default function Dashboard({ setCurrentView }) {
         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
           <Clock size={18} color="var(--terracotta)" />
           <h3 style={{ fontSize: "16px", fontWeight: "700", margin: 0 }}>
-            Recent Activities (हाल की गतिविधियाँ)
+            {t("statDaysActive", "Recent Activities")}
           </h3>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>

@@ -6,8 +6,11 @@ import {
   User,
   BotMessageSquare,
 } from "lucide-react";
+import { useTranslation } from "../context/LanguageContext";
 
 export default function BottomNav({ currentView, setCurrentView }) {
+  const { t } = useTranslation();
+
   // Determine active tab
   const isHome = currentView === "dashboard";
   const isTools = ["tools", "crop", "disease", "weather", "mandi", "fertilizer"].includes(currentView);
@@ -18,29 +21,25 @@ export default function BottomNav({ currentView, setCurrentView }) {
   const tabs = [
     {
       id: "dashboard",
-      label: "Home",
-      hindi: "होम",
+      label: t("home", "Home"),
       icon: Home,
       isActive: isHome,
     },
     {
       id: "tools",
-      label: "Tools",
-      hindi: "उपकरण",
+      label: t("toolsTitle", "Tools"),
       icon: Wrench,
       isActive: isTools,
     },
     {
       id: "store",
-      label: "Store",
-      hindi: "दुकान",
+      label: t("agriStore", "Store"),
       icon: ShoppingBag,
       isActive: isStore,
     },
     {
       id: "profile",
-      label: "Profile",
-      hindi: "प्रोफ़ाइल",
+      label: t("profileTitle", "Profile"),
       icon: User,
       isActive: isProfile,
     },

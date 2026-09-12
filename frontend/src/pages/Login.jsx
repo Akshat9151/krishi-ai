@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Lock, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
+import { Lock, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Globe } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "../context/LanguageContext";
 
-export default function Login({ onSwitchToRegister, onLoginSuccess }) {
+export default function Login({ onSwitchToRegister, onLoginSuccess, onGuestContinue }) {
   const { login } = useAuth();
+  const { language, setLanguage, languages, t } = useTranslation();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -69,6 +71,43 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
           boxShadow: "0 10px 30px rgba(43, 33, 24, 0.08)",
         }}
       >
+        {/* Language selector in card header */}
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "8px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              backgroundColor: "var(--bg-cream)",
+              border: "1px solid var(--card-border)",
+              borderRadius: "var(--radius-sm)",
+              padding: "3px 7px",
+            }}
+          >
+            <Globe size={13} color="var(--growth-green)" />
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              aria-label="Select Language"
+              style={{
+                background: "transparent",
+                border: "none",
+                outline: "none",
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "var(--text-primary)",
+                cursor: "pointer",
+              }}
+            >
+              {languages.map((item) => (
+                <option key={item.code} value={item.code}>
+                  {item.flag} {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         {/* Brand & Logo */}
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
           <div
@@ -88,10 +127,10 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
             🌱
           </div>
           <h1 style={{ fontSize: "24px", fontWeight: "800", color: "var(--text-primary)", marginBottom: "4px" }}>
-            Welcome to Krishi AI
+            {t("welcomeKrishi", "Welcome to Krishi AI")}
           </h1>
           <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0 }}>
-            Your Smart Agriculture Assistant (किसान लॉगिन)
+            {t("loginTagline", "Your Smart Agriculture Assistant")}
           </p>
         </div>
 
@@ -130,20 +169,20 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
             }}
           >
             <CheckCircle2 size={16} />
-            <span>Login successful! Opening farm dashboard...</span>
+            <span>{t("loginSuccess", "Login successful! Redirecting...")}</span>
           </div>
         )}
 
         {/* Login Form */}
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div>
-            <label className="input-label">Username (उपयोगकर्ता नाम)</label>
+            <label className="input-label">{t("username", "Username")}</label>
             <div style={{ position: "relative" }}>
               <User size={17} color="var(--text-muted)" style={{ position: "absolute", top: "12px", left: "12px" }} />
               <input
                 type="text"
                 className="input-field"
-                placeholder="Enter your username"
+                placeholder={t("usernamePlaceholder", "Enter your username")}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 style={{ paddingLeft: "38px" }}
@@ -153,13 +192,13 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
           </div>
 
           <div>
-            <label className="input-label">Password (पासवर्ड)</label>
+            <label className="input-label">{t("password", "Password")}</label>
             <div style={{ position: "relative" }}>
               <Lock size={17} color="var(--text-muted)" style={{ position: "absolute", top: "12px", left: "12px" }} />
               <input
                 type="password"
                 className="input-field"
-                placeholder="Enter your password"
+                placeholder={t("passwordPlaceholder", "Enter your password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 style={{ paddingLeft: "38px" }}
@@ -174,7 +213,7 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
             style={{ width: "100%", padding: "12px", marginTop: "6px" }}
             disabled={loading}
           >
-            <span>{loading ? "Logging in..." : "Login to Your Farm (लॉगिन करें)"}</span>
+            <span>{loading ? "Logging in..." : t("loginBtn", "Login to Your Farm")}</span>
             <ArrowRight size={16} />
           </button>
         </form>
@@ -183,7 +222,7 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
 
         {/* Link to Register */}
         <div style={{ textAlign: "center", marginTop: "24px", fontSize: "13.5px", color: "var(--text-secondary)" }}>
-          <span>New to Krishi AI? </span>
+          <span>{t("newToKrishi", "New to Krishi AI?")} </span>
           <button
             onClick={onSwitchToRegister}
             style={{
@@ -195,9 +234,29 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
               padding: 0,
             }}
           >
-            Create an account (खाता बनाएं) →
+            {t("createAccount", "Create an account")} →
           </button>
         </div>
+
+        {/* Continue as Guest option */}
+        {onGuestContinue && (
+          <div style={{ textAlign: "center", marginTop: "14px" }}>
+            <button
+              type="button"
+              onClick={onGuestContinue}
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "var(--text-muted)",
+                fontSize: "12.5px",
+                cursor: "pointer",
+                textDecoration: "underline",
+              }}
+            >
+              Continue as Guest Farmer (बिना लॉगिन देखें)
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

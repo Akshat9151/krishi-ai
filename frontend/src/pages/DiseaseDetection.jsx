@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { ScanSearch, AlertTriangle, ShieldCheck, ShoppingCart, Check, Sparkles } from "lucide-react";
 import { coreApi, storeApi } from "../services/api";
 import { useCart } from "../context/CartContext";
+import { useTranslation } from "../context/LanguageContext";
 
 export default function DiseaseDetection({ setCurrentView }) {
   const { addToCart } = useCart();
+  const { t } = useTranslation();
 
   const [selectedCrop, setSelectedCrop] = useState("wheat");
   const [symptomsInput, setSymptomsInput] = useState("");
@@ -86,10 +88,10 @@ export default function DiseaseDetection({ setCurrentView }) {
     <div className="page-container" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       <div>
         <h2 style={{ fontSize: "22px", fontWeight: "800", color: "var(--text-primary)" }}>
-          Plant Disease Diagnosis & Remedy (फसल रोग पहचान व निदान)
+          {t("diseaseTitle", "Plant Disease Diagnosis & Remedy")}
         </h2>
         <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginTop: "4px" }}>
-          Select your affected crop and symptoms to get immediate expert diagnosis, curative steps, and verified remedies.
+          {t("diseaseSubtitle", "Select your affected crop and symptoms to get immediate expert diagnosis, curative steps, and verified remedies.")}
         </p>
       </div>
 
@@ -153,7 +155,7 @@ export default function DiseaseDetection({ setCurrentView }) {
             disabled={loading}
           >
             <ScanSearch size={17} />
-            <span>{loading ? "Diagnosing Symptoms..." : "Diagnose Crop Disease (रोग का पता लगाएं)"}</span>
+            <span>{loading ? "Diagnosing Symptoms..." : t("diagnoseBtn", "Diagnose Crop Disease")}</span>
           </button>
         </form>
 
@@ -247,7 +249,7 @@ export default function DiseaseDetection({ setCurrentView }) {
                           ) : (
                             <>
                               <ShoppingCart size={14} />
-                              <span>Add to Cart</span>
+                              <span>{t("addToCart", "Add to Cart")}</span>
                             </>
                           )}
                         </button>

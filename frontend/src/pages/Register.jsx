@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Lock, User, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
+import { Lock, User, ArrowRight, CheckCircle2, AlertCircle, Globe } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "../context/LanguageContext";
 
-export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
+export default function Register({ onSwitchToLogin, onRegisterSuccess, onGuestContinue }) {
   const { register } = useAuth();
+  const { language, setLanguage, languages, t } = useTranslation();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -82,6 +84,43 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
           boxShadow: "0 10px 30px rgba(43, 33, 24, 0.08)",
         }}
       >
+        {/* Language selector in card header */}
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "8px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              backgroundColor: "var(--bg-cream)",
+              border: "1px solid var(--card-border)",
+              borderRadius: "var(--radius-sm)",
+              padding: "3px 7px",
+            }}
+          >
+            <Globe size={13} color="var(--growth-green)" />
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              aria-label="Select Language"
+              style={{
+                background: "transparent",
+                border: "none",
+                outline: "none",
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "var(--text-primary)",
+                cursor: "pointer",
+              }}
+            >
+              {languages.map((item) => (
+                <option key={item.code} value={item.code}>
+                  {item.flag} {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         {/* Brand & Logo */}
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
           <div
@@ -101,10 +140,10 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
             🌱
           </div>
           <h1 style={{ fontSize: "24px", fontWeight: "800", color: "var(--text-primary)", marginBottom: "4px" }}>
-            Create Farmer Account
+            {t("joinKrishi", "Create Farmer Account")}
           </h1>
           <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0 }}>
-            Join Krishi AI Smart Farming Network (नया खाता बनाएं)
+            {t("registerTagline", "Join Krishi AI Smart Farming Network")}
           </p>
         </div>
 
@@ -143,20 +182,20 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
             }}
           >
             <CheckCircle2 size={16} />
-            <span>Account created! Redirecting to login...</span>
+            <span>{t("registerSuccess", "Account created! Redirecting to login...")}</span>
           </div>
         )}
 
         {/* Register Form */}
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
           <div>
-            <label className="input-label">Username (उपयोगकर्ता नाम)</label>
+            <label className="input-label">{t("username", "Username")}</label>
             <div style={{ position: "relative" }}>
               <User size={17} color="var(--text-muted)" style={{ position: "absolute", top: "12px", left: "12px" }} />
               <input
                 type="text"
                 className="input-field"
-                placeholder="Choose a username"
+                placeholder={t("usernameChoose", "Choose a username")}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 style={{ paddingLeft: "38px" }}
@@ -166,13 +205,13 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
           </div>
 
           <div>
-            <label className="input-label">Password (पासवर्ड - कम से कम 6 अक्षर)</label>
+            <label className="input-label">{t("password", "Password")}</label>
             <div style={{ position: "relative" }}>
               <Lock size={17} color="var(--text-muted)" style={{ position: "absolute", top: "12px", left: "12px" }} />
               <input
                 type="password"
                 className="input-field"
-                placeholder="Create a password"
+                placeholder={t("passwordCreate", "Create a password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 style={{ paddingLeft: "38px" }}
@@ -182,13 +221,13 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
           </div>
 
           <div>
-            <label className="input-label">Confirm Password (पासवर्ड दोबारा लिखें)</label>
+            <label className="input-label">{t("confirmPassword", "Confirm Password")}</label>
             <div style={{ position: "relative" }}>
               <Lock size={17} color="var(--text-muted)" style={{ position: "absolute", top: "12px", left: "12px" }} />
               <input
                 type="password"
                 className="input-field"
-                placeholder="Re-enter password"
+                placeholder={t("confirmPasswordPlaceholder", "Re-enter password")}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 style={{ paddingLeft: "38px" }}
@@ -203,7 +242,7 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
             style={{ width: "100%", padding: "12px", marginTop: "8px" }}
             disabled={loading}
           >
-            <span>{loading ? "Creating Account..." : "Register Now (खाता बनाएं)"}</span>
+            <span>{loading ? "Creating Account..." : t("registerBtn", "Register Now")}</span>
             <ArrowRight size={16} />
           </button>
         </form>
@@ -212,7 +251,7 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
 
         {/* Link to Login */}
         <div style={{ textAlign: "center", marginTop: "24px", fontSize: "13.5px", color: "var(--text-secondary)" }}>
-          <span>Already have an account? </span>
+          <span>{t("alreadyHaveAccount", "Already have an account?")} </span>
           <button
             onClick={onSwitchToLogin}
             style={{
@@ -224,9 +263,29 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
               padding: 0,
             }}
           >
-            Sign In here (लॉगिन करें) →
+            {t("loginHere", "Sign In here")} →
           </button>
         </div>
+
+        {/* Continue as Guest option */}
+        {onGuestContinue && (
+          <div style={{ textAlign: "center", marginTop: "14px" }}>
+            <button
+              type="button"
+              onClick={onGuestContinue}
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "var(--text-muted)",
+                fontSize: "12.5px",
+                cursor: "pointer",
+                textDecoration: "underline",
+              }}
+            >
+              Continue as Guest Farmer (बिना लॉगिन देखें)
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

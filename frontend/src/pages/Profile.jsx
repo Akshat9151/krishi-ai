@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { User, MapPin, Globe, Bell, Volume2, BotMessageSquare, LogOut, Save, Check } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "../context/LanguageContext";
 
 export default function Profile({ setCurrentView }) {
   const { user, preferences, updatePreferences, logout } = useAuth();
+  const { language: appLang, setLanguage: setAppLang, languages, t } = useTranslation();
 
   const [farmLocation, setFarmLocation] = useState(preferences?.farmLocation || "Jaipur, Rajasthan");
   const [landSize, setLandSize] = useState(preferences?.landSize || "3");
   const [landUnit, setLandUnit] = useState(preferences?.landUnit || "Acres");
   const [primaryCrop, setPrimaryCrop] = useState(preferences?.primaryCrop || "Wheat");
-  const [language, setLanguage] = useState(preferences?.language || "hi");
+  const [language, setLanguage] = useState(appLang || preferences?.language || "hi");
   const [soundEnabled, setSoundEnabled] = useState(preferences?.soundEnabled ?? true);
   const [saved, setSaved] = useState(false);
 
@@ -23,6 +25,7 @@ export default function Profile({ setCurrentView }) {
       language,
       soundEnabled,
     });
+    setAppLang(language);
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };
@@ -161,15 +164,17 @@ export default function Profile({ setCurrentView }) {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px" }}>
           <div>
-            <label className="input-label">Preferred Advisory Language</label>
+            <label className="input-label">Preferred Advisory Language (भाषा)</label>
             <select
               className="input-field"
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
             >
-              <option value="hi">Hindi (हिन्दी)</option>
-              <option value="hinglish">Hinglish (किसान बोलचाल)</option>
-              <option value="en">English</option>
+              {languages.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.flag} {l.name} ({l.native})
+                </option>
+              ))}
             </select>
           </div>
 
@@ -230,12 +235,15 @@ export default function Profile({ setCurrentView }) {
 
         {user ? (
           <button
-            onClick={logout}
+            onClick={() => {
+              logout();
+              setCurrentView("login");
+            }}
             className="btn-outline"
             style={{ color: "var(--terracotta)", borderColor: "var(--terracotta)", fontSize: "13px" }}
           >
             <LogOut size={15} />
-            <span>Sign Out from Device</span>
+            <span>{t("signOut", "Sign Out from Device")}</span>
           </button>
         ) : (
           <button
