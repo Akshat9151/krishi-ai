@@ -1,4 +1,4 @@
-﻿# Python
+# Python
 __pycache__/
 *.py[cod]
 *.pyo
@@ -39,3 +39,11 @@ desktop.ini
 # IDE
 .vscode/
 .idea/
+
+# Node.js
+node_modules/
+frontend/node_modules/
+frontend/dist/
+.eslintcache
+
+frontend-legacy/
