@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ScanSearch, AlertTriangle, ShieldCheck, ShoppingCart, Check, Sparkles } from "lucide-react";
-import { coreApi } from "../services/api";
+import { coreApi, storeApi } from "../services/api";
 import { useCart } from "../context/CartContext";
 
 export default function DiseaseDetection({ setCurrentView }) {
@@ -40,7 +40,22 @@ export default function DiseaseDetection({ setCurrentView }) {
       try {
         const prodData = await coreApi.recommendProducts(selectedCrop);
         if (prodData && prodData.products) {
-          setProducts(prodData.products);
+          // Enrich with real store data (price, image) by searching each product slug
+          const enriched = await Promise.all(
+            prodData.products.map(async (prod) => {
+              try {
+                const results = await storeApi.search(prod.slug || prod.name);
+                const storeProduct = Array.isArray(results)
+                  ? results[0]
+                  : results?.products?.[0] || results?.items?.[0];
+                if (storeProduct) {
+                  return { ...prod, price: storeProduct.price, image_url: storeProduct.image_url, id: storeProduct.id };
+                }
+              } catch { /* ignore enrichment failure */ }
+              return prod;
+            })
+          );
+          setProducts(enriched);
         }
       } catch (pErr) {
         console.warn("Products recommendation fallback:", pErr);
@@ -216,7 +231,7 @@ export default function DiseaseDetection({ setCurrentView }) {
                             {prod.name}
                           </h5>
                           <p style={{ fontSize: "12px", color: "var(--text-secondary)", marginTop: "2px" }}>
-                            ₹399 • Fast Village Delivery Available
+                            {prod.price ? `₹${prod.price}` : "Price on store"} • Fast Village Delivery Available
                           </p>
                         </div>
                         <button
