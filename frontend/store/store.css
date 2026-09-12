@@ -1,27 +1,27 @@
 /* ===================================================
-   KRISHI AI – AGRISTORE STYLESHEET
-   Inspired by BigHaat.com: Clean, Product-Focused, Light Green Theme
+   🌱 KRISHI AI – AGRISTORE STYLESHEET
+   Modern Emerald & Slate Theme: Clean, Product-Focused, Fast Commerce
 =================================================== */
 
 :root {
-    --brand-green: #0b7a3a;
-    --brand-green-hover: #085a2b;
-    --brand-green-light: #e8f5ec;
-    --brand-green-tint: #f2f9f4;
+    --brand-green: #059669;
+    --brand-green-hover: #047857;
+    --brand-green-light: #ecfdf5;
+    --brand-green-tint: #f0fdf4;
     --brand-accent-yellow: #f59e0b;
-    --brand-red: #dc2626;
-    --text-primary: #192a1e;
-    --text-secondary: #5c6f60;
-    --text-muted: #889c8d;
-    --border-color: #e2ede4;
-    --border-subtle: #edf4ee;
-    --bg-body: #f8faf8;
+    --brand-red: #ef4444;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border-color: #e2e8f0;
+    --border-subtle: #f1f5f9;
+    --bg-body: #f8fafc;
     --bg-surface: #ffffff;
-    --card-shadow: 0 2px 6px rgba(11, 122, 58, 0.04);
-    --card-shadow-hover: 0 8px 20px rgba(11, 122, 58, 0.09);
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
+    --card-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    --card-shadow-hover: 0 12px 28px -4px rgba(5, 150, 105, 0.12);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
     --radius-full: 9999px;
     --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }

@@ -1,8 +1,7 @@
 /**
- * Krishi AI - Unified Header Component
- * Adapts VoteVictory's clean, minimalist topbar pattern with Krishi AI's green identity.
- * Provides identical navigation, language switcher, notifications, AgriStore shortcut,
- * and user profile pill across all pages.
+ * Krishi AI - Modern Emerald Global Header Component
+ * Provides clean topbar, language selector, notifications drawer, AgriStore shortcut,
+ * and user session pill across all Krishi AI pages.
  */
 
 (function () {
@@ -10,7 +9,6 @@
     const headerMount = document.getElementById("ka-header-mount") || document.querySelector(".ka-header-placeholder");
     const existingHeader = document.querySelector("header.main-header, header.ka-topbar");
 
-    // Determine current active page
     const pathname = window.location.pathname.toLowerCase();
     const isDashboard = pathname.includes("dashboard.html");
     const isDisease = pathname.includes("disease.html");
@@ -20,15 +18,11 @@
     const isProfile = pathname.includes("profile.html");
     const isAbout = pathname.includes("about.html");
     const isContact = pathname.includes("contact.html");
-    const isHome = pathname.endsWith("index.html") || pathname.endsWith("/") || (!isDashboard && !isDisease && !isWeather && !isAssistant && !isStore && !isProfile && !isAbout && !isContact);
 
-    // Prefix for paths depending on whether inside /store/ or root
     const rootPrefix = isStore ? "../" : "./";
-
-    // User authentication state
     const loggedInUser = localStorage.getItem("loggedInUser") || "";
-    const userInitial = loggedInUser ? loggedInUser.charAt(0).toUpperCase() : "👤";
-    const userDisplayName = loggedInUser || "किसान / Guest";
+    const userInitial = loggedInUser ? loggedInUser.charAt(0).toUpperCase() : "🌱";
+    const userDisplayName = loggedInUser || "किसान / Farmer";
 
     const headerHtml = `
       <header class="ka-topbar" id="kaTopbar">
@@ -38,17 +32,17 @@
             <i class="fa-solid fa-bars"></i>
           </button>
           
-          <a href="${rootPrefix}dashboard.html" class="ka-brand-link">
+          <a href="${rootPrefix}index.html" class="ka-brand-link">
             <div class="ka-brand-logo-wrap">
-              <span class="ka-brand-icon">🌱</span>
+              <i class="fa-solid fa-seedling"></i>
             </div>
             <div class="ka-brand-text">
               <div class="ka-brand-title">Krishi AI</div>
-              <div class="ka-brand-subtitle">कृषि AI • Smart Farming</div>
+              <div class="ka-brand-subtitle">स्मार्ट कृषि • Smart Agriculture</div>
             </div>
           </a>
 
-          <!-- Desktop Navigation Links -->
+          <!-- Desktop Navigation -->
           <nav class="ka-nav-links" id="kaNavMenu">
             <a href="${rootPrefix}dashboard.html" class="ka-nav-item ${isDashboard ? 'active' : ''}">
               <i class="fa-solid fa-chart-pie"></i>
@@ -67,57 +61,55 @@
               <span data-i18n="assistantTitle">AI Assistant</span>
             </a>
             <a href="${rootPrefix}store/index.html" class="ka-nav-item ${isStore ? 'active' : ''}">
-              <i class="fa-solid fa-store"></i>
+              <i class="fa-solid fa-bag-shopping"></i>
               <span data-i18n="agriStore">AgriStore</span>
             </a>
           </nav>
         </div>
 
-        <!-- Right: Controls Cluster -->
+        <!-- Right: Actions Cluster -->
         <div class="ka-topbar-right">
           
           <!-- Language Selector -->
-          <div class="ka-lang-wrap" id="kaHeaderLangMount" title="Change Language / भाषा बदलें">
-            <!-- Rendered by KrishiI18n -->
-          </div>
+          <div class="ka-lang-wrap" id="kaHeaderLangMount" title="Change Language / भाषा बदलें"></div>
 
           <!-- Notification Bell -->
-          <div class="ka-notify-wrap">
+          <div class="ka-notify-wrap" style="position: relative;">
             <button class="ka-icon-btn" id="kaNotificationBtn" title="Notifications / सूचनाएँ" aria-label="Notifications">
               <i class="fa-regular fa-bell"></i>
               <span class="ka-notify-dot"></span>
             </button>
-            <div class="ka-notify-dropdown" id="kaNotifyDropdown" style="display: none;">
-              <div class="ka-notify-header">
-                <strong>सूचनाएँ (Notifications)</strong>
-                <span class="ka-notify-count">2 New</span>
+            <div class="ka-notify-dropdown" id="kaNotifyDropdown" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; width: 300px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1); padding: 14px; z-index: 1100;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9; font-size: 13px; font-weight: 700; color: #0f172a;">
+                <span>📢 सूचनाएँ (Notifications)</span>
+                <span style="background: #ecfdf5; color: #059669; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px;">2 New</span>
               </div>
-              <div class="ka-notify-item">
-                <i class="fa-solid fa-cloud-rain" style="color: #0284c7;"></i>
+              <div style="display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px dashed #f1f5f9; font-size: 12.5px;">
+                <i class="fa-solid fa-cloud-sun" style="color: #0284c7; font-size: 16px; margin-top: 2px;"></i>
                 <div>
-                  <div class="ka-notify-text">मौसम चेतावनी: अगले 24 घंटों में हल्की बारिश संभव</div>
-                  <div class="ka-notify-time">2 घंटे पहले</div>
+                  <div style="color: #1e293b; font-weight: 600;">मौसम सलाह: आज शाम हल्की बारिश का अनुमान</div>
+                  <div style="color: #94a3b8; font-size: 11px; margin-top: 2px;">1 घंटा पहले</div>
                 </div>
               </div>
-              <div class="ka-notify-item">
-                <i class="fa-solid fa-tag" style="color: #0b7a3a;"></i>
+              <div style="display: flex; gap: 10px; padding: 10px 0; font-size: 12.5px;">
+                <i class="fa-solid fa-tag" style="color: #059669; font-size: 16px; margin-top: 2px;"></i>
                 <div>
-                  <div class="ka-notify-text">AgriStore: IFFCO जैविक खाद पर 20% छूट उपलब्ध</div>
-                  <div class="ka-notify-time">आज सुबह</div>
+                  <div style="color: #1e293b; font-weight: 600;">AgriStore: IFFCO NPK खाद पर 15% छूट</div>
+                  <div style="color: #94a3b8; font-size: 11px; margin-top: 2px;">आज सुबह</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- AgriStore Shortcut Pill -->
-          <a href="${rootPrefix}store/index.html" class="ka-store-pill" title="Shop Agri-Inputs">
-            <i class="fa-solid fa-bag-shopping"></i>
+          <!-- AgriStore Shortcut -->
+          <a href="${rootPrefix}store/index.html" class="ka-store-pill" title="Open AgriStore">
+            <i class="fa-solid fa-store"></i>
             <span class="ka-store-label" data-i18n="agriStore">AgriStore</span>
           </a>
 
-          <!-- User Pill / Profile Shortcut -->
+          <!-- User Pill / Profile Button -->
           ${loggedInUser ? `
-            <a href="${rootPrefix}profile.html" class="ka-user-pill" title="My Profile (${loggedInUser})">
+            <a href="${rootPrefix}profile.html" class="ka-user-pill" title="View Profile (${loggedInUser})">
               <div class="ka-user-avatar">${userInitial}</div>
               <div class="ka-user-info">
                 <span class="ka-user-name">${loggedInUser}</span>
@@ -138,19 +130,15 @@
     if (headerMount) {
       headerMount.outerHTML = headerHtml;
     } else if (existingHeader && !isDashboard) {
-      // Replace existing non-dashboard header
       existingHeader.outerHTML = headerHtml;
     } else if (!isDashboard && !document.getElementById("kaTopbar")) {
-      // Prepend to body if neither found
       document.body.insertAdjacentHTML("afterbegin", headerHtml);
     }
 
-    // Initialize interactive behaviors
     initHeaderEvents();
   }
 
   function initHeaderEvents() {
-    // 1. Mobile Menu Toggle
     const menuToggle = document.getElementById("kaMenuToggle");
     const navMenu = document.getElementById("kaNavMenu");
     if (menuToggle && navMenu) {
@@ -165,7 +153,6 @@
       });
     }
 
-    // 2. Notification Bell Dropdown
     const notifyBtn = document.getElementById("kaNotificationBtn");
     const notifyDropdown = document.getElementById("kaNotifyDropdown");
     if (notifyBtn && notifyDropdown) {
@@ -181,14 +168,12 @@
       });
     }
 
-    // 3. Language Selector Mount
     if (window.krishiI18n && typeof window.krishiI18n.renderSelector === "function") {
       window.krishiI18n.renderSelector("kaHeaderLangMount", { compact: true });
       window.krishiI18n.translatePage();
     }
   }
 
-  // Run on DOM ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", renderUnifiedHeader);
   } else {

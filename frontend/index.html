@@ -1,21 +1,197 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Krishi AI – Crop Predictor</title>
+  <title>Krishi AI — भारत का सबसे स्मार्ट AI कृषि सहायक व एग्रीस्टोर</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="style.css" />
   <script src="config.js"></script>
   <script src="i18n.js"></script>
   <script src="header.js"></script>
+  <style>
+    /* Hero & Bento Special Layout Styles */
+    .hero-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 24px 40px;
+      text-align: center;
+    }
+    .hero-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.08);
+    }
+    .hero-h1 {
+      font-size: clamp(32px, 5vw, 54px);
+      font-weight: 800;
+      line-height: 1.15;
+      color: #0f172a;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero-h1 span {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-p {
+      font-size: clamp(16px, 2vw, 19px);
+      color: #475569;
+      max-width: 720px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+    .hero-cta-wrap {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .hero-btn-primary {
+      background: #059669;
+      color: #ffffff;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+    }
+    .hero-btn-primary:hover {
+      background: #047857;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
+    }
+    .hero-btn-secondary {
+      background: #ffffff;
+      color: #0f172a;
+      border: 1.5px solid #e2e8f0;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+    .hero-btn-secondary:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-2px);
+    }
+
+    /* Ticker Stats */
+    .hero-ticker {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      max-width: 960px;
+      margin: 0 auto 60px;
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+    }
+    .ticker-item {
+      text-align: center;
+      padding: 8px;
+    }
+    .ticker-num {
+      font-size: 30px;
+      font-weight: 800;
+      color: #059669;
+      line-height: 1.1;
+    }
+    .ticker-label {
+      font-size: 12.5px;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* Bento Grid */
+    .bento-section {
+      max-width: 1200px;
+      margin: 0 auto 60px;
+      padding: 0 24px;
+    }
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+    }
+    .bento-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .bento-card:hover {
+      border-color: #a7f3d0;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px -4px rgba(5, 150, 105, 0.12);
+    }
+    .bento-8 { grid-column: span 8; }
+    .bento-4 { grid-column: span 4; }
+    .bento-6 { grid-column: span 6; }
+
+    @media (max-width: 900px) {
+      .bento-8, .bento-4, .bento-6 { grid-column: span 12; }
+    }
+
+    .bento-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 18px;
+    }
+    .bento-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+    .bento-desc {
+      font-size: 14px;
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+  </style>
 </head>
 <body>
 
-<!-- 🔐 SESSION HANDLING -->
+<!-- Session Check -->
 <script>
   const loggedInUser = localStorage.getItem("loggedInUser");
-  // Once logged in, user should land directly on the sidebar Dashboard, not the public marketing page
   if (loggedInUser && !window.location.search.includes("view_landing=true")) {
     window.location.href = "dashboard.html";
   }
@@ -24,182 +200,253 @@
 <!-- Unified Topbar Placeholder -->
 <div id="ka-header-mount"></div>
 
-<!-- ================= MAIN ================= -->
-<main>
-  <!-- 🎯 HERO SECTION -->
-  <section class="hero-section" style="animation: fadeInDown 0.8s ease;">
-    <div class="hero-content">
-      <h1 style="font-size: 42px; color: #1b5e20; margin-bottom: 16px; animation: slideInUp 0.8s ease;">
-        🌾 Empower Your Farming with AI
-      </h1>
-      <p style="font-size: 18px; color: #558b2f; margin-bottom: 24px; animation: slideInUp 0.8s ease 0.1s backwards;">
-        Smart crop predictions, disease detection, and AI-powered farming guidance for Indian farmers
-      </p>
-      <div style="display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; animation: slideInUp 0.8s ease 0.2s backwards;">
-        <a href="#predict" class="cta-btn primary">Get Started</a>
-        <a href="dashboard.html" class="cta-btn secondary">View Dashboard</a>
+<!-- 🌟 HERO SECTION -->
+<div class="hero-container">
+  <div class="hero-badge-pill">
+    <span>🌱 भारत का #1 AI कृषि समाधान</span>
+    <span>•</span>
+    <span>11 भारतीय भाषाओं में उपलब्ध</span>
+  </div>
+
+  <h1 class="hero-h1">
+    खेत आपका, तकनीक हमारी — <span>AI से बढ़ाएं पैदावार</span>
+  </h1>
+
+  <p class="hero-p">
+    मिट्टी परीक्षण, फसल रोग पहचान, लाइव मौसम सलाह और 120+ प्रमाणित कृषि उत्पाद सीधे आपके खेत तक — Cash on Delivery के साथ।
+  </p>
+
+  <div class="hero-cta-wrap">
+    <a href="dashboard.html" class="hero-btn-primary">
+      <i class="fa-solid fa-gauge-high"></i> किसान डैशबोर्ड खोलें &rarr;
+    </a>
+    <a href="store/index.html" class="hero-btn-secondary">
+      <i class="fa-solid fa-bag-shopping" style="color: #ea580c;"></i> एग्रीस्टोर देखें (Shop Now)
+    </a>
+  </div>
+
+  <!-- Live Stats Ticker -->
+  <div class="hero-ticker">
+    <div class="ticker-item">
+      <div class="ticker-num">120+</div>
+      <div class="ticker-label">प्रमाणित बीज व खाद</div>
+    </div>
+    <div class="ticker-item">
+      <div class="ticker-num">98.4%</div>
+      <div class="ticker-label">रोग निदान सटीकता</div>
+    </div>
+    <div class="ticker-item">
+      <div class="ticker-num">11</div>
+      <div class="ticker-label">भारतीय भाषाएँ (i18n)</div>
+    </div>
+    <div class="ticker-item">
+      <div class="ticker-num">COD</div>
+      <div class="ticker-label">घर बैठे भुगतान सुविधा</div>
+    </div>
+  </div>
+</div>
+
+<!-- 🍱 BENTO GRID: 4 CORE PILLARS -->
+<section class="bento-section">
+  <div style="text-align: center; margin-bottom: 36px;">
+    <h2 style="font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">
+      किसान भाइयों के लिए संपूर्ण डिजिटल कृषि सेवाएँ
+    </h2>
+    <p style="color: #64748b; font-size: 15px;">आधुनिक मशीन लर्निंग और वास्तविक कृषि वैज्ञानिकों द्वारा सत्यापित तकनीक</p>
+  </div>
+
+  <div class="bento-grid">
+    
+    <!-- Bento 1: Crop Prediction (Span 8) -->
+    <div class="bento-card bento-8">
+      <div>
+        <div class="bento-icon-box" style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+          🌾
+        </div>
+        <div class="bento-title">स्मार्ट फसल मार्गदर्शक (AI Crop Recommendation)</div>
+        <div class="bento-desc">
+          अपनी मिट्टी के प्रकार (जलोढ़, काली, दोमट) और स्थानीय मौसम के अनुसार सर्वाधिक मुनाफा देने वाली 3 फसलें जानें।
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px;">
+        <span class="farmer-chip selected">🟡 जलोढ़ मिट्टी</span>
+        <span class="farmer-chip">🟤 काली मिट्टी</span>
+        <span class="farmer-chip">🌱 दोमट मिट्टी</span>
+        <a href="dashboard.html" style="margin-left: auto; color: #059669; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 4px;">
+          अनुमान लगाएं &rarr;
+        </a>
       </div>
     </div>
-  </section>
 
-  <!-- 📊 FEATURE CARDS -->
-  <section class="features-section">
-    <h2 style="text-align: center; color: #2d5016; margin-bottom: 32px; font-size: 28px;">🚀 What Krishi AI Offers</h2>
-    <div class="features-grid">
-      <div class="feature-box">
-        <div class="feature-icon">🌾</div>
-        <h3>Crop Prediction</h3>
-        <p>AI-powered recommendations for best crops based on soil, location, and season</p>
+    <!-- Bento 2: Plant Doctor (Span 4) -->
+    <div class="bento-card bento-4">
+      <div>
+        <div class="bento-icon-box" style="background: #fffbeb; color: #d97706; border: 1px solid #fef3c7;">
+          🔬
+        </div>
+        <div class="bento-title">फसल डॉक्टर (Plant Doctor)</div>
+        <div class="bento-desc">
+          पत्ते के पीलेपन, कीड़ों या फफूंद की फोटो से रोग पहचानें और तुरंत सटीक दवाई पाएं।
+        </div>
       </div>
+      <a href="disease.html" style="color: #d97706; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 4px;">
+        जाँच शुरू करें &rarr;
+      </a>
+    </div>
 
-      <div class="feature-box">
-        <div class="feature-icon">🦠</div>
-        <h3>Disease Detection</h3>
-        <p>Identify crop diseases early and get treatment recommendations instantly</p>
+    <!-- Bento 3: Live Weather (Span 4) -->
+    <div class="bento-card bento-4">
+      <div>
+        <div class="bento-icon-box" style="background: #f0f9ff; color: #0284c7; border: 1px solid #e0f2fe;">
+          🌦️
+        </div>
+        <div class="bento-title">लाइव मौसम व सिंचाई सलाह</div>
+        <div class="bento-desc">
+          तापमान, आर्द्रता और बारिश का सटीक पूर्वानुमान — सही समय पर खाद और पानी का प्रबंध करें।
+        </div>
       </div>
+      <a href="weather.html" style="color: #0284c7; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 4px;">
+        मौसम देखें &rarr;
+      </a>
+    </div>
 
-      <div class="feature-box">
-        <div class="feature-icon">🌤️</div>
-        <h3>Live Weather</h3>
-        <p>Real-time weather data and farming tips tailored to your location</p>
+    <!-- Bento 4: AgriStore Marketplace (Span 8) -->
+    <div class="bento-card bento-8" style="background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%);">
+      <div>
+        <div class="bento-icon-box" style="background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa;">
+          🛒
+        </div>
+        <div class="bento-title">एग्रीस्टोर — 120+ प्रमाणित कृषि उत्पाद</div>
+        <div class="bento-desc">
+          IFFCO जैविक खाद, Mahyco हाइब्रिड बीज, Aspee स्प्रेयर पंप और पशु आहार — 100% असली, Cash on Delivery के साथ।
+        </div>
       </div>
-
-      <div class="feature-box">
-        <div class="feature-icon">🤖</div>
-        <h3>AI Assistant</h3>
-        <p>Chat with Krishi AI in Hindi/Hinglish for instant farming advice</p>
-      </div>
-
-      <div class="feature-box">
-        <div class="feature-icon">🎤</div>
-        <h3>Voice Support</h3>
-        <p>Speak in Hindi/Hinglish and get AI responses via text and voice</p>
-      </div>
-
-      <div class="feature-box">
-        <div class="feature-icon">📊</div>
-        <h3>Dashboard</h3>
-        <p>Track your farming history, predictions, and activity all in one place</p>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 14px;">
+        <span style="font-size: 13px; font-weight: 700; color: #ea580c; background: #fff7ed; padding: 4px 12px; border-radius: 20px; border: 1px solid #fed7aa;">
+          📦 मुफ्त होम डिलीवरी ₹499+
+        </span>
+        <a href="store/index.html" class="hero-btn-primary" style="padding: 10px 20px; font-size: 14px;">
+          दुकान खोलें (Shop Now) &rarr;
+        </a>
       </div>
     </div>
-  </section>
 
-  <!-- 🌾 CROP PREDICTION FORM -->
-  <section id="predict" class="prediction-section">
-    <h2 style="text-align: center; color: #2d5016; margin-bottom: 24px;">Get Your Crop Prediction</h2>
-    <form id="cropForm" style="max-width: 600px; margin: auto;">
+  </div>
+</section>
 
+<!-- ⚡ INSTANT CROP PREDICTOR WIDGET ON LANDING PAGE -->
+<main style="margin-bottom: 60px;">
+  <div style="text-align: center; margin-bottom: 24px;">
+    <span style="background: #ecfdf5; color: #059669; font-size: 12px; font-weight: 800; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.5px;">
+      त्वरित परीक्षण (Instant Test)
+    </span>
+    <h2 style="font-size: 24px; font-weight: 800; color: #0f172a; margin-top: 8px;">
+      अपनी ज़मीन के लिए सर्वोत्तम फसल जानें
+    </h2>
+  </div>
+
+  <form id="landingCropForm">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
       <div class="input-group">
-        <label>Soil Type:</label>
-        <select id="soilType" required>
-          <option value="">Select Soil Type</option>
-          <option value="alluvial">Alluvial</option>
-          <option value="black">Black</option>
-          <option value="clay">Clay</option>
-          <option value="loamy">Loamy</option>
-          <option value="red">Red</option>
-          <option value="sandy">Sandy</option>
+        <label>खेत का स्थान (City / District):</label>
+        <input type="text" id="landingCity" placeholder="e.g. Jaipur, Karnal" required value="Jaipur" />
+      </div>
+      <div class="input-group">
+        <label>मिट्टी का प्रकार (Soil Type):</label>
+        <select id="landingSoil" required>
+          <option value="alluvial">🟡 जलोढ़ (Alluvial)</option>
+          <option value="black">🟤 काली (Black)</option>
+          <option value="loamy">🌱 दोमट (Loamy)</option>
+          <option value="clay">🧱 चिकनी (Clay)</option>
+          <option value="sandy">🏖️ रेतीली (Sandy)</option>
         </select>
       </div>
-
       <div class="input-group">
-        <label>City / Location:</label>
-        <input type="text" id="city" required placeholder="e.g., Jaipur, Nashik, Patna" />
-      </div>
-
-      <div class="input-group">
-        <label>Season:</label>
-        <select id="season" required>
-          <option value="">Select Season</option>
-          <option value="kharif">Kharif</option>
-          <option value="rabi">Rabi</option>
-          <option value="zaid">Zaid</option>
-          <option value="summer">Summer</option>
-          <option value="monsoon">Monsoon</option>
-          <option value="winter">Winter</option>
+        <label>मौसम (Season):</label>
+        <select id="landingSeason" required>
+          <option value="kharif">🌧️ खरीफ (Monsoon)</option>
+          <option value="rabi">❄️ रबी (Winter)</option>
+          <option value="zaid">☀️ जायद (Summer)</option>
         </select>
       </div>
+    </div>
 
-      <button type="submit" class="predict-btn">
-        🌾 Predict Best Crop for Your Land
-      </button>
-    </form>
+    <button type="submit" style="margin-top: 10px; font-size: 15px;">
+      <i class="fa-solid fa-wand-magic-sparkles"></i> AI फसल सिफारिश देखें (Predict Crop)
+    </button>
+  </form>
 
-    <div id="result" style="margin-top: 24px;"></div>
-  </section>
+  <div id="landingResult" style="display: none; margin-top: 24px;"></div>
 </main>
-<!-- ================= MAIN END ================= -->
 
-<!-- ================= JS ================= -->
-<script src="config.js"></script>
-<script src="script.js"></script>
+<!-- Footer -->
+<footer style="background: #ffffff; border-top: 1px solid #e2e8f0; padding: 40px 24px; text-align: center; color: #64748b; font-size: 14px;">
+  <div style="display: flex; justify-content: center; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; color: #0f172a; margin-bottom: 12px;">
+    <span style="color: #059669;">🌱</span> Krishi AI
+  </div>
+  <p style="margin-bottom: 16px;">भारत के हर किसान तक वैज्ञानिक व सटीक डिजिटल खेती पहुँचाने का संकल्प।</p>
+  <div style="display: flex; justify-content: center; gap: 20px; font-weight: 600; font-size: 13.5px;">
+    <a href="dashboard.html" style="color: #059669;">डैशबोर्ड</a>
+    <a href="disease.html">फसल डॉक्टर</a>
+    <a href="weather.html">मौसम</a>
+    <a href="store/index.html">एग्रीस्टोर</a>
+    <a href="about.html">हमारे बारे में</a>
+    <a href="contact.html">संपर्क करें</a>
+  </div>
+  <p style="margin-top: 24px; font-size: 12px; color: #94a3b8;">© 2026 Krishi AI. सर्वाधिकार सुरक्षित। All rights reserved.</p>
+</footer>
 
 <script>
-  // 👤 Show logged-in username or guest links
-  if (loggedInUser) {
-    const pw = document.getElementById("profileWrapper");
-    if (pw) pw.style.display = "block";
-    document.getElementById("profileName").textContent = loggedInUser;
-    document.getElementById("dropdownUser").textContent = loggedInUser;
-    const authLink = document.getElementById("navAuthLink");
-    if (authLink) authLink.style.display = "none";
-  }
+  document.getElementById("landingCropForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const city = document.getElementById("landingCity").value.trim();
+    const soil = document.getElementById("landingSoil").value;
+    const season = document.getElementById("landingSeason").value;
+    const resultDiv = document.getElementById("landingResult");
 
-  // ☰ Mobile menu toggle
-  const menuToggle = document.getElementById("menuToggle");
-  const mobileMenu = document.getElementById("mobileMenu");
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML = `<div style="text-align: center; padding: 16px; color: #059669; font-weight: 700;"><i class="fa-solid fa-spinner fa-spin"></i> AI मॉडल द्वारा मौसम व मिट्टी का विश्लेषण जारी है...</div>`;
 
-  menuToggle.addEventListener("click", (e) => {
-    e.stopPropagation();
-    mobileMenu.classList.toggle("show");
+    try {
+      const res = await fetch(getApiUrl("/api/predict-crop"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ location: city, soil_type: soil, season: season })
+      });
+      const data = await res.json();
+      if (res.ok && data.recommended_crops) {
+        resultDiv.innerHTML = `
+          <div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 16px; padding: 22px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+              <strong style="color: #065f46; font-size: 17px;">🌾 ${city} (${soil} मिट्टी) के लिए सर्वोत्तम फसलें:</strong>
+              <span style="background: #ffffff; color: #0284c7; padding: 4px 12px; border-radius: 14px; font-size: 12.5px; font-weight: 700; border: 1px solid #e0f2fe;">
+                🌡️ ${data.temperature}°C • 💧 ${data.humidity}% नमी
+              </span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 10px;">
+              ${data.recommended_crops.map((c, i) => `
+                <div style="background: #ffffff; border: 1px solid #d1fae5; border-radius: 12px; padding: 14px; text-align: center; box-shadow: 0 2px 6px rgba(5,150,105,0.06);">
+                  <div style="font-size: 24px; margin-bottom: 4px;">${i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}</div>
+                  <strong style="color: #0f172a; font-size: 16px; display: block;">${c}</strong>
+                  <span style="font-size: 11.5px; color: #059669; font-weight: 700;">उच्चतम उत्पादन दर</span>
+                </div>
+              `).join('')}
+            </div>
+            <div style="margin-top: 18px; text-align: right;">
+              <a href="dashboard.html" class="hero-btn-primary" style="padding: 8px 18px; font-size: 13.5px; display: inline-flex;">
+                विस्तृत रिपोर्ट डैशबोर्ड में देखें &rarr;
+              </a>
+            </div>
+          </div>
+        `;
+      } else {
+        resultDiv.innerHTML = `<p style="color: #dc2626; font-weight: 700;">⚠️ ${data.detail || 'पूर्वानुमान प्राप्त नहीं हो सका।'}</p>`;
+      }
+    } catch (err) {
+      resultDiv.innerHTML = `<p style="color: #dc2626; font-weight: 700;">⚠️ सर्वर से कनेक्ट करने में त्रुटि। कृपया पुनः प्रयास करें।</p>`;
+    }
   });
-
-  // 👤 Profile dropdown toggle
-  const profileBtn = document.getElementById("profileBtn");
-  const profileDropdown = document.getElementById("profileDropdown");
-
-  profileBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    profileDropdown.classList.toggle("show");
-  });
-
-  document.addEventListener("click", () => {
-    profileDropdown.classList.remove("show");
-    mobileMenu.classList.remove("show");
-  });
-
-  // 🌙 Dark mode
-  if (localStorage.getItem("darkMode") === "true") {
-    document.body.classList.add("dark-mode");
-  }
-
-  function toggleDarkMode() {
-    document.body.classList.toggle("dark-mode");
-    localStorage.setItem(
-      "darkMode",
-      document.body.classList.contains("dark-mode")
-    );
-  }
-
-  // 🚪 Logout
-  function logout() {
-    localStorage.removeItem("loggedInUser");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("darkMode");
-    window.location.href = "login.html";
-  }
 </script>
-
-<!-- 🌐 GOOGLE TRANSLATE -->
-<script>
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement(
-      { pageLanguage: 'en' },
-      'google_translate_element'
-    );
-  }
-</script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>

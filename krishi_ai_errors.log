@@ -1,0 +1,10 @@
+2026-09-08 01:38:10,365 - root - ERROR - ERROR in Store API - Get Products: 'NoneType' object has no attribute 'client'
+Traceback: Traceback (most recent call last):
+  File "C:\Users\Akshat jain\OneDrive\Desktop\kirshi ai\services\store_api.py", line 115, in get_products
+    logger.log_api_request(None, user="anonymous")
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Akshat jain\OneDrive\Desktop\kirshi ai\services\logger.py", line 54, in log_api_request
+    client_ip = request.client.host if request.client else "unknown"
+                                       ^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'client'
+
