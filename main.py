@@ -17,9 +17,9 @@ from services.seed_data import seed_database
 
 # Create FastAPI app
 app = FastAPI(
-    title="Krishi AI",
-    description="Crop Recommendation System",
-    version="1.0"
+    title="KhetiTak",
+    description="Smart Agriculture & Village AgriStore Platform",
+    version="2.0"
 )
 
 # Set up rate limiting
@@ -71,4 +71,4 @@ app.include_router(legacy_router)
 # Root API
 @app.get("/")
 def home():
-    return {"message": "🚀 Welcome to Krishi AI API – Crop Recommendation System"}
+    return {"message": "🚀 Welcome to KhetiTak API – Smart Agriculture & AgriStore Platform"}

@@ -22,7 +22,7 @@ export function LanguageProvider({ children }) {
     } catch {
       /* ignore */
     }
-    return "hi"; // Default to Hindi as per Krishi AI specs
+    return "hi"; // Default to Hindi as per KhetiTak specs
   });
 
   const setLanguage = (langCode) => {

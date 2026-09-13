@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Lock, User, ArrowRight, CheckCircle2, AlertCircle, Globe } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
+import { KhetiTakMark } from "../components/KhetiTakBranding";
 
 export default function Register({ onSwitchToLogin, onRegisterSuccess, onGuestContinue }) {
   const { register } = useAuth();
@@ -121,29 +122,17 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess, onGuestCo
           </div>
         </div>
 
-        {/* Brand & Logo */}
-        <div style={{ textAlign: "center", marginBottom: "28px" }}>
-          <div
-            style={{
-              width: "64px",
-              height: "64px",
-              margin: "0 auto 12px auto",
-              borderRadius: "50%",
-              background: "linear-gradient(135deg, var(--growth-green), var(--marigold))",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "30px",
-              boxShadow: "0 4px 12px rgba(76, 122, 58, 0.25)",
-            }}
-          >
-            🌱
+        {/* Brand & Logo — Concept 2 Grain K */}
+        <div style={{ textAlign: "center", marginBottom: "26px" }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+            <KhetiTakMark size={64} />
           </div>
-          <h1 style={{ fontSize: "24px", fontWeight: "800", color: "var(--text-primary)", marginBottom: "4px" }}>
-            {t("joinKrishi", "Create Farmer Account")}
+          <h1 style={{ fontSize: "24px", fontWeight: "800", margin: "0 0 4px 0", letterSpacing: "-0.01em" }}>
+            <span style={{ color: "#2B2118" }}>Kheti</span>
+            <span style={{ color: "#E8A33D" }}>Tak</span>
           </h1>
-          <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0 }}>
-            {t("registerTagline", "Join Krishi AI Smart Farming Network")}
+          <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0, fontWeight: "500" }}>
+            {t("joinKrishi", "Join KhetiTak Farmer Network")}
           </p>
         </div>
 

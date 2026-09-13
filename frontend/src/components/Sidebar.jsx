@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
+import { KhetiTakLogo } from "./KhetiTakBranding";
 
 export default function Sidebar({ currentView, setCurrentView }) {
   const { user, logout } = useAuth();
@@ -35,30 +36,18 @@ export default function Sidebar({ currentView, setCurrentView }) {
 
   return (
     <aside className="desktop-sidebar">
-      {/* Brand Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "4px 8px 20px 8px", borderBottom: "1px solid var(--card-border)" }}>
-        <div style={{
-          width: "42px",
-          height: "42px",
-          borderRadius: "10px",
-          background: "linear-gradient(135deg, var(--growth-green), var(--marigold))",
+      {/* Brand Header — Concept 2 Grain K Logo & Wordmark */}
+      <div
+        onClick={() => setCurrentView("dashboard")}
+        style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          color: "#FFFFFF",
-          fontSize: "22px",
-          boxShadow: "0 2px 6px rgba(76, 122, 58, 0.25)"
-        }}>
-          🌱
-        </div>
-        <div>
-          <h2 style={{ fontSize: "19px", fontWeight: "800", color: "var(--text-primary)", lineHeight: "1.2" }}>
-            {t("brandTitle", "Krishi AI")}
-          </h2>
-          <p style={{ fontSize: "11.5px", color: "var(--text-secondary)", fontWeight: "500" }}>
-            {t("brandSubtitle", "Smart Farm Companion")}
-          </p>
-        </div>
+          padding: "6px 8px 18px 8px",
+          borderBottom: "1px solid var(--card-border)",
+          cursor: "pointer",
+        }}
+      >
+        <KhetiTakLogo size={36} showTagline={true} />
       </div>
 
       {/* Navigation List — All 9 Flat items */}

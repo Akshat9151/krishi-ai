@@ -3,6 +3,7 @@ import { ShoppingCart, BotMessageSquare, CloudSun, User, Globe, LogIn } from "lu
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
+import { KhetiTakLogo } from "./KhetiTakBranding";
 
 export default function Header({ currentView, setCurrentView }) {
   const { totalItems, setIsCartOpen } = useCart();
@@ -14,7 +15,7 @@ export default function Header({ currentView, setCurrentView }) {
       case "dashboard": return t("dashTitle", "Farm Dashboard");
       case "crop": return t("cropRecTitle", "Crop Recommendation");
       case "disease": return t("diseaseTitle", "Plant Disease Detection");
-      case "assistant": return t("assistantTitle", "Krishi AI Assistant");
+      case "assistant": return t("assistantTitle", "KhetiTak Assistant");
       case "weather": return t("weatherTitle", "Weather & Agri-Advisory");
       case "mandi": return t("mandiTitle", "Live Mandi Bhav (Market Rates)");
       case "fertilizer": return t("fertilizerTitle", "Fertilizer Calculator");
@@ -24,7 +25,7 @@ export default function Header({ currentView, setCurrentView }) {
       case "profile": return t("profileTitle", "Profile & Settings");
       case "login": return t("signIn", "Sign In");
       case "register": return t("createAccount", "Create Account");
-      default: return t("brandTitle", "Krishi AI");
+      default: return t("brandTitle", "KhetiTak");
     }
   };
 
@@ -49,15 +50,11 @@ export default function Header({ currentView, setCurrentView }) {
           style={{
             display: "none",
             alignItems: "center",
-            gap: "8px",
             cursor: "pointer",
           }}
           className="mobile-brand-title"
         >
-          <span style={{ fontSize: "20px" }}>🌱</span>
-          <span style={{ fontWeight: "800", fontSize: "17px", color: "var(--text-primary)" }}>
-            Krishi <span style={{ color: "var(--marigold)" }}>AI</span>
-          </span>
+          <KhetiTakLogo size={28} />
         </div>
 
         <div className="desktop-view-title">
@@ -145,7 +142,7 @@ export default function Header({ currentView, setCurrentView }) {
             cursor: "pointer",
             transition: "all 0.15s ease",
           }}
-          title={t("assistantTitle", "Chat with Krishi AI")}
+          title={t("assistantTitle", "Chat with KhetiTak")}
         >
           <BotMessageSquare size={16} color={currentView === "assistant" ? "#FFFFFF" : "var(--terracotta)"} />
           <span className="hide-on-compact">{t("featAssistant", "Ask AI")}</span>

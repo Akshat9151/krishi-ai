@@ -1,0 +1,15 @@
+﻿{
+  "short_name": "KhetiTak",
+  "name": "KhetiTak — खेती का भरोसा, आपके पास",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#FBF8F2",
+  "theme_color": "#FBF8F2",
+  "display": "standalone"
+}

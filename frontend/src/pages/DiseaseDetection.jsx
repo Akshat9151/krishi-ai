@@ -77,7 +77,7 @@ export default function DiseaseDetection({ setCurrentView }) {
       price: product.price || 450,
       image_url: product.image_url || "https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?w=120",
       unit: "500ml / 1kg",
-      brand: "Krishi AI Certified",
+      brand: "KhetiTak Certified",
     };
     addToCart(cartProduct, 1);
     setAddedProductId(product.name);

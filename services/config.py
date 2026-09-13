@@ -6,9 +6,9 @@ class Settings(BaseSettings):
     """Production-ready configuration settings."""
     
     # Application
-    PROJECT_NAME: str = "Krishi AI"
-    VERSION: str = "1.0.0"
-    DESCRIPTION: str = "Crop Recommendation System"
+    PROJECT_NAME: str = "KhetiTak"
+    VERSION: str = "2.0.0"
+    DESCRIPTION: str = "KhetiTak Smart Agriculture & Village AgriStore"
     API_V1_STR: str = "/api/v1"
     DEBUG: bool = False
     

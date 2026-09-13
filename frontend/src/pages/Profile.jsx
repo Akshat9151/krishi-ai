@@ -78,7 +78,7 @@ export default function Profile({ setCurrentView }) {
               {user ? user.username : "Guest Farmer"}
             </h3>
             <p style={{ fontSize: "12.5px", color: "var(--text-secondary)", margin: "2px 0 0 0" }}>
-              Verified Krishi AI Account • {preferences.farmLocation}
+              Verified KhetiTak Account • {preferences.farmLocation}
             </p>
           </div>
         </div>

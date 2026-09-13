@@ -9,7 +9,7 @@ from backend.database import SessionLocal
 from services.logger import logger
 
 class HealthChecker:
-    """Comprehensive health checking system for Krishi AI."""
+    """Comprehensive health checking system for KhetiTak."""
     
     def __init__(self):
         self.start_time = time.time()
@@ -191,8 +191,8 @@ def get_health_metrics() -> Dict[str, Any]:
     """Get detailed health metrics for monitoring."""
     return {
         "application": {
-            "name": "Krishi AI",
-            "version": "1.0.0",
+            "name": "KhetiTak",
+            "version": "2.0.0",
             "environment": "production" if psutil.cpu_count() > 2 else "development"
         },
         "system": health_checker.check_system_resources(),

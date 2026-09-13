@@ -1105,7 +1105,7 @@ def seed_database():
                 reviews_count=prod.get("reviews_count", 50),
                 in_stock=True,
                 badge=prod.get("badge"),
-                brand=prod.get("brand", "Krishi AI"),
+                brand=prod.get("brand", "KhetiTak"),
                 weight=prod.get("weight"),
                 unit=prod.get("unit"),
                 sku=prod.get("sku"),

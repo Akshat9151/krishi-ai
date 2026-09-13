@@ -81,7 +81,7 @@ class OllamaChat:
 
     def generate(self, user_message: str) -> str:
         prompt = f"""
-You are Krishi AI, an expert Indian agriculture assistant.
+You are KhetiTak, an expert Indian agriculture assistant and farming companion.
 
 Rules:
 - Answer in Hindi / Hinglish / English (farmer friendly)

@@ -39,7 +39,7 @@ export default function MyOrders({ setCurrentView }) {
           My Orders & Delivery Tracking (मेरे ऑर्डर)
         </h2>
         <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginTop: "4px" }}>
-          Track orders placed through Krishi AI AgriStore with live delivery status.
+          Track orders placed through KhetiTak AgriStore with live delivery status.
         </p>
       </div>
 

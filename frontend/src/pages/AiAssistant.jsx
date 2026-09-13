@@ -9,7 +9,7 @@ export default function AiAssistant() {
   const [messages, setMessages] = useState([
     {
       sender: "bot",
-      text: "नमस्ते किसान भाई! मैं कृषि AI हूँ। आप मुझसे फसल रोग, खाद की मात्रा, मौसम, या मंडी भाव के बारे में हिंदी, हिंग्लिश या इंग्लिश में पूछ सकते हैं।",
+      text: "नमस्ते किसान भाई! मैं KhetiTak AI सलाहकार हूँ। आप मुझसे फसल रोग, खाद की मात्रा, मौसम, या मंडी भाव के बारे में हिंदी, हिंग्लिश या इंग्लिश में पूछ सकते हैं।",
       time: "Just now",
     },
   ]);
@@ -125,7 +125,7 @@ export default function AiAssistant() {
           </div>
           <div>
             <h3 style={{ fontSize: "16px", fontWeight: "800", margin: 0 }}>
-              Krishi AI Assistant (कृषि मित्र)
+              KhetiTak AI Assistant (कृषि मित्र)
             </h3>
             <p style={{ fontSize: "12px", color: "var(--growth-green)", margin: 0, fontWeight: "600" }}>
               ● 24/7 Smart Agriculture Expert
@@ -225,7 +225,7 @@ export default function AiAssistant() {
         {loading && (
           <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-secondary)", fontSize: "13px" }}>
             <Sparkles size={16} color="var(--marigold)" />
-            <span>Krishi AI is formulating farming advice...</span>
+            <span>KhetiTak is formulating farming advice...</span>
           </div>
         )}
         <div ref={messagesEndRef} />

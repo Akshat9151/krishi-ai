@@ -21,6 +21,7 @@ import Profile from "./pages/Profile";
 import FarmTools from "./pages/FarmTools";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import { KhetiTakSplash } from "./components/KhetiTakBranding";
 
 function MainApp() {
   const { user } = useAuth();
@@ -30,10 +31,18 @@ function MainApp() {
       const path = window.location.pathname.toLowerCase();
       const hash = window.location.hash.toLowerCase().replace("#", "");
 
+      if (path === "/splash" || hash === "splash") return "splash";
       if (path === "/login" || hash === "login") return "login";
       if (path === "/register" || hash === "register") return "register";
-      if (hash && ["dashboard", "crop", "disease", "assistant", "weather", "mandi", "fertilizer", "store", "orders", "profile", "tools"].includes(hash)) {
+      if (hash && ["splash", "dashboard", "crop", "disease", "assistant", "weather", "mandi", "fertilizer", "store", "orders", "profile", "tools"].includes(hash)) {
         return hash;
+      }
+
+      // Check if user has seen splash
+      const seenSplash = sessionStorage.getItem("khetitak_seen_splash");
+      if (!seenSplash && !localStorage.getItem("accessToken")) {
+        sessionStorage.setItem("khetitak_seen_splash", "true");
+        return "splash";
       }
 
       // If user is not authenticated and has no active token, land on Login/Signup
@@ -76,6 +85,15 @@ function MainApp() {
       window.removeEventListener("hashchange", handleHashChange);
     };
   }, []);
+
+  // If on splash screen view
+  if (currentView === "splash") {
+    return (
+      <KhetiTakSplash
+        onContinue={() => setCurrentView("login")}
+      />
+    );
+  }
 
   // If on login/register view
   if (currentView === "login") {

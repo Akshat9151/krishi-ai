@@ -1,4 +1,4 @@
-# Production Dockerfile for Krishi AI
+# Production Dockerfile for KhetiTak
 FROM python:3.11-slim
 
 # Set working directory

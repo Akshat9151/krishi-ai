@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Search, ShoppingCart, Star, Check, Tag, Eye, X, PackageCheck, ArrowRight, Sparkles } from "lucide-react";
 import { storeApi } from "../services/api";
 import { useCart } from "../context/CartContext";
+import { AgriStoreConceptCard } from "../components/KhetiTakBranding";
 
 export default function AgriStore({ setCurrentView }) {
   const { addToCart, setIsCartOpen } = useCart();
@@ -80,27 +81,22 @@ export default function AgriStore({ setCurrentView }) {
 
   return (
     <div className="page-container" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-      {/* Top Banner & Header */}
-      <div
-        className="ka-card"
-        style={{
-          background: "linear-gradient(135deg, #FFFFFF 0%, var(--marigold-light) 100%)",
-          borderColor: "var(--marigold)",
-          padding: "20px 24px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "14px",
+      {/* Top Banner — Official Concept 2 AgriStore Card */}
+      <AgriStoreConceptCard
+        onShopNow={() => {
+          const el = document.getElementById("agristore-products-grid");
+          if (el) el.scrollIntoView({ behavior: "smooth" });
         }}
-      >
+      />
+
+      {/* Action shortcuts: My Orders and View Cart */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
         <div>
-          <span className="badge-marigold">DIRECT VILLAGE APMC STORE</span>
-          <h2 style={{ fontSize: "24px", fontWeight: "800", color: "var(--text-primary)", marginTop: "4px" }}>
-            AgriStore Village Market (कृषि बाज़ार)
+          <h2 style={{ fontSize: "20px", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
+            KhetiTak AgriStore (कृषि बाज़ार)
           </h2>
-          <p style={{ color: "var(--text-secondary)", fontSize: "13.5px", margin: 0 }}>
-            Certified fertilizers, hybrid seeds, and protective gear delivered to your farm with Cash on Delivery.
+          <p style={{ color: "var(--text-secondary)", fontSize: "13px", margin: "2px 0 0 0" }}>
+            Certified fertilizers, seeds & farming tools delivered straight to your farm.
           </p>
         </div>
 
@@ -254,7 +250,7 @@ export default function AgriStore({ setCurrentView }) {
       )}
 
       {/* Main Products Grid */}
-      <div>
+      <div id="agristore-products-grid">
         <h3 style={{ fontSize: "16px", fontWeight: "700", marginBottom: "14px" }}>
           All Products ({products.length})
         </h3>

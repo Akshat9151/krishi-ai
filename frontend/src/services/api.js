@@ -1,5 +1,5 @@
 /**
- * Krishi AI — Central API Service Client
+ * KhetiTak — Central API Service Client
  * Connects to the existing Render FastAPI backend: https://krishi-ai-2-4j3k.onrender.com
  */
 

@@ -270,7 +270,7 @@ def recommend_products(data: DiseaseRequest):
 def health_check():
     return {
         "status": "ok",
-        "service": "Krishi AI"
+        "service": "KhetiTak"
     }
 
 

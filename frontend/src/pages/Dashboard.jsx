@@ -17,6 +17,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
 import { coreApi } from "../services/api";
+import { AgriStoreConceptCard, KhetiTakMark } from "../components/KhetiTakBranding";
 
 export default function Dashboard({ setCurrentView }) {
   const { user, preferences } = useAuth();
@@ -91,7 +92,7 @@ export default function Dashboard({ setCurrentView }) {
     },
     {
       id: "assistant",
-      title: t("assistantTitle", "Ask Krishi AI"),
+      title: t("assistantTitle", "Ask KhetiTak AI"),
       desc: t("assistantSubtitle", "Chat with your 24/7 AI farming advisor in Hindi & English"),
       icon: BotMessageSquare,
       color: "var(--marigold)",
@@ -117,7 +118,7 @@ export default function Dashboard({ setCurrentView }) {
       >
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-            <span style={{ fontSize: "22px" }}>🌾</span>
+            <KhetiTakMark size={24} />
             <span className="badge-marigold">{t("welcomeFarmer", "Namaste, Farmer")}</span>
           </div>
           <h2 style={{ fontSize: "24px", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
@@ -135,7 +136,7 @@ export default function Dashboard({ setCurrentView }) {
           style={{ padding: "12px 20px" }}
         >
           <Sparkles size={16} />
-          <span>{t("featAssistant", "Ask Krishi AI")}</span>
+          <span>{t("featAssistant", "Ask KhetiTak AI")}</span>
         </button>
       </div>
 
@@ -245,6 +246,9 @@ export default function Dashboard({ setCurrentView }) {
           </button>
         </div>
       </div>
+
+      {/* AgriStore Feature Card — Concept 2 Quality Inputs, Better Yields */}
+      <AgriStoreConceptCard onShopNow={() => setCurrentView("store")} />
 
       {/* Quick Action Grid */}
       <div>
