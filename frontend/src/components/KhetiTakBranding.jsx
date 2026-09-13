@@ -321,30 +321,16 @@ export function KhetiTakSplash({ onContinue }) {
             fontSize: "16px",
             fontWeight: "600",
             color: "#6B645A",
-            margin: "0 0 24px 0",
+            margin: "0 0 20px 0",
           }}
         >
           खेती का भरोसा, आपके पास
         </p>
 
-        {onContinue && (
-          <button
-            onClick={onContinue}
-            style={{
-              backgroundColor: "#C1440E",
-              color: "#FFFFFF",
-              border: "none",
-              borderRadius: "10px",
-              padding: "12px 28px",
-              fontSize: "14.5px",
-              fontWeight: "700",
-              cursor: "pointer",
-              boxShadow: "0 4px 14px rgba(193, 68, 14, 0.35)",
-            }}
-          >
-            ऐप शुरू करें / Continue →
-          </button>
-        )}
+        {/* Real App Cold-Start Loading Indicator */}
+        <div style={{ width: "160px", margin: "8px auto 0 auto" }}>
+          <div className="growing-bar" style={{ height: "4px", borderRadius: "3px" }} />
+        </div>
       </div>
 
       {/* Bottom Rolling Hills Field Illustration */}

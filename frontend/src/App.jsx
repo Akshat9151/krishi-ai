@@ -86,13 +86,24 @@ function MainApp() {
     };
   }, []);
 
+  // Auto-navigate splash screen after 1.8s matching native cold-start feel
+  useEffect(() => {
+    if (currentView === "splash") {
+      const timer = setTimeout(() => {
+        const token = localStorage.getItem("accessToken");
+        if (token || user) {
+          setCurrentView("dashboard");
+        } else {
+          setCurrentView("login");
+        }
+      }, 1800);
+      return () => clearTimeout(timer);
+    }
+  }, [currentView, user]);
+
   // If on splash screen view
   if (currentView === "splash") {
-    return (
-      <KhetiTakSplash
-        onContinue={() => setCurrentView("login")}
-      />
-    );
+    return <KhetiTakSplash />;
   }
 
   // If on login/register view
