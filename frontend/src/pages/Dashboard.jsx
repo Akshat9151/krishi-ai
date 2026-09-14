@@ -226,12 +226,12 @@ export default function Dashboard({ setCurrentView }) {
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: "13.5px", color: "var(--text-secondary)" }}>Primary Crop:</span>
-                <span style={{ fontWeight: "700", color: "var(--growth-green)" }}>{preferences.primaryCrop}</span>
+                <span style={{ fontWeight: "700", color: "var(--growth-green)" }}>{preferences?.primaryCrop || "Wheat"}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: "13.5px", color: "var(--text-secondary)" }}>Registered Land Size:</span>
                 <span style={{ fontWeight: "700", color: "var(--text-primary)" }}>
-                  {preferences.landSize} {preferences.landUnit}
+                  {preferences?.landSize || "3"} {preferences?.landUnit || "Acres"}
                 </span>
               </div>
             </div>

@@ -14,16 +14,22 @@ export function AuthProvider({ children }) {
   // Farmer preferences (language, farm details, location)
   const [preferences, setPreferences] = useState(() => {
     const saved = localStorage.getItem("krishi_preferences");
-    return saved
-      ? JSON.parse(saved)
-      : {
-          language: "hi", // 'hi', 'en', 'hinglish'
-          farmLocation: "Jaipur, Rajasthan",
-          landSize: "3",
-          landUnit: "Acres",
-          primaryCrop: "Wheat",
-          soundEnabled: true,
-        };
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        // Corrupted preferences — clear and fall back to defaults
+        localStorage.removeItem("krishi_preferences");
+      }
+    }
+    return {
+      language: "hi", // 'hi', 'en', 'hinglish'
+      farmLocation: "Jaipur, Rajasthan",
+      landSize: "3",
+      landUnit: "Acres",
+      primaryCrop: "Wheat",
+      soundEnabled: true,
+    };
   });
 
   const updatePreferences = (newPrefs) => {
