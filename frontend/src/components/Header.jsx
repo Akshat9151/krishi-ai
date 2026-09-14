@@ -7,7 +7,7 @@ import { KhetiTakLogo } from "./KhetiTakBranding";
 
 export default function Header({ currentView, setCurrentView }) {
   const { totalItems, setIsCartOpen } = useCart();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { language, setLanguage, languages, t } = useTranslation();
 
   const getTitle = () => {
@@ -195,7 +195,7 @@ export default function Header({ currentView, setCurrentView }) {
         </button>
 
         {/* User Status / Sign In or Profile */}
-        {user ? (
+        {isAuthenticated ? (
           <button
             onClick={() => setCurrentView("profile")}
             className="mobile-only-profile"

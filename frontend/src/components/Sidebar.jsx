@@ -19,7 +19,7 @@ import { useTranslation } from "../context/LanguageContext";
 import { KhetiTakLogo } from "./KhetiTakBranding";
 
 export default function Sidebar({ currentView, setCurrentView }) {
-  const { user, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const { t } = useTranslation();
 
   const navItems = [
@@ -150,7 +150,7 @@ export default function Sidebar({ currentView, setCurrentView }) {
           <ChevronRight size={16} color="var(--text-muted)" />
         </button>
 
-        {user ? (
+        {isAuthenticated ? (
           <button
             onClick={logout}
             style={{
