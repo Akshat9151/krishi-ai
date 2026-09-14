@@ -324,4 +324,3 @@ def legacy_predict_crop(data: dict):
 @legacy_router.post("/predict")
 def legacy_predict_alias(data: dict):
     return _legacy_crop_prediction(data)
-\n

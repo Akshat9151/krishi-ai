@@ -68,7 +68,7 @@ export function KhetiTakMark({ size = 48, className = "" }) {
 export function KhetiTakLogo({ size = 32, showTagline = false, className = "", style = {} }) {
   return (
     <div
-      className={khetitak-brand-logo }
+      className="khetitak-brand-logo"
       style={{
         display: "inline-flex",
         alignItems: "center",
