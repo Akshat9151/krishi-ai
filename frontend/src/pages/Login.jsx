@@ -61,7 +61,7 @@ export default function Login({ onSwitchToRegister, onLoginSuccess, onGuestConti
 
       {/* Login Card */}
       <div
-        className="ka-card"
+        className="ka-card auth-card"
         style={{
           width: "100%",
           maxWidth: "420px",

@@ -74,7 +74,7 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess, onGuestCo
 
       {/* Register Card */}
       <div
-        className="ka-card"
+        className="ka-card auth-card"
         style={{
           width: "100%",
           maxWidth: "420px",

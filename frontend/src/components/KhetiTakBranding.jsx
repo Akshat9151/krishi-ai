@@ -274,6 +274,7 @@ export function AgriStoreConceptCard({ onShopNow, style = {} }) {
 export function KhetiTakSplash({ onContinue }) {
   return (
     <div
+      className="splash-screen"
       style={{
         position: "relative",
         minHeight: "100vh",
@@ -288,6 +289,7 @@ export function KhetiTakSplash({ onContinue }) {
     >
       {/* Top Branding Section */}
       <div
+        className="splash-branding"
         style={{
           display: "flex",
           flexDirection: "column",
@@ -297,11 +299,12 @@ export function KhetiTakSplash({ onContinue }) {
           zIndex: 10,
         }}
       >
-        <div style={{ marginBottom: "18px" }}>
+        <div className="splash-mark" style={{ marginBottom: "18px" }}>
           <KhetiTakMark size={96} />
         </div>
 
         <h1
+          className="splash-wordmark"
           style={{
             fontFamily: "var(--font-headings)",
             fontSize: "40px",
@@ -316,6 +319,7 @@ export function KhetiTakSplash({ onContinue }) {
         </h1>
 
         <p
+          className="splash-tagline"
           style={{
             fontFamily: "var(--font-headings)",
             fontSize: "16px",
@@ -328,13 +332,13 @@ export function KhetiTakSplash({ onContinue }) {
         </p>
 
         {/* Real App Cold-Start Loading Indicator */}
-        <div style={{ width: "160px", margin: "8px auto 0 auto" }}>
+        <div className="splash-loader" style={{ width: "160px", margin: "8px auto 0 auto" }}>
           <div className="growing-bar" style={{ height: "4px", borderRadius: "3px" }} />
         </div>
       </div>
 
       {/* Bottom Rolling Hills Field Illustration */}
-      <div style={{ width: "100%", maxWidth: "560px", zIndex: 1, lineHeight: 0 }}>
+      <div className="splash-illustration" style={{ width: "100%", maxWidth: "560px", zIndex: 1, lineHeight: 0 }}>
         <svg
           viewBox="0 0 500 220"
           fill="none"

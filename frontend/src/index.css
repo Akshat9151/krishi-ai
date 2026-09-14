@@ -68,6 +68,10 @@ h1, h2, h3, h4, h5, h6 {
   transition: border-color 0.2s ease, transform 0.15s ease;
 }
 
+.auth-card {
+  border-radius: 16px;
+}
+
 .ka-card-interactive:hover {
   border-color: var(--marigold);
   transform: translateY(-2px);
@@ -281,6 +285,50 @@ textarea {
   border-radius: 2px;
   margin-top: 14px;
   animation: growBar 1.8s infinite ease-in-out;
+}
+
+.splash-screen {
+  min-height: 100dvh !important;
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    border-radius: 16px;
+  }
+
+  .splash-screen {
+    padding: 24px 16px 0 16px !important;
+  }
+
+  .splash-branding {
+    margin-top: 24px !important;
+  }
+
+  .splash-mark {
+    margin-bottom: 14px !important;
+  }
+
+  .splash-mark svg {
+    width: clamp(72px, 24vw, 96px);
+    height: auto;
+  }
+
+  .splash-wordmark {
+    font-size: clamp(32px, 10vw, 40px) !important;
+  }
+
+  .splash-tagline {
+    font-size: clamp(14px, 4vw, 16px) !important;
+    margin-bottom: 14px !important;
+  }
+
+  .splash-loader {
+    width: min(160px, 48vw) !important;
+  }
+
+  .splash-illustration {
+    max-width: 100%;
+  }
 }
 
 @keyframes growBar {
