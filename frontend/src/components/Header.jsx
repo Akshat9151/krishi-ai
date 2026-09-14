@@ -1,5 +1,5 @@
 import React from "react";
-import { ShoppingCart, BotMessageSquare, CloudSun, User, Globe, LogIn } from "lucide-react";
+import { ShoppingCart, BotMessageSquare, CloudSun, User, Globe } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
@@ -217,23 +217,7 @@ export default function Header({ currentView, setCurrentView }) {
           >
             {user.username.charAt(0).toUpperCase()}
           </button>
-        ) : (
-          <button
-            onClick={() => setCurrentView("login")}
-            className="btn-primary header-sign-in"
-            style={{
-              padding: "6px 14px",
-              fontSize: "12.5px",
-              borderRadius: "var(--radius-sm)",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            <LogIn size={15} />
-            <span className="header-sign-in-label">{t("signIn", "Sign In")}</span>
-          </button>
-        )}
+        ) : null}
       </div>
 
       {/* Media query helpers inline for header */}
