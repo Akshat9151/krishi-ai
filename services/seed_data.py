@@ -42,6 +42,14 @@ CATEGORIES = [
         "image": "https://images.unsplash.com/photo-1560493676-04071c5f467b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
         "description": "ड्रिप किट एवं पानी की बचत उपकरण",
         "sort_order": 5
+    },
+    {
+        "name": "organic-bio",
+        "display_name": "à¤œà¥ˆà¤µà¤¿à¤• à¤‰à¤¤à¥à¤ªà¤¾à¤¦ (Organic & Bio)",
+        "icon": "fas fa-leaf",
+        "image": "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        "description": "Organic soil conditioners and biological crop-care products.",
+        "sort_order": 6
     }
 ]
 
@@ -288,25 +296,44 @@ PRODUCTS = [
     }
 ]
 
+DEMO_PRODUCTS = [
+    {"name": "Urea 46% Nitrogen", "category": "organic-fertilizers", "subcategory": "nitrogen-fertilizer", "description": "High-analysis nitrogen fertilizer for wheat, rice, maize and vegetables.", "image_url": "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=500", "price": 1325.0, "original_price": 1450.0, "discount_percentage": 9.0, "rating": 4.7, "reviews_count": 86, "badge": "Farm Essential", "fertilizer_type": "urea", "suitable_crops": json.dumps(["wheat", "rice", "maize"]), "brand": "IFFCO", "weight": "50kg", "unit": "bag", "sku": "DEMO-UREA-50KG", "product_url": "product.html?sku=DEMO-UREA-50KG"},
+    {"name": "DAP Di-Ammonium Phosphate 18:46:0", "category": "organic-fertilizers", "subcategory": "phosphate-fertilizer", "description": "Balanced starter fertilizer supplying nitrogen and phosphorus for strong roots.", "image_url": "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=500", "price": 1350.0, "original_price": 1500.0, "discount_percentage": 10.0, "rating": 4.8, "reviews_count": 124, "badge": "Bestseller", "fertilizer_type": "DAP", "suitable_crops": json.dumps(["wheat", "rice", "mustard", "maize"]), "brand": "IFFCO", "weight": "50kg", "unit": "bag", "sku": "DEMO-DAP-50KG", "product_url": "product.html?sku=DEMO-DAP-50KG"},
+    {"name": "MOP Muriate of Potash 60%", "category": "organic-fertilizers", "subcategory": "potash-fertilizer", "description": "Potassium fertilizer for improved crop strength, quality and stress tolerance.", "image_url": "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=500", "price": 1650.0, "original_price": 1800.0, "discount_percentage": 8.0, "rating": 4.6, "reviews_count": 58, "badge": "Popular", "fertilizer_type": "potash", "suitable_crops": json.dumps(["potato", "sugarcane", "cotton"]), "brand": "IPL", "weight": "50kg", "unit": "bag", "sku": "DEMO-MOP-50KG", "product_url": "product.html?sku=DEMO-MOP-50KG"},
+    {"name": "NPK 10:26:26 Granular Fertilizer", "category": "organic-fertilizers", "subcategory": "npk-fertilizer", "description": "Granular NPK blend for flowering, fruiting and balanced crop nutrition.", "image_url": "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=500", "price": 1475.0, "original_price": 1600.0, "discount_percentage": 8.0, "rating": 4.7, "reviews_count": 73, "badge": "Balanced Nutrition", "fertilizer_type": "NPK", "suitable_crops": json.dumps(["wheat", "rice", "maize", "vegetables"]), "brand": "Coromandel", "weight": "50kg", "unit": "bag", "sku": "DEMO-NPK-102626-50KG", "product_url": "product.html?sku=DEMO-NPK-102626-50KG"},
+    {"name": "Single Super Phosphate SSP", "category": "organic-fertilizers", "subcategory": "phosphate-fertilizer", "description": "Phosphorus, sulphur and calcium fertilizer for root development and oilseeds.", "image_url": "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=500", "price": 520.0, "original_price": 600.0, "discount_percentage": 13.0, "rating": 4.5, "reviews_count": 41, "badge": "Value Pack", "fertilizer_type": "SSP", "suitable_crops": json.dumps(["mustard", "wheat", "groundnut"]), "brand": "Rashtriya Chemicals", "weight": "50kg", "unit": "bag", "sku": "DEMO-SSP-50KG", "product_url": "product.html?sku=DEMO-SSP-50KG"},
+    {"name": "Zinc Sulphate 21% Micronutrient", "category": "organic-fertilizers", "subcategory": "micronutrient", "description": "Fast-acting zinc supplement for correcting zinc deficiency in field crops.", "image_url": "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=500", "price": 185.0, "original_price": 220.0, "discount_percentage": 16.0, "rating": 4.6, "reviews_count": 39, "badge": "Micronutrient", "fertilizer_type": "micronutrient", "suitable_crops": json.dumps(["rice", "wheat", "maize"]), "brand": "KhetiCare", "weight": "1kg", "unit": "pack", "sku": "DEMO-ZINC-1KG", "product_url": "product.html?sku=DEMO-ZINC-1KG"},
+    {"name": "Organic Vermicompost Enriched", "category": "organic-fertilizers", "subcategory": "compost", "description": "Well-decomposed organic vermicompost to improve soil structure and microbial activity.", "image_url": "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=500", "price": 425.0, "original_price": 500.0, "discount_percentage": 15.0, "rating": 4.8, "reviews_count": 92, "badge": "Organic", "fertilizer_type": "organic", "suitable_crops": json.dumps(["vegetables", "wheat", "rice"]), "brand": "Krishi Bio", "weight": "25kg", "unit": "bag", "sku": "DEMO-VERMICOMPOST-25KG", "product_url": "product.html?sku=DEMO-VERMICOMPOST-25KG"},
+    {"name": "Certified Wheat Seeds HD-2967", "category": "vegetable-seeds", "subcategory": "cereal-seeds", "description": "Popular HD-2967 wheat variety with reliable germination and strong yield potential.", "image_url": "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500", "price": 1480.0, "original_price": 1650.0, "discount_percentage": 10.0, "rating": 4.8, "reviews_count": 113, "badge": "Certified Seed", "fertilizer_type": None, "suitable_crops": json.dumps(["wheat"]), "brand": "National Seeds Corp", "weight": "40kg", "unit": "bag", "sku": "DEMO-WHEAT-HD2967", "product_url": "product.html?sku=DEMO-WHEAT-HD2967"},
+    {"name": "Pusa Basmati 1121 Paddy Seeds", "category": "vegetable-seeds", "subcategory": "rice-seeds", "description": "Premium aromatic basmati rice seed for suitable irrigated regions.", "image_url": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500", "price": 780.0, "original_price": 900.0, "discount_percentage": 13.0, "rating": 4.7, "reviews_count": 67, "badge": "Basmati", "fertilizer_type": None, "suitable_crops": json.dumps(["rice", "paddy"]), "brand": "Pusa IARI", "weight": "5kg", "unit": "pack", "sku": "DEMO-PADDY-BASMATI-5KG", "product_url": "product.html?sku=DEMO-PADDY-BASMATI-5KG"},
+    {"name": "PR-126 Non-Basmati Paddy Seeds", "category": "vegetable-seeds", "subcategory": "rice-seeds", "description": "Early-duration non-basmati paddy seed suited to water-saving cultivation.", "image_url": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500", "price": 620.0, "original_price": 720.0, "discount_percentage": 14.0, "rating": 4.6, "reviews_count": 54, "badge": "Early Variety", "fertilizer_type": None, "suitable_crops": json.dumps(["rice", "paddy"]), "brand": "PAU Certified", "weight": "10kg", "unit": "pack", "sku": "DEMO-PADDY-PR126-10KG", "product_url": "product.html?sku=DEMO-PADDY-PR126-10KG"},
+    {"name": "Hybrid Maize Seeds", "category": "vegetable-seeds", "subcategory": "cereal-seeds", "description": "High-vigor hybrid maize seed for uniform crop establishment and cob size.", "image_url": "https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=500", "price": 390.0, "original_price": 450.0, "discount_percentage": 13.0, "rating": 4.5, "reviews_count": 48, "badge": "Hybrid", "fertilizer_type": None, "suitable_crops": json.dumps(["maize"]), "brand": "Kheti Gold", "weight": "1kg", "unit": "pack", "sku": "DEMO-MAIZE-HYBRID-1KG", "product_url": "product.html?sku=DEMO-MAIZE-HYBRID-1KG"},
+    {"name": "Certified Mustard Seeds Pusa Jai Kisan", "category": "vegetable-seeds", "subcategory": "oilseed-seeds", "description": "Reliable mustard variety for strong branching and oil-rich seed production.", "image_url": "https://images.unsplash.com/photo-1473445361085-b9a07f55608b?w=500", "price": 260.0, "original_price": 300.0, "discount_percentage": 13.0, "rating": 4.6, "reviews_count": 37, "badge": "Rabi Seed", "fertilizer_type": None, "suitable_crops": json.dumps(["mustard"]), "brand": "Pusa IARI", "weight": "2kg", "unit": "pack", "sku": "DEMO-MUSTARD-2KG", "product_url": "product.html?sku=DEMO-MUSTARD-2KG"},
+    {"name": "Vegetable Seed Combo Tomato Onion Chili", "category": "vegetable-seeds", "subcategory": "vegetable-seeds", "description": "Three practical retail seed packets for kitchen gardens and small farms.", "image_url": "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500", "price": 149.0, "original_price": 180.0, "discount_percentage": 17.0, "rating": 4.4, "reviews_count": 29, "badge": "Combo Pack", "fertilizer_type": None, "suitable_crops": json.dumps(["tomato", "onion", "chili"]), "brand": "Krishi Gold", "weight": "3 packets", "unit": "pack", "sku": "DEMO-VEG-COMBO-3PK", "product_url": "product.html?sku=DEMO-VEG-COMBO-3PK"},
+    {"name": "Chlorpyrifos 20% EC Insecticide", "category": "crop-protection", "subcategory": "insecticide", "description": "Agricultural insecticide for labelled crop pests; use only as permitted on the product label.", "image_url": "https://images.unsplash.com/photo-1584990347441-8c0a8c802f2c?w=500", "price": 420.0, "original_price": 480.0, "discount_percentage": 13.0, "rating": 4.4, "reviews_count": 31, "badge": "Crop Protection", "fertilizer_type": "insecticide", "suitable_crops": json.dumps(["rice", "cotton", "vegetables"]), "brand": "KhetiCare", "weight": "1L", "unit": "bottle", "sku": "DEMO-CHLORPYRIFOS-1L", "product_url": "product.html?sku=DEMO-CHLORPYRIFOS-1L"},
+    {"name": "Mancozeb 75% WP Fungicide", "category": "crop-protection", "subcategory": "fungicide", "description": "Contact fungicide for labelled fungal disease management; follow local legal directions.", "image_url": "https://images.unsplash.com/photo-1584990347441-8c0a8c802f2c?w=500", "price": 285.0, "original_price": 330.0, "discount_percentage": 14.0, "rating": 4.6, "reviews_count": 45, "badge": "Fungicide", "fertilizer_type": "fungicide", "suitable_crops": json.dumps(["potato", "tomato", "grapes"]), "brand": "Krishi Care", "weight": "500g", "unit": "pack", "sku": "DEMO-MANCOZEB-500G", "product_url": "product.html?sku=DEMO-MANCOZEB-500G"},
+    {"name": "Glyphosate 41% SL Herbicide", "category": "crop-protection", "subcategory": "herbicide", "description": "Non-selective herbicide for permitted non-crop areas; follow label, PPE and local regulations.", "image_url": "https://images.unsplash.com/photo-1584990347441-8c0a8c802f2c?w=500", "price": 520.0, "original_price": 590.0, "discount_percentage": 12.0, "rating": 4.3, "reviews_count": 22, "badge": "Herbicide", "fertilizer_type": "herbicide", "suitable_crops": json.dumps([]), "brand": "AgriShield", "weight": "1L", "unit": "bottle", "sku": "DEMO-GLYPHOSATE-1L", "product_url": "product.html?sku=DEMO-GLYPHOSATE-1L"},
+    {"name": "Cold Pressed Neem Oil", "category": "crop-protection", "subcategory": "bio-pesticide", "description": "Plant-based neem oil for organic pest management and integrated crop care.", "image_url": "https://images.unsplash.com/photo-1584990347441-8c0a8c802f2c?w=500", "price": 249.0, "original_price": 299.0, "discount_percentage": 17.0, "rating": 4.6, "reviews_count": 78, "badge": "Organic", "fertilizer_type": "bio-control", "suitable_crops": json.dumps(["cotton", "wheat", "rice", "vegetables"]), "brand": "BioShield", "weight": "500ml", "unit": "bottle", "sku": "DEMO-NEEM-OIL-500ML", "product_url": "product.html?sku=DEMO-NEEM-OIL-500ML"},
+    {"name": "Manual Hand Sprayer 16L Pump", "category": "farming-tools", "subcategory": "spray-pump", "description": "Durable 16-litre manual pump sprayer with adjustable agricultural nozzle.", "image_url": "https://images.unsplash.com/photo-1589652043056-ba1a2c4830a7?w=500", "price": 1199.0, "original_price": 1399.0, "discount_percentage": 14.0, "rating": 4.5, "reviews_count": 64, "badge": "Farm Tool", "fertilizer_type": None, "suitable_crops": json.dumps([]), "brand": "AgriTech", "weight": "16L", "unit": "piece", "sku": "DEMO-SPRAYER-16L", "product_url": "product.html?sku=DEMO-SPRAYER-16L"},
+    {"name": "Forged Steel Sickle Hasiya", "category": "farming-tools", "subcategory": "hand-tools", "description": "Balanced forged-steel sickle for harvesting fodder, grass and mature crops.", "image_url": "https://images.unsplash.com/photo-1598257008754-b4d61c42d6d4?w=500", "price": 185.0, "original_price": 225.0, "discount_percentage": 18.0, "rating": 4.4, "reviews_count": 33, "badge": "Hand Tool", "fertilizer_type": None, "suitable_crops": json.dumps([]), "brand": "AgriCraft", "weight": "450g", "unit": "piece", "sku": "DEMO-SICKLE-HASIYA", "product_url": "product.html?sku=DEMO-SICKLE-HASIYA"},
+    {"name": "Heavy Duty Khurpi Hand Hoe", "category": "farming-tools", "subcategory": "hand-tools", "description": "Compact steel khurpi for weeding, transplanting and loosening soil around plants.", "image_url": "https://images.unsplash.com/photo-1598257008754-b4d61c42d6d4?w=500", "price": 199.0, "original_price": 249.0, "discount_percentage": 20.0, "rating": 4.5, "reviews_count": 56, "badge": "Best Seller", "fertilizer_type": None, "suitable_crops": json.dumps([]), "brand": "AgriCraft", "weight": "500g", "unit": "piece", "sku": "DEMO-KHURPI-HOE", "product_url": "product.html?sku=DEMO-KHURPI-HOE"},
+]
+
 def seed_database(db: Session):
     """Seed initial categories, products, and fertilizer recommendations if database is empty."""
-    # Seed categories
-    if db.query(ProductCategory).count() == 0:
-        for cat_data in CATEGORIES:
-            cat = ProductCategory(**cat_data)
-            db.add(cat)
-        db.commit()
+    # Seed missing categories idempotently for both fresh and existing databases.
+    existing_categories = {name for (name,) in db.query(ProductCategory.name).all()}
+    for cat_data in CATEGORIES:
+        if cat_data["name"] not in existing_categories:
+            db.add(ProductCategory(**cat_data))
+    db.commit()
 
-    # Seed products
+    # Seed the original catalog and its recommendations when the database is empty.
     if db.query(StoreProduct).count() == 0:
-        created_products = []
         for prod_data in PRODUCTS:
-            prod = StoreProduct(**prod_data)
-            db.add(prod)
-            created_products.append(prod)
+            db.add(StoreProduct(**prod_data))
         db.commit()
 
-        # Seed fertilizer recommendations linked to products
         recs = [
             ("Rice", "NPK", 5, 0.95),
             ("Rice", "Urea + DAP", 7, 0.90),
@@ -330,11 +357,17 @@ def seed_database(db: Session):
             ("Sugarcane", "organic", 2, 0.90),
         ]
         for crop, ftype, pid, score in recs:
-            rec = FertilizerRecommendation(
+            db.add(FertilizerRecommendation(
                 crop_name=crop,
                 fertilizer_type=ftype,
                 product_id=pid,
-                recommendation_score=score
-            )
-            db.add(rec)
+                recommendation_score=score,
+            ))
         db.commit()
+
+    # Add the checkout demo catalog idempotently to existing deployments.
+    existing_skus = {sku for (sku,) in db.query(StoreProduct.sku).filter(StoreProduct.sku.isnot(None)).all()}
+    for prod_data in DEMO_PRODUCTS:
+        if prod_data["sku"] not in existing_skus:
+            db.add(StoreProduct(**prod_data))
+    db.commit()

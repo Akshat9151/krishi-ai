@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { PackageCheck, Search, CheckCircle2, Clock, Truck, MapPin, ArrowRight } from "lucide-react";
 import { storeApi } from "../services/api";
 import { useCart } from "../context/CartContext";
+import OrderTracking from "../components/OrderTracking";
 
 export default function MyOrders({ setCurrentView }) {
   const { placedOrders } = useCart();
@@ -9,6 +10,7 @@ export default function MyOrders({ setCurrentView }) {
   const [searchedOrder, setSearchedOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [trackingOrder, setTrackingOrder] = useState(null);
 
   const handleLookup = async (e) => {
     e.preventDefault();
@@ -30,6 +32,10 @@ export default function MyOrders({ setCurrentView }) {
   };
 
   const displayOrders = searchedOrder ? [searchedOrder] : placedOrders;
+
+  if (trackingOrder) {
+    return <OrderTracking order={trackingOrder} onBack={() => setTrackingOrder(null)} />;
+  }
 
   return (
     <div className="page-container" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -174,6 +180,15 @@ export default function MyOrders({ setCurrentView }) {
                   </div>
                 </div>
               )}
+
+                  <button
+                    className="btn-primary"
+                    style={{ marginTop: "16px" }}
+                    onClick={() => setTrackingOrder(order)}
+                  >
+                    <Truck size={16} />
+                    <span>Track Order</span>
+                  </button>
             </div>
           ))}
         </div>
