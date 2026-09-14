@@ -151,7 +151,16 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     identifier = _clean(user.username or user.email or user.phone)
     if not identifier:
         raise HTTPException(status_code=400, detail="Username, email, or phone is required")
-    if db.query(User).filter(or_(User.username == _clean(user.username), User.email == _clean(user.email), User.phone == _clean(user.phone))).first():
+    identifiers = [
+        field == value
+        for field, value in (
+            (User.username, _clean(user.username)),
+            (User.email, _clean(user.email)),
+            (User.phone, _clean(user.phone)),
+        )
+        if value
+    ]
+    if db.query(User).filter(or_(*identifiers)).first():
         raise HTTPException(status_code=400, detail="User already exists")
     new_user = User(
         username=_clean(user.username) or identifier,
