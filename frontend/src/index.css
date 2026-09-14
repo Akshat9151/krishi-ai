@@ -140,9 +140,17 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--marigold);
 }
 
+button,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
 /* FORM INPUTS */
 .input-field {
   width: 100%;
+  min-height: 44px;
   padding: 11px 14px;
   background-color: #FFFFFF;
   border: 1px solid var(--card-border);
@@ -336,7 +344,17 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 8px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+  .header-quick-action {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-header {
+    padding: 12px !important;
+  }
+
   .desktop-sidebar {
     display: none !important;
   }
@@ -345,6 +363,54 @@ h1, h2, h3, h4, h5, h6 {
   }
   .page-container {
     padding: 16px 16px 88px 16px; /* Extra bottom padding for bottom nav */
+  }
+
+  .header-actions {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .header-actions > button {
+    flex-shrink: 0;
+    min-width: 44px;
+  }
+
+  .header-quick-action {
+    display: none !important;
+  }
+
+  .header-language {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .header-language select {
+    max-width: 78px;
+  }
+
+  .header-language {
+    gap: 0 !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  .header-language svg {
+    display: none;
+  }
+
+  .header-sign-in-label {
+    display: none;
+  }
+
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  input,
+  select,
+  textarea {
+    min-height: 44px;
   }
 }
 

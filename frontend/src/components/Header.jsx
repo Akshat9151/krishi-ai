@@ -31,6 +31,7 @@ export default function Header({ currentView, setCurrentView }) {
 
   return (
     <header
+      className="app-header"
       style={{
         display: "flex",
         alignItems: "center",
@@ -65,9 +66,10 @@ export default function Header({ currentView, setCurrentView }) {
       </div>
 
       {/* Right actions: Language selector, AI shortcut, Weather shortcut, Cart, Sign In / Profile */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <div className="header-actions" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
         {/* Language Selector Dropdown */}
         <div
+          className="header-language"
           style={{
             display: "flex",
             alignItems: "center",
@@ -105,6 +107,7 @@ export default function Header({ currentView, setCurrentView }) {
 
         {/* Quick Weather button */}
         <button
+          className="header-quick-action"
           onClick={() => setCurrentView("weather")}
           style={{
             display: "flex",
@@ -127,6 +130,7 @@ export default function Header({ currentView, setCurrentView }) {
 
         {/* AI Assistant quick shortcut */}
         <button
+          className="header-quick-action"
           onClick={() => setCurrentView("assistant")}
           style={{
             display: "flex",
@@ -207,6 +211,7 @@ export default function Header({ currentView, setCurrentView }) {
               cursor: "pointer",
               color: "var(--terracotta)",
               fontWeight: "700",
+              minWidth: "38px",
             }}
             title={user.username}
           >
@@ -215,7 +220,7 @@ export default function Header({ currentView, setCurrentView }) {
         ) : (
           <button
             onClick={() => setCurrentView("login")}
-            className="btn-primary"
+            className="btn-primary header-sign-in"
             style={{
               padding: "6px 14px",
               fontSize: "12.5px",
@@ -226,14 +231,14 @@ export default function Header({ currentView, setCurrentView }) {
             }}
           >
             <LogIn size={15} />
-            <span>{t("signIn", "Sign In")}</span>
+            <span className="header-sign-in-label">{t("signIn", "Sign In")}</span>
           </button>
         )}
       </div>
 
       {/* Media query helpers inline for header */}
       <style>{`
-        @media (max-width: 768px) {
+        @media (max-width: 767px) {
           .mobile-brand-title { display: flex !important; }
           .desktop-view-title { display: none !important; }
           .mobile-only-profile { display: flex !important; }
