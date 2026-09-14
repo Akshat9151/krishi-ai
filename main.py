@@ -13,6 +13,7 @@ from services import store_api
 from backend.database import engine, SessionLocal
 from backend.models import Base
 import backend.models_store  # Register store models with Base
+from services.seed_data import seed_database
 
 # Create FastAPI app
 app = FastAPI(
@@ -25,13 +26,15 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, custom_rate_limit_exceeded_handler)
 
-# Create database tables for local fallback. Production deployments should run
-# Alembic before starting; no demo or product data is seeded at startup.
+# Create database tables for local fallback and ensure the idempotent catalog
+# exists after production migrations.
 try:
     Base.metadata.create_all(bind=engine)
-    print("[INFO] Database tables verified; startup seeding is disabled.")
+    with SessionLocal() as db:
+        seed_database(db)
+    print("[INFO] Database tables and store catalog verified.")
 except Exception as e:
-    print(f"[ERROR] Error creating/seeding database tables: {e}")
+    print(f"[ERROR] Error creating database tables or store catalog: {e}")
 
 # CORS middleware - Allow deployed frontend origins and local development
 app.add_middleware(
