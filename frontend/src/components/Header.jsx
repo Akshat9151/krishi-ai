@@ -227,6 +227,10 @@ export default function Header({ currentView, setCurrentView }) {
           .desktop-view-title { display: none !important; }
           .mobile-only-profile { display: flex !important; }
           .hide-on-compact { display: none !important; }
+          header.app-header {
+            padding: 10px 14px !important;
+            height: 56px !important;
+          }
         }
       `}</style>
     </header>

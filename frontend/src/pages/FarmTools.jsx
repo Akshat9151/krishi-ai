@@ -22,20 +22,23 @@ export default function FarmTools({ setCurrentView, defaultTool = "crop" }) {
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
       {/* Horizontal Tabs for Mobile / Tools screen */}
       <div
+        className="farm-tools-tabs"
         style={{
           display: "flex",
-          gap: "6px",
+          gap: "8px",
           overflowX: "auto",
-          padding: "10px 16px 4px 16px",
+          padding: "10px 14px",
           backgroundColor: "#FFFFFF",
           borderBottom: "1px solid var(--card-border)",
           position: "sticky",
-          top: "60px",
-          zIndex: 20,
+          top: "56px",
+          zIndex: 25,
+          WebkitOverflowScrolling: "touch",
           scrollbarWidth: "none",
+          msOverflowStyle: "none",
         }}
       >
         {tabs.map((tab) => {
@@ -46,22 +49,24 @@ export default function FarmTools({ setCurrentView, defaultTool = "crop" }) {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               style={{
-                display: "flex",
+                display: "inline-flex",
                 alignItems: "center",
+                flexShrink: 0,
                 gap: "6px",
                 padding: "8px 14px",
                 borderRadius: "var(--radius-full)",
                 border: isActive ? "1.5px solid var(--terracotta)" : "1px solid var(--card-border)",
-                backgroundColor: isActive ? "var(--terracotta-light)" : "var(--bg-cream)",
+                backgroundColor: isActive ? "var(--terracotta-light)" : "#FFFFFF",
                 color: isActive ? "var(--terracotta)" : "var(--text-secondary)",
-                fontWeight: isActive ? "700" : "500",
-                fontSize: "12.5px",
+                fontWeight: isActive ? "700" : "600",
+                fontSize: "13px",
                 whiteSpace: "nowrap",
                 cursor: "pointer",
+                boxShadow: isActive ? "0 2px 6px rgba(193, 68, 14, 0.12)" : "none",
                 transition: "all 0.15s ease",
               }}
             >
-              <Icon size={15} color={isActive ? "var(--terracotta)" : "var(--text-secondary)"} />
+              <Icon size={16} color={isActive ? "var(--terracotta)" : "var(--text-secondary)"} />
               <span>{tab.label}</span>
             </button>
           );

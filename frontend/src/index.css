@@ -410,7 +410,10 @@ textarea {
     display: flex !important;
   }
   .page-container {
-    padding: 16px 16px 88px 16px; /* Extra bottom padding for bottom nav */
+    padding: 14px 14px 88px 14px; /* Extra bottom padding for bottom nav */
+  }
+  .farm-tools-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .header-actions {
