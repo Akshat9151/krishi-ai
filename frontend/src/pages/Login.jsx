@@ -3,6 +3,7 @@ import { Lock, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Globe } fr
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
 import { KhetiTakMark, KhetiTakLogo } from "../components/KhetiTakBranding";
+import GoogleSignInButton from "../components/GoogleSignInButton";
 
 export default function Login({ onSwitchToRegister, onLoginSuccess }) {
   const { login } = useAuth();
@@ -206,6 +207,16 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
             <ArrowRight size={16} />
           </button>
         </form>
+
+        {/* Divider */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "20px 0", opacity: 0.5 }}>
+          <div style={{ flex: 1, height: "1px", backgroundColor: "var(--card-border)" }} />
+          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>{t("or", "or")}</span>
+          <div style={{ flex: 1, height: "1px", backgroundColor: "var(--card-border)" }} />
+        </div>
+
+        {/* Google Sign-In Button */}
+        <GoogleSignInButton onSuccess={onLoginSuccess} variant="login" />
 
         {loading && <div className="growing-bar" />}
 

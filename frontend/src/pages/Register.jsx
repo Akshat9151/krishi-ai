@@ -3,6 +3,7 @@ import { Lock, User, ArrowRight, CheckCircle2, AlertCircle, Globe } from "lucide
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
 import { KhetiTakMark } from "../components/KhetiTakBranding";
+import GoogleSignInButton from "../components/GoogleSignInButton";
 
 export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
   const { register } = useAuth();
@@ -237,6 +238,16 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
         </form>
 
         {loading && <div className="growing-bar" />}
+
+        {/* Divider */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "20px 0", opacity: 0.5 }}>
+          <div style={{ flex: 1, height: "1px", backgroundColor: "var(--card-border)" }} />
+          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>{t("or", "or")}</span>
+          <div style={{ flex: 1, height: "1px", backgroundColor: "var(--card-border)" }} />
+        </div>
+
+        {/* Google Sign-In Button */}
+        <GoogleSignInButton onSuccess={onRegisterSuccess} variant="register" />
 
         {/* Link to Login */}
         <div style={{ textAlign: "center", marginTop: "24px", fontSize: "13.5px", color: "var(--text-secondary)" }}>
