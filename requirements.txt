@@ -11,6 +11,11 @@ python-multipart
 passlib[bcrypt]
 slowapi
 sqlalchemy
+asyncpg
+psycopg2-binary
+aiosqlite
+alembic
+google-auth
 python-dotenv
 gunicorn
 redis

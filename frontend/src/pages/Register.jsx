@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
 import { KhetiTakMark } from "../components/KhetiTakBranding";
 
-export default function Register({ onSwitchToLogin, onRegisterSuccess, onGuestContinue }) {
+export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
   const { register } = useAuth();
   const { language, setLanguage, languages, t } = useTranslation();
 
@@ -256,25 +256,6 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess, onGuestCo
           </button>
         </div>
 
-        {/* Continue as Guest option */}
-        {onGuestContinue && (
-          <div style={{ textAlign: "center", marginTop: "14px" }}>
-            <button
-              type="button"
-              onClick={onGuestContinue}
-              style={{
-                background: "transparent",
-                border: "none",
-                color: "var(--text-muted)",
-                fontSize: "12.5px",
-                cursor: "pointer",
-                textDecoration: "underline",
-              }}
-            >
-              Continue as Guest Farmer (बिना लॉगिन देखें)
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

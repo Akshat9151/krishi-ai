@@ -13,7 +13,6 @@ from services import store_api
 from backend.database import engine, SessionLocal
 from backend.models import Base
 import backend.models_store  # Register store models with Base
-from services.seed_data import seed_database
 
 # Create FastAPI app
 app = FastAPI(
@@ -26,13 +25,11 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, custom_rate_limit_exceeded_handler)
 
-# Create database tables and seed initial store data
+# Create database tables for local fallback. Production deployments should run
+# Alembic before starting; no demo or product data is seeded at startup.
 try:
     Base.metadata.create_all(bind=engine)
-    db_session = SessionLocal()
-    seed_database(db_session)
-    db_session.close()
-    print("[INFO] Database tables created and verified successfully!")
+    print("[INFO] Database tables verified; startup seeding is disabled.")
 except Exception as e:
     print(f"[ERROR] Error creating/seeding database tables: {e}")
 
@@ -40,6 +37,9 @@ except Exception as e:
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "https://khetitak.in",
+        "https://www.khetitak.in",
+        "https://krishi-ai-sable-sigma.vercel.app",
         "https://krishi-ai-sable-sigma.vercel.app",
         "https://krishi-ai-2-4j3k.onrender.com",
         "http://localhost:5500",

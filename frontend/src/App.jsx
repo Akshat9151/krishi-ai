@@ -112,7 +112,6 @@ function MainApp() {
       <Login
         onSwitchToRegister={() => setCurrentView("register")}
         onLoginSuccess={() => setCurrentView("dashboard")}
-        onGuestContinue={() => setCurrentView("dashboard")}
       />
     );
   }
@@ -122,7 +121,6 @@ function MainApp() {
       <Register
         onSwitchToLogin={() => setCurrentView("login")}
         onRegisterSuccess={() => setCurrentView("login")}
-        onGuestContinue={() => setCurrentView("dashboard")}
       />
     );
   }

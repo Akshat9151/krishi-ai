@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Index, DateTime, Text
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Index, DateTime, Text, Boolean
 from datetime import datetime
 from backend.database import Base
 
@@ -8,13 +8,32 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)  # Added index for login queries
-    password = Column(String)
+    username = Column(String, unique=True, index=True, nullable=True)
+    password = Column(String, nullable=True)
+    email = Column(String, unique=True, index=True, nullable=True)
+    phone = Column(String, unique=True, index=True, nullable=True)
+    google_sub = Column(String, unique=True, index=True, nullable=True)
+    is_verified = Column(Boolean, default=False, nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
     
     # Composite index for potential future queries
     __table_args__ = (
         Index('idx_user_username', 'username'),
     )
+
+class OTPChallenge(Base):
+    __tablename__ = "otp_challenges"
+
+    id = Column(String(64), primary_key=True)
+    purpose = Column(String(32), index=True, nullable=False)
+    destination = Column(String(255), index=True, nullable=False)
+    code_hash = Column(String(128), nullable=False)
+    payload_json = Column(Text, nullable=True)
+    expires_at = Column(DateTime, nullable=False)
+    attempts = Column(Integer, default=0, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
 
 # 🌾 Crop Recommendations

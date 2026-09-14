@@ -1,6 +1,6 @@
-import os
 from typing import List, Optional
-from pydantic import BaseSettings, validator
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     """Production-ready configuration settings."""
@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     
     # Database
     DATABASE_URL: str = "sqlite:///./krishi_ai.db"
+    DATABASE_SYNC_URL: Optional[str] = None
+    DB_POOL_SIZE: int = 5
+    DB_MAX_OVERFLOW: int = 10
+    DB_POOL_TIMEOUT: int = 30
     DB_HOST: str = "localhost"
     DB_PORT: int = 5432
     DB_NAME: str = "krishi_ai"
@@ -24,6 +28,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "krishi-ai-super-secret-key-change-in-production"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     
     # CORS
     ALLOWED_ORIGINS: List[str] = [
@@ -86,7 +91,25 @@ class Settings(BaseSettings):
     SMTP_PORT: int = 587
     SMTP_USER: Optional[str] = None
     SMTP_PASSWORD: Optional[str] = None
+    SMTP_USERNAME: Optional[str] = None
+    SMTP_FROM_EMAIL: Optional[str] = None
     ALERT_EMAIL: Optional[str] = None
+
+    # Authentication providers
+    GOOGLE_CLIENT_ID: str = ""
+    SMS_PROVIDER: str = "mock"
+    EMAIL_PROVIDER: str = "mock"
+    TWILIO_ACCOUNT_SID: str = ""
+    TWILIO_AUTH_TOKEN: str = ""
+    TWILIO_FROM_NUMBER: str = ""
+    MSG91_AUTH_KEY: str = ""
+    MSG91_TEMPLATE_ID: str = ""
+    AWS_SNS_REGION: str = ""
+    RESEND_API_KEY: str = ""
+    BREVO_API_KEY: str = ""
+    SENDGRID_API_KEY: str = ""
+    OTP_EXPIRE_MINUTES: int = 10
+    OTP_MAX_ATTEMPTS: int = 5
     
     # Backup
     BACKUP_ENABLED: bool = False
@@ -108,27 +131,56 @@ class Settings(BaseSettings):
     X_XSS_PROTECTION: str = "1; mode=block"
     STRICT_TRANSPORT_SECURITY: str = "max-age=31536000; includeSubDomains"
     
-    @validator("ALLOWED_ORIGINS", pre=True)
+    @field_validator("ALLOWED_ORIGINS", mode="before")
     def parse_cors_origins(cls, v):
         if isinstance(v, str):
             return [i.strip() for i in v.split(",")]
         return v
     
-    @validator("ALLOWED_METHODS", pre=True)
+    @field_validator("ALLOWED_METHODS", mode="before")
     def parse_cors_methods(cls, v):
         if isinstance(v, str):
             return [i.strip() for i in v.split(",")]
         return v
     
-    @validator("ALLOWED_HEADERS", pre=True)
+    @field_validator("ALLOWED_HEADERS", mode="before")
     def parse_cors_headers(cls, v):
         if isinstance(v, str):
             return [i.strip() for i in v.split(",")]
         return v
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=False, extra="ignore")
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def normalize_database_url(cls, value):
+        if not isinstance(value, str):
+            return value
+        if value.startswith("sqlite:///") and not value.startswith("sqlite+aiosqlite:///"):
+            return value.replace("sqlite:///", "sqlite+aiosqlite:///", 1)
+        if value.startswith("postgres://"):
+            value = value.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif value.startswith("postgresql://"):
+            value = value.replace("postgresql://", "postgresql+asyncpg://", 1)
+        if "sslmode=" in value:
+            value = value.replace("sslmode=", "ssl=", 1)
+        return value
+
+    @field_validator("DATABASE_SYNC_URL", mode="before")
+    @classmethod
+    def normalize_sync_database_url(cls, value, info):
+        value = value or info.data.get("DATABASE_URL")
+        if not isinstance(value, str):
+            return value
+        if value.startswith("sqlite+aiosqlite:///"):
+            return value.replace("sqlite+aiosqlite:///", "sqlite:///", 1)
+        if value.startswith("postgres://"):
+            value = value.replace("postgres://", "postgresql://", 1)
+        elif value.startswith("postgresql+asyncpg://"):
+            value = value.replace("postgresql+asyncpg://", "postgresql://", 1)
+        if "ssl=" in value and "sslmode=" not in value:
+            value = value.replace("ssl=", "sslmode=", 1)
+        return value
 
 # Create global settings instance
 settings = Settings()
