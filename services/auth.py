@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, Field
 from sqlalchemy import or_
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from backend.database import SessionLocal
@@ -152,9 +153,19 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Username, email, or phone is required")
     if db.query(User).filter(or_(User.username == _clean(user.username), User.email == _clean(user.email), User.phone == _clean(user.phone))).first():
         raise HTTPException(status_code=400, detail="User already exists")
-    new_user = User(username=_clean(user.username) or identifier, email=_clean(user.email), phone=_clean(user.phone), password=get_password_hash(user.password), is_verified=False)
+    new_user = User(
+        username=_clean(user.username) or identifier,
+        email=_clean(user.email),
+        phone=_clean(user.phone),
+        password=get_password_hash(user.password),
+        is_verified=False,
+    )
     db.add(new_user)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="User already exists")
     db.refresh(new_user)
     return UserResponse(id=new_user.id, username=new_user.username, message="Registration successful")
 

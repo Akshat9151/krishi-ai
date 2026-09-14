@@ -4,6 +4,7 @@
  */
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '' : 'https://krishi-ai-2-4j3k.onrender.com');
+const REQUEST_TIMEOUT_MS = 20000;
 
 export const getApiBaseUrl = () => API_BASE_URL;
 
@@ -23,7 +24,14 @@ async function request(endpoint, options = {}) {
 
   try {
     const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
-    const response = await fetch(url, config);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    let response;
+    try {
+      response = await fetch(url, { ...config, signal: controller.signal });
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     let data;
     const contentType = response.headers.get('content-type');
@@ -41,6 +49,9 @@ async function request(endpoint, options = {}) {
     return data;
   } catch (err) {
     console.error(`API Error on ${endpoint}:`, err);
+    if (err.name === 'AbortError') {
+      throw new Error('The server took too long to respond. Please try again.');
+    }
     throw err;
   }
 }
@@ -65,6 +76,13 @@ export const authApi = {
 
   getMe: async () => {
     return request('/auth/me');
+  },
+
+  google: async (credential) => {
+    return request('/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ credential }),
+    });
   },
 };
 

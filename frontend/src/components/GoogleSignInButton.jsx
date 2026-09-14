@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
+import { authApi } from "../services/api";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
 export default function GoogleSignInButton({ onSuccess, variant = "login" }) {
   const { t } = useTranslation();
-  const { login } = useAuth();
+  const { loginWithToken } = useAuth();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const buttonContainerRef = useRef(null);
@@ -49,7 +50,7 @@ export default function GoogleSignInButton({ onSuccess, variant = "login" }) {
           {
             theme: "outline",
             size: "large",
-            width: "100%",
+            width: "300",
             type: "standard",
             text: variant === "login" ? "signin_with" : "signup_with",
           }
@@ -70,33 +71,11 @@ export default function GoogleSignInButton({ onSuccess, variant = "login" }) {
     setError("");
 
     try {
-      const apiUrl =
-        import.meta.env.VITE_API_URL || "http://localhost:8000";
-      const apiResponse = await fetch(`${apiUrl}/auth/google`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ credential: response.credential }),
-      });
-
-      if (!apiResponse.ok) {
-        const errorData = await apiResponse.json();
-        throw new Error(
-          errorData.detail || errorData.message || "Google sign-in failed"
-        );
-      }
-
-      const data = await apiResponse.json();
+      const data = await authApi.google(response.credential);
 
       // Store tokens
-      localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("refresh_token", data.refresh_token);
-      if (data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-      }
-
-      // Update auth context
-      const username = data.user?.username || data.user?.email || "user";
-      await login(username, "");
+      const username = data.username || data.email || "google-user";
+      loginWithToken(username, data.access_token);
 
       // Call success callback
       if (onSuccess) {
@@ -158,4 +137,3 @@ export default function GoogleSignInButton({ onSuccess, variant = "login" }) {
     </div>
   );
 }
-

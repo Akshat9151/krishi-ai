@@ -73,6 +73,12 @@ export function AuthProvider({ children }) {
     throw new Error("No token returned from server");
   };
 
+  const loginWithToken = (username, token) => {
+    localStorage.setItem("accessToken", token);
+    localStorage.setItem("loggedInUser", username);
+    setUser({ username, token });
+  };
+
   const register = async (username, password) => {
     const data = await authApi.register(username, password);
     return data;
@@ -93,6 +99,7 @@ export function AuthProvider({ children }) {
         preferences,
         updatePreferences,
         login,
+        loginWithToken,
         register,
         logout,
       }}
