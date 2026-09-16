@@ -1,16 +1,29 @@
 import React, { useState } from "react";
 import { PackageCheck, Search, CheckCircle2, Clock, Truck, MapPin, ArrowRight } from "lucide-react";
 import { storeApi } from "../services/api";
-import { useCart } from "../context/CartContext";
 import OrderTracking from "../components/OrderTracking";
 
 export default function MyOrders({ setCurrentView }) {
-  const { placedOrders } = useCart();
   const [searchNum, setSearchNum] = useState("");
   const [searchedOrder, setSearchedOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [trackingOrder, setTrackingOrder] = useState(null);
+  const [accountOrders, setAccountOrders] = useState([]);
+
+  useEffect(() => {
+    let active = true;
+    storeApi.getMyOrders()
+      .then((orders) => {
+        if (active) setAccountOrders(Array.isArray(orders) ? orders : []);
+      })
+      .catch((err) => {
+        console.error("Failed to load account orders:", err);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleLookup = async (e) => {
     e.preventDefault();
@@ -31,7 +44,7 @@ export default function MyOrders({ setCurrentView }) {
     }
   };
 
-  const displayOrders = searchedOrder ? [searchedOrder] : placedOrders;
+  const displayOrders = searchedOrder ? [searchedOrder] : accountOrders;
 
   if (trackingOrder) {
     return <OrderTracking order={trackingOrder} onBack={() => setTrackingOrder(null)} />;

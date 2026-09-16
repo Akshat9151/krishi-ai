@@ -85,12 +85,9 @@ export default function CartDrawer({ onNavigateOrders }) {
         customer_name: customerName,
         phone,
         address,
-        total_amount: totalAmount,
         payment_method: paymentMethod,
         items: items.map((item) => ({
           product_id: item.id,
-          name: item.name,
-          price: item.price,
           quantity: item.quantity,
         })),
       };
@@ -106,7 +103,7 @@ export default function CartDrawer({ onNavigateOrders }) {
         customer_name: customerName,
         phone,
         address,
-        items: [...items],
+        items: response.items || [...items],
       };
       recordOrder(newOrder);
       setOrderSuccess(newOrder);

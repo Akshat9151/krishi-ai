@@ -1,17 +1,28 @@
 from fastapi import APIRouter, HTTPException, Query, Depends
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from typing import List, Optional, Any, Union
+import json
 from datetime import datetime
 
 from backend.database import get_db
-from backend.models_store import StoreProduct, ProductCategory, FertilizerRecommendation, StoreOrder
+from backend.models_store import StoreProduct, ProductCategory, FertilizerRecommendation, StoreOrder, StoreOrderEvent
 from backend.models import User
 from services.auth import get_current_user
 from services.logger import logger
 from services.validation import ValidationUtils
 
 router = APIRouter(prefix="/api/store", tags=["Store"])
+
+
+def _load_order_items(items_json: Optional[str]) -> list:
+    if not items_json:
+        return []
+    try:
+        items = json.loads(items_json)
+    except json.JSONDecodeError:
+        return []
+    return items if isinstance(items, list) else []
 
 # Pydantic Models
 class ProductResponse(BaseModel):
@@ -318,17 +329,14 @@ def generate_fertilizer_search_link(crop: str, base_url: str = "https://krishi-a
 # =========================
 
 class OrderItem(BaseModel):
-    product_id: Optional[int] = None
-    name: Optional[str] = None
-    price: float
-    quantity: int
+    product_id: int
+    quantity: int = Field(..., gt=0, le=1000)
 
 class CreateOrderRequest(BaseModel):
     customer_name: str
     phone: str
     address: str
     items: List[OrderItem]
-    total_amount: float
     payment_method: Optional[str] = "cod"
 
 class CreateOrderResponse(BaseModel):
@@ -337,6 +345,27 @@ class CreateOrderResponse(BaseModel):
     message: str
     total_amount: float
     created_at: datetime
+    items: List[Any] = Field(default_factory=list)
+
+
+class OrderEventResponse(BaseModel):
+    event_type: str
+    status: str
+    message: str
+    created_at: datetime
+
+
+class OrderSummary(BaseModel):
+    order_number: str
+    customer_name: str
+    phone: str
+    address: str
+    items: List[Any] = Field(default_factory=list)
+    status: str
+    total_amount: float
+    payment_method: str
+    created_at: datetime
+    events: List[OrderEventResponse] = Field(default_factory=list)
 
 @router.post("/orders", response_model=CreateOrderResponse)
 async def create_store_order(
@@ -344,47 +373,118 @@ async def create_store_order(
     db: Session = Depends(get_db),
     current_user: str = Depends(get_current_user),
 ):
-    """Create a new order in SQLite database"""
+    """Create an authenticated order using server-side price snapshots."""
     try:
-        import time, json
+        import time, json, secrets
         user = db.query(User).filter(User.username == current_user).first()
         if not user:
             raise HTTPException(status_code=401, detail="Sign in again to place an order")
 
-        if not order_data.items or order_data.total_amount <= 0:
+        if not order_data.items:
             raise HTTPException(status_code=422, detail="Your cart must contain at least one item")
 
-        order_num = f"ORD{int(time.time() * 1000)}"
-        
-        # Save one real, farmer-owned order record.
+        product_ids = [item.product_id for item in order_data.items]
+        products = db.query(StoreProduct).filter(StoreProduct.id.in_(product_ids)).all()
+        products_by_id = {product.id: product for product in products}
+        if len(products_by_id) != len(set(product_ids)):
+            raise HTTPException(status_code=422, detail="One or more products are no longer available")
+
+        snapshot_items = []
+        total_amount = 0.0
+        for item in order_data.items:
+            product = products_by_id[item.product_id]
+            if not product.in_stock:
+                raise HTTPException(status_code=409, detail=f"{product.name} is currently out of stock")
+            unit_price = round(float(product.price), 2)
+            line_total = round(unit_price * item.quantity, 2)
+            total_amount = round(total_amount + line_total, 2)
+            snapshot_items.append({
+                "product_id": product.id,
+                "sku": product.sku,
+                "name": product.name,
+                "price": unit_price,
+                "quantity": item.quantity,
+                "line_total": line_total,
+            })
+
+        order_num = f"ORD{int(time.time() * 1000)}{secrets.token_hex(2).upper()}"
         store_order = StoreOrder(
             order_number=order_num,
             user_id=user.id,
             customer_name=order_data.customer_name,
             phone=order_data.phone,
             address=order_data.address,
-            items_json=json.dumps([item.dict() for item in order_data.items], ensure_ascii=False),
-            total_amount=order_data.total_amount,
+            items_json=json.dumps(snapshot_items, ensure_ascii=False),
+            total_amount=total_amount,
             status="confirmed",
             payment_method=order_data.payment_method or "cod"
         )
         db.add(store_order)
-        
-
-        db.commit()
+        db.flush()
         db.refresh(store_order)
+        db.add(StoreOrderEvent(
+            order_id=store_order.id,
+            event_type="order_created",
+            status=store_order.status,
+            message="Order placed successfully",
+        ))
+        db.commit()
         
         return CreateOrderResponse(
             order_number=store_order.order_number,
             status=store_order.status,
             message="Order placed successfully! ✅",
             total_amount=store_order.total_amount,
-            created_at=store_order.created_at
+            created_at=store_order.created_at,
+            items=snapshot_items,
         )
+    except HTTPException:
+        db.rollback()
+        raise
     except Exception as e:
         db.rollback()
         logger.log_error(e, "Store API - Create Order")
         raise HTTPException(status_code=500, detail=f"Failed to place order: {str(e)}")
+
+
+@router.get("/orders", response_model=List[OrderSummary])
+async def get_my_orders(
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    """Return only orders owned by the authenticated farmer."""
+    user = db.query(User).filter(User.username == current_user).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Sign in again to view your orders")
+    orders = db.query(StoreOrder).filter(StoreOrder.user_id == user.id).order_by(
+        StoreOrder.created_at.desc()
+    ).all()
+    result = []
+    for order in orders:
+        events = db.query(StoreOrderEvent).filter(
+            StoreOrderEvent.order_id == order.id
+        ).order_by(StoreOrderEvent.created_at.asc()).all()
+        result.append({
+            "order_number": order.order_number,
+            "customer_name": order.customer_name,
+            "phone": order.phone,
+            "address": order.address,
+            "items": _load_order_items(order.items_json),
+            "status": order.status,
+            "total_amount": order.total_amount,
+            "payment_method": order.payment_method,
+            "created_at": order.created_at,
+            "events": [
+                {
+                    "event_type": event.event_type,
+                    "status": event.status,
+                    "message": event.message,
+                    "created_at": event.created_at,
+                }
+                for event in events
+            ],
+        })
+    return result
 
 @router.get("/orders/{order_number}")
 async def get_order_details(
@@ -401,13 +501,12 @@ async def get_order_details(
             # Do not reveal whether another farmer's order number exists.
             raise HTTPException(status_code=404, detail="Order not found")
         
-        items = []
-        if order.items_json:
-            try:
-                items = json.loads(order.items_json)
-            except:
-                pass
+        items = _load_order_items(order.items_json)
                 
+        events = db.query(StoreOrderEvent).filter(
+            StoreOrderEvent.order_id == order.id
+        ).order_by(StoreOrderEvent.created_at.asc()).all()
+
         return {
             "order_number": order.order_number,
             "customer_name": order.customer_name,
@@ -417,11 +516,19 @@ async def get_order_details(
             "total_amount": order.total_amount,
             "status": order.status,
             "payment_method": order.payment_method,
-            "created_at": order.created_at.isoformat()
+            "created_at": order.created_at.isoformat(),
+            "events": [
+                {
+                    "event_type": event.event_type,
+                    "status": event.status,
+                    "message": event.message,
+                    "created_at": event.created_at.isoformat(),
+                }
+                for event in events
+            ]
         }
     except HTTPException:
         raise
     except Exception as e:
         logger.log_error(e, "Store API - Get Order")
         raise HTTPException(status_code=500, detail="Failed to fetch order")
-

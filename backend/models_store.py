@@ -90,3 +90,13 @@ class StoreOrder(Base):
     payment_method = Column(String, default="cod")
     created_at = Column(DateTime, default=datetime.utcnow)
 
+
+class StoreOrderEvent(Base):
+    __tablename__ = "store_order_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(Integer, ForeignKey("store_orders.id"), nullable=False, index=True)
+    event_type = Column(String, nullable=False, index=True)
+    status = Column(String, nullable=False)
+    message = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)

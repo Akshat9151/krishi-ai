@@ -225,6 +225,10 @@ export const storeApi = {
   getOrder: async (orderNumber) => {
     return request(`/api/store/orders/${orderNumber}`);
   },
+
+  getMyOrders: async () => {
+    return request('/api/store/orders');
+  },
 };
 
 // ==========================================
@@ -301,4 +305,3 @@ export const mandiApi = {
     return results;
   }
 };
-
