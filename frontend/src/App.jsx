@@ -21,9 +21,13 @@ import Profile from "./pages/Profile";
 import FarmTools from "./pages/FarmTools";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import PublicSeoPage from "./pages/PublicSeoPage";
 import { KhetiTakSplash } from "./components/KhetiTakBranding";
 
 const viewPaths = {
+  home: "/",
+  about: "/about",
+  faq: "/faq",
   dashboard: "/dashboard",
   crop: "/crop-recommendation",
   disease: "/crop-disease",
@@ -53,12 +57,23 @@ const protectedViews = new Set([
   "profile",
   "tools",
 ]);
+const publicViews = new Set(["home", "about", "faq", "splash", "login", "register"]);
 
 function updatePageMetadata(view) {
   const metadata = {
-    "/": {
+    home: {
       title: "KhetiTak — खेती का भरोसा, आपके पास | Smart Agriculture",
       description: "KhetiTak brings smart crop advisory, mandi bhav, weather insights, crop disease information and agri products for Indian farmers.",
+      robots: "index,follow",
+    },
+    about: {
+      title: "About KhetiTak | Agriculture Tools for Indian Farmers",
+      description: "Learn how KhetiTak brings crop planning, weather, mandi information and agri products together for Indian farmers.",
+      robots: "index,follow",
+    },
+    faq: {
+      title: "KhetiTak FAQ | Agriculture Platform Questions",
+      description: "Answers about KhetiTak agriculture tools, data context, farmer accounts and market information.",
       robots: "index,follow",
     },
     login: {
@@ -103,22 +118,12 @@ function MainApp() {
       if (path === "/splash" || hash === "splash") return "splash";
       if (path === "/login" || hash === "login") return "login";
       if (path === "/register" || hash === "register") return "register";
+      if (path === "/") return "home";
       if (hash && ["splash", "dashboard", "crop", "disease", "assistant", "weather", "mandi", "fertilizer", "store", "orders", "profile", "tools"].includes(hash)) {
         return hash;
       }
 
-      // Check if user has seen splash
-      const seenSplash = sessionStorage.getItem("khetitak_seen_splash");
-      if (!seenSplash && !localStorage.getItem("accessToken")) {
-        sessionStorage.setItem("khetitak_seen_splash", "true");
-        return "splash";
-      }
-
-      // If user is not authenticated and has no active token, land on Login/Signup
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        return "login";
-      }
+      return "home";
     }
     return "dashboard";
   };
@@ -126,8 +131,6 @@ function MainApp() {
   const [currentView, setCurrentViewState] = useState(getInitialView);
   const [selectedCropForCalc, setSelectedCropForCalc] = useState("wheat");
   const [isMobile, setIsMobile] = useState(() => (typeof window !== "undefined" ? window.innerWidth < 768 : false));
-  const publicViews = new Set(["splash", "login", "register"]);
-
   const setCurrentView = (view) => {
     setCurrentViewState(view);
     if (typeof window !== "undefined") {
@@ -150,7 +153,7 @@ function MainApp() {
       const path = window.location.pathname.toLowerCase();
       const hash = window.location.hash.toLowerCase().replace("#", "");
       const routeView = pathToView[path] || hash;
-      if (routeView && ["login", "register", "dashboard", "crop", "disease", "assistant", "weather", "mandi", "fertilizer", "store", "orders", "profile", "tools"].includes(routeView)) {
+      if (routeView && [...publicViews, ...protectedViews].includes(routeView)) {
         setCurrentViewState(routeView);
       }
     };
@@ -206,6 +209,10 @@ function MainApp() {
         onRegisterSuccess={() => setCurrentView("login")}
       />
     );
+  }
+
+  if (publicViews.has(currentView) && ["home", "about", "faq"].includes(currentView)) {
+    return <PublicSeoPage page={currentView} setCurrentView={setCurrentView} />;
   }
 
   if (authLoading && !publicViews.has(currentView)) {
