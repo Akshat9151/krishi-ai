@@ -7,7 +7,7 @@ import { KhetiTakMark, KhetiTakLogo } from "../components/KhetiTakBranding";
 import GoogleSignInButton from "../components/GoogleSignInButton";
 
 export default function Login({ onSwitchToRegister, onLoginSuccess }) {
-  const { login } = useAuth();
+  const { login, loginWithToken } = useAuth();
   const { language, setLanguage, languages, t } = useTranslation();
 
   const [username, setUsername] = useState("");
@@ -21,6 +21,9 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
   const [recoveryCode, setRecoveryCode] = useState("");
   const [recoveryChallenge, setRecoveryChallenge] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [otpMode, setOtpMode] = useState(false);
+  const [otpChallenge, setOtpChallenge] = useState("");
+  const [otpCode, setOtpCode] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,6 +80,38 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
       setSuccess(true);
     } catch (err) {
       setError(err.message || "Could not reset password.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const requestLoginOtp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const data = await authApi.requestLoginOtp({ identifier: username.trim(), password });
+      setOtpChallenge(data.challenge_id);
+      setSuccess(data.dev_code ? `OTP sent. Development OTP: ${data.dev_code}` : "OTP sent successfully.");
+    } catch (err) {
+      setError(err.message || "Could not send login OTP.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyLoginOtp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const data = await authApi.verifyLoginOtp({ challenge_id: otpChallenge, code: otpCode.trim() });
+      loginWithToken(username.trim(), data.access_token);
+      if (data.refresh_token) localStorage.setItem("refreshToken", data.refresh_token);
+      setSuccess("OTP verified. Redirecting...");
+      setTimeout(() => onLoginSuccess?.(), 300);
+    } catch (err) {
+      setError(err.message || "Invalid OTP.");
     } finally {
       setLoading(false);
     }
@@ -269,6 +304,17 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
             <ArrowRight size={16} />
           </button>
         </form>
+        <button type="button" onClick={() => { setOtpMode(!otpMode); setOtpChallenge(""); setError(""); }} style={{ alignSelf: "center", background: "transparent", border: "none", color: "var(--growth-green)", cursor: "pointer", fontSize: "13px", fontWeight: "700" }}>
+          {otpMode ? "Use password login" : "Login with OTP"}
+        </button>
+        {otpMode && (
+          <form onSubmit={otpChallenge ? verifyLoginOtp : requestLoginOtp} style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "10px" }}>
+            <input className="input-field" placeholder="Username, email or phone" value={username} onChange={(e) => setUsername(e.target.value)} required />
+            {!otpChallenge && <input className="input-field" type="password" placeholder="Your password" value={password} onChange={(e) => setPassword(e.target.value)} required />}
+            {otpChallenge && <input className="input-field" inputMode="numeric" placeholder="6-digit OTP" value={otpCode} onChange={(e) => setOtpCode(e.target.value)} minLength={6} maxLength={6} required />}
+            <button className="btn-secondary" disabled={loading}>{loading ? "Please wait..." : otpChallenge ? "Verify OTP" : "Send Login OTP"}</button>
+          </form>
+        )}
         <button type="button" onClick={() => { setRecovery(true); setError(""); setSuccess(false); }} style={{ alignSelf: "flex-end", background: "transparent", border: "none", color: "var(--terracotta)", cursor: "pointer", fontSize: "12px" }}>
           Forgot password?
         </button>
