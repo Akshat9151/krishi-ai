@@ -126,6 +126,10 @@ function MainApp() {
     );
   }
 
+  if (authLoading && !publicViews.has(currentView)) {
+    return <KhetiTakSplash />;
+  }
+
   // Do not mount protected pages while a saved session is being rejected.
   // This prevents their effects from sending additional requests with a stale token.
   if (!authLoading && !user && !publicViews.has(currentView)) {
