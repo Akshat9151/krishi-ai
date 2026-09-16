@@ -266,6 +266,7 @@ export default function AiAssistant() {
         <button
           type="submit"
           className="btn-primary"
+          aria-label="Send message"
           style={{ padding: "0 20px" }}
           disabled={loading || !inputMessage.trim()}
         >

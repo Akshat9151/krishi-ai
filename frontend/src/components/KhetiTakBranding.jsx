@@ -90,7 +90,7 @@ export function KhetiTakLogo({ size = 32, showTagline = false, className = "", s
           }}
         >
           <span style={{ color: "#2B2118" }}>Kheti</span>
-          <span style={{ color: "#E8A33D" }}>Tak</span>
+          <span style={{ color: "#B36B00" }}>Tak</span>
         </span>
         {showTagline && (
           <span
