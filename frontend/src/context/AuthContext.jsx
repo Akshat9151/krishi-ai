@@ -52,6 +52,14 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
+    const handleSessionExpired = () => {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("loggedInUser");
+      setUser(null);
+    };
+    window.addEventListener("auth-session-expired", handleSessionExpired);
+
     const initAuth = async () => {
       const token = localStorage.getItem("accessToken");
       const username = localStorage.getItem("loggedInUser");
@@ -93,12 +101,14 @@ export function AuthProvider({ children }) {
       setLoading(false);
     };
     initAuth();
+    return () => window.removeEventListener("auth-session-expired", handleSessionExpired);
   }, []);
 
   const login = async (username, password) => {
     const data = await authApi.login(username, password);
     if (data && data.access_token) {
       localStorage.setItem("accessToken", data.access_token);
+      if (data.refresh_token) localStorage.setItem("refreshToken", data.refresh_token);
       localStorage.setItem("loggedInUser", username);
       setUser({ username, token: data.access_token });
       return data;
@@ -119,6 +129,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     localStorage.removeItem("loggedInUser");
     setUser(null);
   };

@@ -9,7 +9,7 @@ const REQUEST_TIMEOUT_MS = 20000;
 export const getApiBaseUrl = () => API_BASE_URL;
 
 // Helper to make authenticated/unauthenticated API calls
-async function request(endpoint, options = {}) {
+async function request(endpoint, options = {}, allowRefresh = true) {
   const token = localStorage.getItem('accessToken');
   const headers = {
     'Content-Type': 'application/json',
@@ -41,9 +41,34 @@ async function request(endpoint, options = {}) {
       data = await response.text();
     }
 
+    if (response.status === 401 && allowRefresh && !endpoint.startsWith('/auth/')) {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (refreshToken) {
+        try {
+          const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: refreshToken }),
+          });
+          const refreshed = await refreshResponse.json();
+          if (refreshResponse.ok && refreshed.access_token) {
+            localStorage.setItem('accessToken', refreshed.access_token);
+            return request(endpoint, options, false);
+          }
+        } catch (refreshError) {
+          console.warn('Session refresh failed:', refreshError);
+        }
+      }
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      window.dispatchEvent(new CustomEvent('auth-session-expired'));
+    }
+
     if (!response.ok) {
       const errorMsg = data?.detail || data?.message || (typeof data === 'string' ? data : 'Request failed');
-      throw new Error(errorMsg);
+      const error = new Error(errorMsg);
+      error.status = response.status;
+      throw error;
     }
 
     return data;
