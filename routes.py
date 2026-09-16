@@ -12,7 +12,7 @@ from services.rate_limiter import limiter, RateLimitConfig, check_rate_limit
 from services.logger import logger
 from services.auth_utils import get_current_user_token
 from backend.database import SessionLocal
-from backend.models import FarmActivity
+from backend.models import FarmActivity, FarmerProfile, MandiPrice, User
 
 # legacy prediction support
 import joblib
@@ -263,6 +263,169 @@ def recommend_products(data: DiseaseRequest):
 
 
 # =========================
+# 📈 MANDI BHAV API
+# =========================
+
+@router.get("/mandi-bhav")
+def get_mandi_bhav(
+    commodity: Optional[str] = None,
+    state: Optional[str] = None,
+    district: Optional[str] = None,
+    search: Optional[str] = None,
+    limit: int = 50
+):
+    db = SessionLocal()
+    try:
+        query = db.query(MandiPrice)
+        if commodity and commodity.lower() != "all":
+            query = query.filter(MandiPrice.commodity.ilike(f"%{commodity}%"))
+        if state and state.lower() != "all":
+            query = query.filter(MandiPrice.state.ilike(f"%{state}%"))
+        if district and district.lower() != "all":
+            query = query.filter(MandiPrice.district.ilike(f"%{district}%"))
+        if search:
+            term = f"%{search.strip()}%"
+            query = query.filter(
+                (MandiPrice.commodity.ilike(term)) |
+                (MandiPrice.market.ilike(term)) |
+                (MandiPrice.district.ilike(term)) |
+                (MandiPrice.state.ilike(term))
+            )
+
+        rows = query.order_by(MandiPrice.modal_price.desc()).limit(min(limit, 100)).all()
+        return [
+            {
+                "id": str(r.id),
+                "commodity": f"{r.commodity} ({r.commodity_hi})" if r.commodity_hi else r.commodity,
+                "state": r.state,
+                "district": r.district,
+                "market": r.market,
+                "minPrice": r.min_price,
+                "maxPrice": r.max_price,
+                "modalPrice": r.modal_price,
+                "change": r.price_change,
+                "trend": r.trend,
+                "arrivalDate": r.arrival_date,
+                "source": r.source,
+                "updatedAt": r.updated_at.isoformat() if r.updated_at else None,
+            }
+            for r in rows
+        ]
+    finally:
+        db.close()
+
+
+# =========================
+# 👨‍🌾 FARMER PROFILE & PREFERENCES API
+# =========================
+
+class ProfileUpdateRequest(BaseModel):
+    full_name: Optional[str] = None
+    language: Optional[str] = None
+    farm_location: Optional[str] = None
+    land_size: Optional[str] = None
+    land_unit: Optional[str] = None
+    primary_crop: Optional[str] = None
+    sound_enabled: Optional[bool] = None
+
+
+@router.get("/profile")
+def get_farmer_profile(request: Request):
+    username = _request_username(request)
+    if not username:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Sign in to view your profile."
+        )
+    db = SessionLocal()
+    try:
+        profile = db.query(FarmerProfile).filter(FarmerProfile.username == username).first()
+        if not profile:
+            # Create default profile tied to this user
+            user = db.query(User).filter(User.username == username).first()
+            profile = FarmerProfile(
+                user_id=user.id if user else None,
+                username=username,
+                language="hi",
+                farm_location="Jaipur, Rajasthan",
+                land_size="3",
+                land_unit="Acres",
+                primary_crop="Wheat",
+                sound_enabled=True
+            )
+            db.add(profile)
+            db.commit()
+            db.refresh(profile)
+
+        return {
+            "username": profile.username,
+            "fullName": profile.full_name,
+            "language": profile.language,
+            "farmLocation": profile.farm_location,
+            "landSize": profile.land_size,
+            "landUnit": profile.land_unit,
+            "primaryCrop": profile.primary_crop,
+            "soundEnabled": profile.sound_enabled,
+        }
+    finally:
+        db.close()
+
+
+@router.patch("/profile")
+def update_farmer_profile(request: Request, data: ProfileUpdateRequest):
+    username = _request_username(request)
+    if not username:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Sign in to update your profile."
+        )
+    db = SessionLocal()
+    try:
+        profile = db.query(FarmerProfile).filter(FarmerProfile.username == username).first()
+        if not profile:
+            user = db.query(User).filter(User.username == username).first()
+            profile = FarmerProfile(
+                user_id=user.id if user else None,
+                username=username
+            )
+            db.add(profile)
+
+        if data.full_name is not None:
+            profile.full_name = data.full_name.strip()
+        if data.language is not None:
+            profile.language = data.language
+        if data.farm_location is not None:
+            profile.farm_location = data.farm_location.strip()
+        if data.land_size is not None:
+            profile.land_size = str(data.land_size).strip()
+        if data.land_unit is not None:
+            profile.land_unit = data.land_unit.strip()
+        if data.primary_crop is not None:
+            profile.primary_crop = data.primary_crop.strip()
+        if data.sound_enabled is not None:
+            profile.sound_enabled = bool(data.sound_enabled)
+
+        db.commit()
+        db.refresh(profile)
+        return {
+            "status": "success",
+            "message": "Profile updated successfully",
+            "profile": {
+                "username": profile.username,
+                "fullName": profile.full_name,
+                "language": profile.language,
+                "farmLocation": profile.farm_location,
+                "landSize": profile.land_size,
+                "landUnit": profile.land_unit,
+                "primaryCrop": profile.primary_crop,
+                "soundEnabled": profile.sound_enabled,
+            }
+        }
+    finally:
+        db.close()
+
+
+# =========================
 # ❤️ HEALTH CHECK
 # =========================
 
@@ -272,6 +435,7 @@ def health_check():
         "status": "ok",
         "service": "KhetiTak"
     }
+
 
 
 # -------------------------------------------------

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { authApi } from "../services/api";
+import { authApi, profileApi } from "../services/api";
 
 const AuthContext = createContext(null);
 
@@ -36,6 +36,17 @@ export function AuthProvider({ children }) {
     setPreferences((prev) => {
       const updated = { ...prev, ...newPrefs };
       localStorage.setItem("krishi_preferences", JSON.stringify(updated));
+      // Asynchronously sync with backend if authenticated
+      if (localStorage.getItem("accessToken")) {
+        profileApi.updateProfile({
+          language: updated.language,
+          farm_location: updated.farmLocation,
+          land_size: updated.landSize,
+          land_unit: updated.landUnit,
+          primary_crop: updated.primaryCrop,
+          sound_enabled: updated.soundEnabled,
+        }).catch(() => { /* silent fallback to local */ });
+      }
       return updated;
     });
   };
@@ -49,6 +60,28 @@ export function AuthProvider({ children }) {
           // Verify with backend
           await authApi.getMe();
           setUser({ username, token });
+
+          // Fetch server-authoritative farmer profile
+          try {
+            const serverProfile = await profileApi.getProfile();
+            if (serverProfile) {
+              setPreferences((prev) => {
+                const synced = {
+                  ...prev,
+                  language: serverProfile.language || prev.language,
+                  farmLocation: serverProfile.farmLocation || prev.farmLocation,
+                  landSize: serverProfile.landSize || prev.landSize,
+                  landUnit: serverProfile.landUnit || prev.landUnit,
+                  primaryCrop: serverProfile.primaryCrop || prev.primaryCrop,
+                  soundEnabled: serverProfile.soundEnabled !== undefined ? serverProfile.soundEnabled : prev.soundEnabled,
+                };
+                localStorage.setItem("krishi_preferences", JSON.stringify(synced));
+                return synced;
+              });
+            }
+          } catch {
+            // Profile fetch optional on offline/cold start
+          }
         } catch (err) {
           console.warn("Token expired or invalid:", err);
           // Keep local session if network offline, or reset if 401

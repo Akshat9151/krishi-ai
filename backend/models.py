@@ -139,3 +139,48 @@ class FarmActivity(Base):
         Index('idx_farm_activity_user_time', 'username', 'created_at'),
         Index('idx_farm_activity_type_time', 'activity_type', 'created_at'),
     )
+
+
+# 🌾 Server-side Farmer Profile & Preferences
+class FarmerProfile(Base):
+    __tablename__ = "farmer_profiles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, index=True, nullable=True)
+    username = Column(String, unique=True, index=True, nullable=False)
+    full_name = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    language = Column(String, default="hi")
+    farm_location = Column(String, default="Jaipur, Rajasthan")
+    land_size = Column(String, default="3")
+    land_unit = Column(String, default="Acres")
+    primary_crop = Column(String, default="Wheat")
+    sound_enabled = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+
+# 📈 Mandi Market Prices
+class MandiPrice(Base):
+    __tablename__ = "mandi_prices"
+
+    id = Column(Integer, primary_key=True, index=True)
+    commodity = Column(String, index=True, nullable=False)
+    commodity_hi = Column(String, nullable=True)
+    state = Column(String, index=True, nullable=False)
+    district = Column(String, index=True, nullable=False)
+    market = Column(String, index=True, nullable=False)
+    min_price = Column(Float, nullable=False)
+    max_price = Column(Float, nullable=False)
+    modal_price = Column(Float, nullable=False)
+    price_change = Column(String, default="₹0")
+    trend = Column(String, default="up")
+    arrival_date = Column(String, default="Today")
+    source = Column(String, default="eNAM / Agmarknet")
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+    __table_args__ = (
+        Index('idx_mandi_commodity_state', 'commodity', 'state'),
+        Index('idx_mandi_market', 'market'),
+    )
+

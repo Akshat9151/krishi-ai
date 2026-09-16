@@ -1,6 +1,7 @@
 import json
 from sqlalchemy.orm import Session
 from backend.models_store import StoreProduct, ProductCategory, FertilizerRecommendation
+from backend.models import MandiPrice
 
 CATEGORIES = [
     {
@@ -371,3 +372,27 @@ def seed_database(db: Session):
         if prod_data["sku"] not in existing_skus:
             db.add(StoreProduct(**prod_data))
     db.commit()
+
+    # Seed Mandi market prices idempotently
+    if db.query(MandiPrice).count() == 0:
+        initial_mandi = [
+            {"commodity": "Wheat", "commodity_hi": "गेहूं", "state": "Madhya Pradesh", "district": "Neemuch", "market": "Neemuch Mandi", "min_price": 2420, "max_price": 2850, "modal_price": 2680, "price_change": "+₹45", "trend": "up", "arrival_date": "Today"},
+            {"commodity": "Wheat", "commodity_hi": "गेहूं", "state": "Punjab", "district": "Ludhiana", "market": "Khanna Mandi", "min_price": 2500, "max_price": 2920, "modal_price": 2750, "price_change": "+₹60", "trend": "up", "arrival_date": "Today"},
+            {"commodity": "Wheat", "commodity_hi": "गेहूं", "state": "Uttar Pradesh", "district": "Aligarh", "market": "Aligarh Mandi", "min_price": 2380, "max_price": 2710, "modal_price": 2560, "price_change": "-₹20", "trend": "down", "arrival_date": "Today"},
+            {"commodity": "Mustard", "commodity_hi": "सरसों", "state": "Rajasthan", "district": "Bharatpur", "market": "Bharatpur Mandi", "min_price": 5200, "max_price": 5850, "modal_price": 5620, "price_change": "+₹110", "trend": "up", "arrival_date": "Today"},
+            {"commodity": "Mustard", "commodity_hi": "सरसों", "state": "Haryana", "district": "Rewari", "market": "Rewari Mandi", "min_price": 5150, "max_price": 5780, "modal_price": 5540, "price_change": "+₹80", "trend": "up", "arrival_date": "Today"},
+            {"commodity": "Soybean", "commodity_hi": "सोयाबीन", "state": "Madhya Pradesh", "district": "Indore", "market": "Indore Mandi", "min_price": 4300, "max_price": 4950, "modal_price": 4720, "price_change": "+₹30", "trend": "up", "arrival_date": "Today"},
+            {"commodity": "Soybean", "commodity_hi": "सोयाबीन", "state": "Maharashtra", "district": "Nagpur", "market": "Nagpur Mandi", "min_price": 4250, "max_price": 4890, "modal_price": 4680, "price_change": "-₹40", "trend": "down", "arrival_date": "Today"},
+            {"commodity": "Cotton", "commodity_hi": "कपास", "state": "Gujarat", "district": "Rajkot", "market": "Rajkot Mandi", "min_price": 6800, "max_price": 7750, "modal_price": 7350, "price_change": "+₹150", "trend": "up", "arrival_date": "Today"},
+            {"commodity": "Cotton", "commodity_hi": "कपास", "state": "Maharashtra", "district": "Yavatmal", "market": "Yavatmal Mandi", "min_price": 6700, "max_price": 7600, "modal_price": 7200, "price_change": "+₹90", "trend": "up", "arrival_date": "Today"},
+            {"commodity": "Rice / Paddy", "commodity_hi": "धान", "state": "Punjab", "district": "Amritsar", "market": "Amritsar Mandi", "min_price": 3100, "max_price": 3850, "modal_price": 3550, "price_change": "+₹50", "trend": "up", "arrival_date": "Today"},
+            {"commodity": "Rice / Paddy", "commodity_hi": "धान", "state": "Haryana", "district": "Karnal", "market": "Karnal Mandi", "min_price": 3200, "max_price": 4100, "modal_price": 3750, "price_change": "+₹75", "trend": "up", "arrival_date": "Today"},
+            {"commodity": "Onion", "commodity_hi": "प्याज", "state": "Maharashtra", "district": "Nashik", "market": "Lasalgaon Mandi", "min_price": 1450, "max_price": 2250, "modal_price": 1850, "price_change": "-₹80", "trend": "down", "arrival_date": "Today"},
+            {"commodity": "Potato", "commodity_hi": "आलू", "state": "Uttar Pradesh", "district": "Agra", "market": "Agra Mandi", "min_price": 1100, "max_price": 1650, "modal_price": 1380, "price_change": "+₹25", "trend": "up", "arrival_date": "Today"},
+            {"commodity": "Gram / Chana", "commodity_hi": "चना", "state": "Rajasthan", "district": "Bikaner", "market": "Bikaner Mandi", "min_price": 5600, "max_price": 6250, "modal_price": 5980, "price_change": "+₹40", "trend": "up", "arrival_date": "Today"},
+            {"commodity": "Maize", "commodity_hi": "मक्का", "state": "Bihar", "district": "Gulabbagh", "market": "Purnea Mandi", "min_price": 2050, "max_price": 2420, "modal_price": 2280, "price_change": "+₹35", "trend": "up", "arrival_date": "Today"}
+        ]
+        for m in initial_mandi:
+            db.add(MandiPrice(**m))
+        db.commit()
+

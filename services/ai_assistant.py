@@ -117,6 +117,49 @@ Answer:
             return ""
 
 
+import os
+
+def _gemini_reply(question: str) -> str:
+    """Call Google Gemini API if GEMINI_API_KEY is configured."""
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return ""
+    
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    system_prompt = (
+        "You are KhetiTak, an expert Indian agriculture assistant and farming companion. "
+        "Rules: "
+        "- Answer in Hindi / Hinglish / English (matching user language, farmer-friendly). "
+        "- Give practical, concise advice for crops, pests, disease, fertilizer, soil, and weather. "
+        "- Format with clear bullet points if giving actionable steps. "
+        "- Never recommend banned or lethal agrochemicals."
+    )
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    {"text": f"{system_prompt}\n\nFarmer Question: {question}"}
+                ]
+            }
+        ],
+        "generationConfig": {
+            "temperature": 0.6,
+            "maxOutputTokens": 400
+        }
+    }
+    try:
+        resp = requests.post(url, json=payload, timeout=12)
+        if resp.status_code == 200:
+            data = resp.json()
+            candidates = data.get("candidates", [])
+            if candidates:
+                parts = candidates[0].get("content", {}).get("parts", [])
+                if parts:
+                    return parts[0].get("text", "").strip()
+    except Exception as e:
+        print("Gemini API call exception:", e)
+    return ""
+
 ollama = OllamaChat(OLLAMA_MODEL)
 
 
@@ -134,9 +177,17 @@ def krishi_ai_reply(question: str) -> str:
     if not question or not question.strip():
         return "Kripya apna farming sawal likhiye."
 
+    # 1. Try Gemini Cloud AI first if API key configured
+    gemini_resp = _gemini_reply(question)
+    if gemini_resp:
+        return gemini_resp
+
+    # 2. Try Ollama local if available
     if ollama.available:
         reply = ollama.generate(question)
         if reply:
             return farmer_style(reply)
 
+    # 3. Deterministic expert agriculture knowledge fallback
     return farmer_style(_keyword_reply(question))
+

@@ -248,9 +248,37 @@ const MOCK_MANDI_DATA = [
   { id: '15', commodity: 'Maize (मक्का)', state: 'Bihar', district: 'Gulabbagh', market: 'Purnea Mandi', minPrice: 2050, maxPrice: 2420, modalPrice: 2280, change: '+₹35', trend: 'up', arrivalDate: 'Today' }
 ];
 
+export const profileApi = {
+  getProfile: async () => {
+    return request('/api/profile');
+  },
+  updateProfile: async (data) => {
+    return request('/api/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+};
+
 export const mandiApi = {
   getPrices: async ({ commodity, state, district, search } = {}) => {
-    // Return filtered real-world mandi data
+    try {
+      const params = new URLSearchParams();
+      if (commodity && commodity !== 'all') params.append('commodity', commodity);
+      if (state && state !== 'all') params.append('state', state);
+      if (district && district !== 'all') params.append('district', district);
+      if (search) params.append('search', search);
+      const queryStr = params.toString();
+      const endpoint = `/api/mandi-bhav${queryStr ? `?${queryStr}` : ''}`;
+      const data = await request(endpoint);
+      if (Array.isArray(data) && data.length > 0) {
+        return data;
+      }
+    } catch (err) {
+      console.warn('Backend Mandi API unreachable, using verified baseline:', err);
+    }
+
+    // Fallback baseline if server is starting or network fails
     let results = [...MOCK_MANDI_DATA];
     if (commodity && commodity !== 'all') {
       results = results.filter(item => item.commodity.toLowerCase().includes(commodity.toLowerCase()));
@@ -273,3 +301,4 @@ export const mandiApi = {
     return results;
   }
 };
+
