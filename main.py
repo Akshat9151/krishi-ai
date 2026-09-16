@@ -53,7 +53,7 @@ app.add_middleware(
         "https://krishi-ai-sable-sigma.vercel.app",
         "https://krishi-cr87mahkb-akshat9151s-projects.vercel.app",
         "https://krishi-cr87mabkb-akshat9151s-projects.vercel.app",
-        "https://krishi-ai-2-4j3k.onrender.com",
+        "https://krishi-ai-j359.onrender.com",
         "http://localhost:5500",
         "http://127.0.0.1:5500",
         "http://localhost:3000",

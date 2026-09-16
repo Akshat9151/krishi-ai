@@ -7,12 +7,12 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: "https://krishi-ai-2-4j3k.onrender.com",
+        target: "https://krishi-ai-j359.onrender.com",
         changeOrigin: true,
         secure: false,
       },
       "/auth": {
-        target: "https://krishi-ai-2-4j3k.onrender.com",
+        target: "https://krishi-ai-j359.onrender.com",
         changeOrigin: true,
         secure: false,
       },

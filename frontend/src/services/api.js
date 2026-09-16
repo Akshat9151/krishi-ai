@@ -1,9 +1,9 @@
 /**
  * KhetiTak — Central API Service Client
- * Connects to the existing Render FastAPI backend: https://krishi-ai-2-4j3k.onrender.com
+ * Connects to the production Render FastAPI backend.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '' : 'https://krishi-ai-2-4j3k.onrender.com');
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '' : 'https://krishi-ai-j359.onrender.com');
 const REQUEST_TIMEOUT_MS = 20000;
 
 export const getApiBaseUrl = () => API_BASE_URL;
