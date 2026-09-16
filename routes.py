@@ -110,6 +110,7 @@ class CropRequest(BaseModel):
 
 class DiseaseRequest(BaseModel):
     crop: str
+    symptoms: Optional[str] = ""
 
     @validator('crop')
     def validate_crop(cls, v):
@@ -122,6 +123,24 @@ class WeatherRequest(BaseModel):
     @validator('location')
     def validate_location(cls, v):
         return ValidationUtils.validate_location(v)
+
+
+class FertilizerDoseRequest(BaseModel):
+    crop: str
+    acres: float
+    soil_health: str = "medium"
+
+
+FERTILIZER_DOSE_PER_ACRE = {
+    "wheat": (55, 50, 20),
+    "rice": (65, 45, 25),
+    "maize": (70, 50, 30),
+    "cotton": (60, 40, 35),
+    "mustard": (45, 40, 15),
+    "potato": (80, 75, 60),
+    "sugarcane": (110, 60, 50),
+    "soybean": (20, 50, 20),
+}
 
 
 class AssistantRequest(BaseModel):
@@ -180,6 +199,30 @@ def weather_api(request: Request, data: WeatherRequest):
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"Weather service unavailable: {str(e)}"
         )
+
+
+@router.post("/fertilizer-dose")
+def fertilizer_dose(data: FertilizerDoseRequest):
+    if data.acres <= 0 or data.acres > 10000:
+        raise HTTPException(status_code=400, detail="Farm area must be between 0.1 and 10,000 acres.")
+    crop = data.crop.strip().lower()
+    base = FERTILIZER_DOSE_PER_ACRE.get(crop, FERTILIZER_DOSE_PER_ACRE["wheat"])
+    health_factor = {"low": 1.15, "medium": 1.0, "high": 0.9}.get(data.soil_health.lower(), 1.0)
+    urea_kg = round(base[0] * data.acres * health_factor)
+    dap_kg = round(base[1] * data.acres * health_factor)
+    mop_kg = round(base[2] * data.acres * health_factor)
+    return {
+        "crop": crop,
+        "acres": data.acres,
+        "soil_health": data.soil_health.lower(),
+        "urea_kg": urea_kg,
+        "urea_bags": round(urea_kg / 45, 1),
+        "dap_kg": dap_kg,
+        "dap_bags": round(dap_kg / 50, 1),
+        "mop_kg": mop_kg,
+        "mop_bags": round(mop_kg / 50, 1),
+        "source": "KhetiTak agronomy baseline; confirm with a local soil test.",
+    }
 
 
 # =========================
@@ -241,7 +284,7 @@ def predict_crop(request: Request, data: CropRequest):
 
 @router.post("/predict-disease")
 def disease_api(request: Request, data: DiseaseRequest):
-    result = predict_disease(data.crop)
+    result = predict_disease(data.crop, data.symptoms)
     _record_activity(
         _request_username(request),
         "disease_check",

@@ -36,7 +36,7 @@ export default function DiseaseDetection({ setCurrentView }) {
 
     try {
       // 1. Predict disease
-      const diseaseData = await coreApi.predictDisease(selectedCrop);
+      const diseaseData = await coreApi.predictDisease(selectedCrop, symptomsInput);
       setDiagnosis(diseaseData);
 
       // 2. Recommend products

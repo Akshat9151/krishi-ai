@@ -109,6 +109,13 @@ export const authApi = {
       body: JSON.stringify({ credential }),
     });
   },
+  requestSignupOtp: async (payload) => request('/auth/signup/request-otp', { method: 'POST', body: JSON.stringify(payload) }),
+  verifySignupOtp: async (payload) => request('/auth/signup/verify-otp', { method: 'POST', body: JSON.stringify(payload) }),
+  requestLoginOtp: async (payload) => request('/auth/login/request-otp', { method: 'POST', body: JSON.stringify(payload) }),
+  verifyLoginOtp: async (payload) => request('/auth/login/verify-otp', { method: 'POST', body: JSON.stringify(payload) }),
+  requestPasswordResetOtp: async (identifier) => request('/auth/forgot-password/request-otp', { method: 'POST', body: JSON.stringify({ identifier }) }),
+  resetPassword: async (payload) => request('/auth/reset-password', { method: 'POST', body: JSON.stringify(payload) }),
+  logout: async () => request('/auth/logout', { method: 'POST' }, false),
 };
 
 // ==========================================
@@ -134,10 +141,10 @@ export const coreApi = {
   },
 
   // Disease Prediction
-  predictDisease: async (crop) => {
+  predictDisease: async (crop, symptoms = '') => {
     return request('/api/predict-disease', {
       method: 'POST',
-      body: JSON.stringify({ crop: crop.toLowerCase() }),
+      body: JSON.stringify({ crop: crop.toLowerCase(), symptoms }),
     });
   },
 
@@ -156,6 +163,10 @@ export const coreApi = {
       body: JSON.stringify({ location }),
     });
   },
+  calculateFertilizer: async ({ crop, acres, soil_health }) => request('/api/fertilizer-dose', {
+    method: 'POST',
+    body: JSON.stringify({ crop, acres, soil_health }),
+  }),
 
   // AI Assistant Chatbot
   askAiAssistant: async (message) => {

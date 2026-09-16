@@ -128,6 +128,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    authApi.logout().catch((err) => console.warn("Backend logout failed:", err));
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("loggedInUser");

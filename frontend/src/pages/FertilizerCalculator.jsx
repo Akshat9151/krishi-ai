@@ -17,6 +17,7 @@ export default function FertilizerCalculator({ defaultCrop, setCurrentView }) {
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
   const [addedProduct, setAddedProduct] = useState(null);
+  const [dose, setDose] = useState(null);
 
   const cropDosageProfiles = {
     wheat: { name: "Wheat (गेहूं)", ureaPerAcre: 55, dapPerAcre: 50, mopPerAcre: 20, basalNote: "Apply full DAP + 1/3 Urea at sowing. Top dress remaining Urea in 2 splits after first and second irrigation." },
@@ -41,16 +42,24 @@ export default function FertilizerCalculator({ defaultCrop, setCurrentView }) {
   const selectedProfile = cropDosageProfiles[crop] || cropDosageProfiles.wheat;
 
   // Compute exact quantities
-  const ureaKg = Math.round(selectedProfile.ureaPerAcre * currentAcres);
-  const ureaBags = (ureaKg / 45).toFixed(1); // 45kg standard bags
+  const ureaKg = dose?.urea_kg ?? Math.round(selectedProfile.ureaPerAcre * currentAcres);
+  const ureaBags = (dose?.urea_bags ?? ureaKg / 45).toFixed(1);
 
-  const dapKg = Math.round(selectedProfile.dapPerAcre * currentAcres);
-  const dapBags = (dapKg / 50).toFixed(1); // 50kg standard bags
+  const dapKg = dose?.dap_kg ?? Math.round(selectedProfile.dapPerAcre * currentAcres);
+  const dapBags = (dose?.dap_bags ?? dapKg / 50).toFixed(1);
 
-  const mopKg = Math.round(selectedProfile.mopPerAcre * currentAcres);
-  const mopBags = (mopKg / 50).toFixed(1); // 50kg standard bags
+  const mopKg = dose?.mop_kg ?? Math.round(selectedProfile.mopPerAcre * currentAcres);
+  const mopBags = (dose?.mop_bags ?? mopKg / 50).toFixed(1);
 
   // Fetch verified fertilizer recommendations from backend
+  useEffect(() => {
+    let active = true;
+    storeApi.calculateFertilizer({ crop, acres: currentAcres, soil_health: soilHealth })
+      .then((result) => { if (active) setDose(result); })
+      .catch((err) => console.warn("Fertilizer dose calculation error:", err));
+    return () => { active = false; };
+  }, [crop, currentAcres, soilHealth]);
+
   useEffect(() => {
     const fetchRecs = async () => {
       setLoadingRecs(true);
