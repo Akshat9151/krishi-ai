@@ -24,6 +24,18 @@ def _normalize_text(text: str) -> str:
     return text.lower().strip()
 
 
+def _greeting_reply(question: str) -> str:
+    """Return a natural welcome for greetings instead of farming advice."""
+    normalized = _normalize_text(question)
+    greeting_words = {
+        "hi", "hii", "hiii", "hello", "hey", "heyy", "namaste",
+        "namaskar", "नमस्ते", "नमस्कार",
+    }
+    if normalized in greeting_words:
+        return "Namaste! Main KhetiTak hoon. Aap fasal, mausam, mitti ya kheti se juda sawal pooch sakte hain."
+    return ""
+
+
 def _keyword_reply(question: str) -> str:
     q = _normalize_text(question)
 
@@ -181,6 +193,10 @@ def krishi_ai_reply(question: str) -> str:
 
     if not question or not question.strip():
         return "Kripya apna farming sawal likhiye."
+
+    greeting = _greeting_reply(question)
+    if greeting:
+        return greeting
 
     groq_resp = _groq_reply(question)
     if groq_resp:
