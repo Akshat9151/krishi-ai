@@ -24,7 +24,7 @@ import Register from "./pages/Register";
 import { KhetiTakSplash } from "./components/KhetiTakBranding";
 
 function MainApp() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   const getInitialView = () => {
     if (typeof window !== "undefined") {
@@ -57,6 +57,7 @@ function MainApp() {
   const [currentView, setCurrentViewState] = useState(getInitialView);
   const [selectedCropForCalc, setSelectedCropForCalc] = useState("wheat");
   const [isMobile, setIsMobile] = useState(() => (typeof window !== "undefined" ? window.innerWidth < 768 : false));
+  const publicViews = new Set(["splash", "login", "register"]);
 
   const setCurrentView = (view) => {
     setCurrentViewState(view);
@@ -121,6 +122,17 @@ function MainApp() {
       <Register
         onSwitchToLogin={() => setCurrentView("login")}
         onRegisterSuccess={() => setCurrentView("login")}
+      />
+    );
+  }
+
+  // Do not mount protected pages while a saved session is being rejected.
+  // This prevents their effects from sending additional requests with a stale token.
+  if (!authLoading && !user && !publicViews.has(currentView)) {
+    return (
+      <Login
+        onSwitchToRegister={() => setCurrentView("register")}
+        onLoginSuccess={() => setCurrentView("dashboard")}
       />
     );
   }
