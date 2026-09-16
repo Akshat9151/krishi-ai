@@ -151,6 +151,15 @@ textarea {
   touch-action: manipulation;
 }
 
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--marigold);
+  outline-offset: 2px;
+}
+
 /* FORM INPUTS */
 .input-field {
   width: 100%;
