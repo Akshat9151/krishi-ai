@@ -23,6 +23,74 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { KhetiTakSplash } from "./components/KhetiTakBranding";
 
+const viewPaths = {
+  dashboard: "/dashboard",
+  crop: "/crop-recommendation",
+  disease: "/crop-disease",
+  assistant: "/ai-assistant",
+  weather: "/weather",
+  mandi: "/mandi-bhav",
+  fertilizer: "/fertilizer-calculator",
+  store: "/store",
+  orders: "/orders",
+  profile: "/profile",
+  tools: "/farm-tools",
+  login: "/login",
+  register: "/register",
+};
+
+const pathToView = Object.fromEntries(Object.entries(viewPaths).map(([view, path]) => [path, view]));
+const protectedViews = new Set([
+  "dashboard",
+  "crop",
+  "disease",
+  "assistant",
+  "weather",
+  "mandi",
+  "fertilizer",
+  "store",
+  "orders",
+  "profile",
+  "tools",
+]);
+
+function updatePageMetadata(view) {
+  const metadata = {
+    "/": {
+      title: "KhetiTak — खेती का भरोसा, आपके पास | Smart Agriculture",
+      description: "KhetiTak brings smart crop advisory, mandi bhav, weather insights, crop disease information and agri products for Indian farmers.",
+      robots: "index,follow",
+    },
+    login: {
+      title: "Sign In | KhetiTak",
+      description: "Sign in to access your KhetiTak farmer dashboard and agriculture tools.",
+      robots: "noindex,nofollow",
+    },
+    register: {
+      title: "Create Account | KhetiTak",
+      description: "Create your KhetiTak farmer account to access agriculture advisory and farm tools.",
+      robots: "noindex,nofollow",
+    },
+  }[view] || {
+    title: `${view === "mandi" ? "Mandi Bhav" : "KhetiTak Agriculture Tools"} | KhetiTak`,
+    description: "KhetiTak agriculture tools for crop planning, mandi information, weather and farmer support.",
+    robots: protectedViews.has(view) ? "noindex,nofollow" : "index,follow",
+  };
+
+  document.title = metadata.title;
+  const description = document.querySelector('meta[name="description"]');
+  if (description) description.setAttribute("content", metadata.description);
+  const robots = document.querySelector('meta[name="robots"]') || document.createElement("meta");
+  robots.setAttribute("name", "robots");
+  robots.setAttribute("content", metadata.robots);
+  if (!robots.parentNode) document.head.appendChild(robots);
+
+  const canonical = document.querySelector('link[rel="canonical"]') || document.createElement("link");
+  canonical.setAttribute("rel", "canonical");
+  canonical.setAttribute("href", `https://khetitak.in${view === "login" || view === "register" ? `/${view}` : view === "/" ? "/" : viewPaths[view] || "/"}`);
+  if (!canonical.parentNode) document.head.appendChild(canonical);
+}
+
 function MainApp() {
   const { user, loading: authLoading } = useAuth();
 
@@ -31,6 +99,7 @@ function MainApp() {
       const path = window.location.pathname.toLowerCase();
       const hash = window.location.hash.toLowerCase().replace("#", "");
 
+      if (pathToView[path]) return pathToView[path];
       if (path === "/splash" || hash === "splash") return "splash";
       if (path === "/login" || hash === "login") return "login";
       if (path === "/register" || hash === "register") return "register";
@@ -63,7 +132,12 @@ function MainApp() {
     setCurrentViewState(view);
     if (typeof window !== "undefined") {
       try {
-        window.history.replaceState(null, "", `#${view}`);
+        const nextPath = viewPaths[view];
+        if (nextPath) {
+          window.history.pushState({ view }, "", nextPath);
+        } else {
+          window.history.pushState({ view }, "", "/");
+        }
       } catch {
         window.location.hash = view;
       }
@@ -72,20 +146,28 @@ function MainApp() {
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
-    const handleHashChange = () => {
+    const handleRouteChange = () => {
+      const path = window.location.pathname.toLowerCase();
       const hash = window.location.hash.toLowerCase().replace("#", "");
-      if (hash && ["login", "register", "dashboard", "crop", "disease", "assistant", "weather", "mandi", "fertilizer", "store", "orders", "profile", "tools"].includes(hash)) {
-        setCurrentViewState(hash);
+      const routeView = pathToView[path] || hash;
+      if (routeView && ["login", "register", "dashboard", "crop", "disease", "assistant", "weather", "mandi", "fertilizer", "store", "orders", "profile", "tools"].includes(routeView)) {
+        setCurrentViewState(routeView);
       }
     };
 
     window.addEventListener("resize", handleResize);
-    window.addEventListener("hashchange", handleHashChange);
+    window.addEventListener("hashchange", handleRouteChange);
+    window.addEventListener("popstate", handleRouteChange);
     return () => {
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("hashchange", handleHashChange);
+      window.removeEventListener("hashchange", handleRouteChange);
+      window.removeEventListener("popstate", handleRouteChange);
     };
   }, []);
+
+  useEffect(() => {
+    updatePageMetadata(currentView);
+  }, [currentView]);
 
   // Auto-navigate splash screen after 1.8s matching native cold-start feel
   useEffect(() => {

@@ -16,6 +16,9 @@ export default function AgriStore({ setCurrentView }) {
   const [selectedProductModal, setSelectedProductModal] = useState(null);
   const [modalQty, setModalQty] = useState(1);
   const [addedId, setAddedId] = useState(null);
+  const modalRef = React.useRef(null);
+  const modalCloseRef = React.useRef(null);
+  const previouslyFocusedRef = React.useRef(null);
 
   useEffect(() => {
     const loadStore = async () => {
@@ -37,6 +40,42 @@ export default function AgriStore({ setCurrentView }) {
     };
     loadStore();
   }, []);
+
+  useEffect(() => {
+    if (!selectedProductModal) return undefined;
+
+    previouslyFocusedRef.current = document.activeElement;
+    modalCloseRef.current?.focus();
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setSelectedProductModal(null);
+        return;
+      }
+      if (event.key !== "Tab" || !modalRef.current) return;
+
+      const focusableElements = modalRef.current.querySelectorAll(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previouslyFocusedRef.current?.focus?.();
+    };
+  }, [selectedProductModal]);
 
   const handleCategoryChange = async (catName) => {
     setSelectedCategory(catName);
@@ -271,6 +310,7 @@ export default function AgriStore({ setCurrentView }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", gap: "16px" }}>
             {products.map((product) => (
               <div
+                ref={modalRef}
                 key={product.id}
                 className="ka-card ka-card-interactive"
                 style={{
@@ -371,6 +411,9 @@ export default function AgriStore({ setCurrentView }) {
       {/* Product Details Modal */}
       {selectedProductModal && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="product-modal-title"
           style={{
             position: "fixed",
             inset: 0,
@@ -399,8 +442,10 @@ export default function AgriStore({ setCurrentView }) {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px" }}>
               <span className="badge-marigold">{selectedProductModal.category}</span>
               <button
+                ref={modalCloseRef}
                 onClick={() => setSelectedProductModal(null)}
                 style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--text-muted)" }}
+                aria-label="Close product details"
               >
                 <X size={20} />
               </button>
@@ -412,7 +457,7 @@ export default function AgriStore({ setCurrentView }) {
               style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "10px", marginBottom: "16px" }}
             />
 
-            <h3 style={{ fontSize: "18px", fontWeight: "800", color: "var(--text-primary)" }}>
+            <h3 id="product-modal-title" style={{ fontSize: "18px", fontWeight: "800", color: "var(--text-primary)" }}>
               {selectedProductModal.name}
             </h3>
 

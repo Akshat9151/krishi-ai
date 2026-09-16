@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { X, Plus, Minus, Trash2, CheckCircle2, ShoppingBag, ArrowRight } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useCart } from "../context/CartContext";
@@ -18,6 +18,45 @@ export default function CartDrawer({ onNavigateOrders }) {
   const [loading, setLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(null);
   const [error, setError] = useState("");
+  const drawerRef = useRef(null);
+  const previouslyFocusedRef = useRef(null);
+  const closeButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (!isCartOpen) return undefined;
+
+    previouslyFocusedRef.current = document.activeElement;
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        closeDrawer();
+        return;
+      }
+
+      if (event.key !== "Tab" || !drawerRef.current) return;
+      const focusableElements = drawerRef.current.querySelectorAll(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previouslyFocusedRef.current?.focus?.();
+    };
+  }, [isCartOpen]);
 
   if (!isCartOpen) return null;
 
@@ -81,13 +120,20 @@ export default function CartDrawer({ onNavigateOrders }) {
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 100, display: "flex", justifyContent: "flex-end", backgroundColor: "rgba(43, 33, 24, 0.45)", backdropFilter: "blur(2px)" }} onClick={closeDrawer}>
-      <div style={{ width: "100%", maxWidth: "420px", height: "100%", backgroundColor: "#FFFFFF", display: "flex", flexDirection: "column", boxShadow: "-4px 0 24px rgba(0, 0, 0, 0.12)" }} onClick={(event) => event.stopPropagation()}>
+      <div
+        ref={drawerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cart-drawer-title"
+        style={{ width: "100%", maxWidth: "420px", height: "100%", backgroundColor: "#FFFFFF", display: "flex", flexDirection: "column", boxShadow: "-4px 0 24px rgba(0, 0, 0, 0.12)" }}
+        onClick={(event) => event.stopPropagation()}
+      >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 20px", borderBottom: "1px solid var(--card-border)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <ShoppingBag size={20} color="var(--terracotta)" />
-            <h3 style={{ fontSize: "17px", fontWeight: "700", margin: 0 }}>{t("cart", "Your AgriCart")} ({items.length})</h3>
+            <h2 id="cart-drawer-title" style={{ fontSize: "17px", fontWeight: "700", margin: 0 }}>{t("cart", "Your AgriCart")} ({items.length})</h2>
           </div>
-          <button onClick={closeDrawer} style={{ background: "transparent", border: "none", cursor: "pointer", padding: "8px", color: "var(--text-secondary)" }} aria-label="Close cart"><X size={20} /></button>
+          <button ref={closeButtonRef} onClick={closeDrawer} style={{ background: "transparent", border: "none", cursor: "pointer", padding: "8px", color: "var(--text-secondary)" }} aria-label="Close cart"><X size={20} /></button>
         </div>
 
         <div style={{ flex: 1, overflowY: "auto", padding: "18px 20px" }}>
@@ -139,11 +185,11 @@ export default function CartDrawer({ onNavigateOrders }) {
               ) : (
                 <form className="ka-card" style={{ marginTop: "12px" }} onSubmit={handleCheckout}>
                   <h4 style={{ fontSize: "15px", fontWeight: "700", marginBottom: "12px" }}>Checkout & Delivery Details</h4>
-                  {error && <div style={{ padding: "8px 12px", background: "var(--terracotta-light)", color: "var(--terracotta)", borderRadius: "6px", fontSize: "12.5px", marginBottom: "10px" }}>{error}</div>}
+                  {error && <div role="alert" aria-live="assertive" style={{ padding: "8px 12px", background: "var(--terracotta-light)", color: "var(--terracotta)", borderRadius: "6px", fontSize: "12.5px", marginBottom: "10px" }}>{error}</div>}
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                    <div><label className="input-label">Farmer Name</label><input className="input-field" value={customerName} onChange={(event) => setCustomerName(event.target.value)} required /></div>
-                    <div><label className="input-label">Mobile Number</label><input type="tel" className="input-field" placeholder="10-digit mobile number" value={phone} onChange={(event) => setPhone(event.target.value)} required /></div>
-                    <div><label className="input-label">Saved Farm Location / Address</label><textarea rows={2} className="input-field" value={address} onChange={(event) => setAddress(event.target.value)} required /></div>
+                    <div><label className="input-label" htmlFor="checkout-customer-name">Farmer Name</label><input id="checkout-customer-name" className="input-field" value={customerName} onChange={(event) => setCustomerName(event.target.value)} required /></div>
+                    <div><label className="input-label" htmlFor="checkout-phone">Mobile Number</label><input id="checkout-phone" type="tel" className="input-field" placeholder="10-digit mobile number" value={phone} onChange={(event) => setPhone(event.target.value)} required /></div>
+                    <div><label className="input-label" htmlFor="checkout-address">Saved Farm Location / Address</label><textarea id="checkout-address" rows={2} className="input-field" value={address} onChange={(event) => setAddress(event.target.value)} required /></div>
                     <div>
                       <label className="input-label">Payment Method</label>
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
