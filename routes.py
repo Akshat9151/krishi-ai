@@ -198,7 +198,11 @@ def predict_crop(request: Request, data: CropRequest):
             season=data.season,
             location=data.location,
             weather=weather,
-            top_n=3
+            top_n=3,
+            nitrogen=data.N,
+            phosphorus=data.P,
+            potassium=data.K,
+            ph=data.ph,
         )
 
         recommended = preds
