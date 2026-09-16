@@ -5,6 +5,7 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
 import { storeApi } from "../services/api";
+import { getProductImage } from "../utils/productImages";
 
 export default function CartDrawer({ onNavigateOrders }) {
   const { items, isCartOpen, setIsCartOpen, updateQuantity, removeFromCart, clearCart, totalAmount, recordOrder } = useCart();
@@ -159,7 +160,7 @@ export default function CartDrawer({ onNavigateOrders }) {
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               {items.map((item) => (
                 <div key={item.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", backgroundColor: "var(--bg-cream)" }}>
-                  <img src={item.image_url || "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=120"} alt={item.name} style={{ width: "56px", height: "56px", borderRadius: "6px", objectFit: "cover", backgroundColor: "#FFF", border: "1px solid var(--card-border)" }} />
+                  <img src={getProductImage(item, 120)} alt={item.name} style={{ width: "56px", height: "56px", borderRadius: "6px", objectFit: "cover", backgroundColor: "#FFF", border: "1px solid var(--card-border)" }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <h5 style={{ fontSize: "13.5px", fontWeight: "700", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.name}</h5>
                     <p style={{ fontSize: "12px", color: "var(--text-secondary)" }}>₹{item.price} • {item.unit}</p>

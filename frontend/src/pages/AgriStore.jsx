@@ -3,6 +3,7 @@ import { Search, ShoppingCart, Star, Check, Tag, Eye, X, PackageCheck, ArrowRigh
 import { storeApi } from "../services/api";
 import { useCart } from "../context/CartContext";
 import { AgriStoreConceptCard } from "../components/KhetiTakBranding";
+import { getProductImage, getProductImageFallback } from "../utils/productImages";
 
 export default function AgriStore({ setCurrentView }) {
   const { addToCart, setIsCartOpen } = useCart();
@@ -225,7 +226,11 @@ export default function AgriStore({ setCurrentView }) {
                 <div>
                   <div style={{ position: "relative" }}>
                     <img
-                      src={p.image_url || "https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?w=300"}
+                      src={getProductImage(p, 300)}
+                      onError={(event) => {
+                        event.currentTarget.onerror = null;
+                        event.currentTarget.src = getProductImageFallback(p, 300);
+                      }}
                       alt={p.name}
                       style={{ width: "100%", height: "140px", objectFit: "cover", borderRadius: "8px" }}
                     />
@@ -328,7 +333,11 @@ export default function AgriStore({ setCurrentView }) {
                 <div>
                   <div style={{ position: "relative" }}>
                     <img
-                      src={product.image_url || "https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?w=300"}
+                      src={getProductImage(product, 300)}
+                      onError={(event) => {
+                        event.currentTarget.onerror = null;
+                        event.currentTarget.src = getProductImageFallback(product, 300);
+                      }}
                       alt={product.name}
                       style={{
                         width: "100%",
@@ -452,7 +461,11 @@ export default function AgriStore({ setCurrentView }) {
             </div>
 
             <img
-              src={selectedProductModal.image_url || "https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?w=500"}
+              src={getProductImage(selectedProductModal, 500)}
+              onError={(event) => {
+                event.currentTarget.onerror = null;
+                event.currentTarget.src = getProductImageFallback(selectedProductModal, 500);
+              }}
               alt={selectedProductModal.name}
               style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "10px", marginBottom: "16px" }}
             />

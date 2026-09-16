@@ -3,6 +3,7 @@ import { Calculator, ShoppingCart, Check, Info, ArrowRight, Sparkles } from "luc
 import { storeApi } from "../services/api";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { getProductImage } from "../utils/productImages";
 
 export default function FertilizerCalculator({ defaultCrop, setCurrentView }) {
   const { preferences } = useAuth();
@@ -249,7 +250,7 @@ export default function FertilizerCalculator({ defaultCrop, setCurrentView }) {
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                         <img
-                          src={prod.image_url || "https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?w=100"}
+                          src={getProductImage(prod, 100)}
                           alt={prod.name}
                           style={{ width: "42px", height: "42px", borderRadius: "6px", objectFit: "cover" }}
                         />
