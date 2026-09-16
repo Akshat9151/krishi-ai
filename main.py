@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Request
 import time
+import os
 
 from routes import router, legacy_router
 from services import auth
@@ -14,6 +15,13 @@ from backend.database import engine, SessionLocal
 from backend.models import Base
 import backend.models_store  # Register store models with Base
 from services.seed_data import seed_database
+from services.config import settings
+
+if os.getenv("RENDER") and settings.DATABASE_URL.startswith("sqlite"):
+    raise RuntimeError(
+        "DATABASE_URL must point to Neon/PostgreSQL on Render. "
+        "Refusing to start with temporary SQLite storage."
+    )
 
 # Create FastAPI app
 app = FastAPI(

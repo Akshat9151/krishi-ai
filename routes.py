@@ -431,9 +431,13 @@ def update_farmer_profile(request: Request, data: ProfileUpdateRequest):
 
 @router.get("/health")
 def health_check():
+    from backend.database import engine
+
     return {
         "status": "ok",
-        "service": "KhetiTak"
+        "service": "KhetiTak",
+        "database": engine.dialect.name,
+        "persistent_storage": engine.dialect.name not in {"sqlite"},
     }
 
 
