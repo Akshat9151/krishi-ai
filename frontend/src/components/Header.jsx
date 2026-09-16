@@ -83,6 +83,7 @@ export default function Header({ currentView, setCurrentView }) {
         >
           <Globe size={15} color="var(--growth-green)" />
           <select
+            id="language-select"
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
             aria-label="Select Language"
