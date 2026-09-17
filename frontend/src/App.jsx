@@ -25,6 +25,7 @@ import PublicSeoPage from "./pages/PublicSeoPage";
 import LegalPage from "./pages/LegalPage";
 import Footer from "./components/Footer";
 import OperationsDashboard from "./pages/OperationsDashboard";
+import StaffLogin from "./pages/StaffLogin";
 import { KhetiTakSplash } from "./components/KhetiTakBranding";
 
 const viewPaths = {
@@ -43,6 +44,7 @@ const viewPaths = {
   profile: "/profile",
   tools: "/farm-tools",
   operations: "/operations",
+  "staff-login": "/staff-login",
   login: "/login",
   register: "/register",
   terms: "/terms",
@@ -66,7 +68,7 @@ const protectedViews = new Set([
   "tools",
   "operations",
 ]);
-const publicViews = new Set(["home", "about", "faq", "splash", "login", "register", "terms", "privacy", "refund-policy", "shipping-policy"]);
+const publicViews = new Set(["home", "about", "faq", "splash", "login", "register", "staff-login", "terms", "privacy", "refund-policy", "shipping-policy"]);
 
 function updatePageMetadata(view) {
   const metadata = {
@@ -232,7 +234,17 @@ function MainApp() {
     return (
       <Login
         onSwitchToRegister={() => setCurrentView("register")}
+        onStaffLogin={() => setCurrentView("staff-login")}
         onLoginSuccess={() => setCurrentView(localStorage.getItem("userRole") === "farmer" ? "dashboard" : "operations")}
+      />
+    );
+  }
+
+  if (currentView === "staff-login") {
+    return (
+      <StaffLogin
+        onBackToFarmerLogin={() => setCurrentView("login")}
+        onLoginSuccess={() => setCurrentView("operations")}
       />
     );
   }

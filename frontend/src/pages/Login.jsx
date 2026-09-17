@@ -7,7 +7,7 @@ import { useTranslation } from "../context/LanguageContext";
 import { KhetiTakMark, KhetiTakLogo } from "../components/KhetiTakBranding";
 import GoogleSignInButton from "../components/GoogleSignInButton";
 
-export default function Login({ onSwitchToRegister, onLoginSuccess }) {
+export default function Login({ onSwitchToRegister, onLoginSuccess, onStaffLogin }) {
   const { login, loginWithToken } = useAuth();
   const { language, setLanguage, languages, t } = useTranslation();
 
@@ -350,6 +350,11 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
             {t("createAccount", "Create an account")} →
           </button>
         </div>
+        {onStaffLogin && (
+          <button type="button" onClick={onStaffLogin} style={{ display: "block", margin: "16px auto 0", background: "transparent", border: "none", color: "var(--growth-green)", cursor: "pointer", fontSize: "13px", fontWeight: "700" }}>
+            Staff / Partner login
+          </button>
+        )}
         </>)}
 
       </div>
