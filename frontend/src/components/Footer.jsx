@@ -30,7 +30,7 @@ export default function Footer({ setCurrentView }) {
   return (
     <footer style={{ background: "var(--card-surface)", borderTop: "1px solid var(--card-border)", marginTop: "48px", padding: "36px 24px 18px" }}>
       <div style={{ maxWidth: "1120px", margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "minmax(220px, 1.4fr) repeat(3, minmax(160px, 1fr))", gap: "28px" }}>
+        <div className="khetitak-footer-grid" style={{ display: "grid", gap: "28px" }}>
           <div>
             <KhetiTakLogo size={38} />
             <p style={{ marginTop: "12px", fontWeight: "600" }}>खेती का भरोसा, आपके पास</p>

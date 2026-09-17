@@ -77,6 +77,16 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-2px);
 }
 
+.khetitak-footer-grid {
+  grid-template-columns: minmax(220px, 1.4fr) repeat(3, minmax(160px, 1fr));
+}
+
+@media (max-width: 767px) {
+  .khetitak-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* BUTTONS */
 .btn-primary {
   display: inline-flex;
