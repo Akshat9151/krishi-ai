@@ -37,8 +37,14 @@ export default function OperationsDashboard() {
         ]);
         setOrders(incoming); setProducts(inventory); setEarnings(summary);
       } else {
-        const [available, riderEarnings] = await Promise.all([storeApi.getRiderOrders(), storeApi.getRiderEarnings()]);
-        setOrders(available); setEarnings(riderEarnings);
+        const [available, assigned, riderEarnings] = await Promise.all([
+          storeApi.getRiderOrders(),
+          storeApi.getRiderDeliveries(),
+          storeApi.getRiderEarnings(),
+        ]);
+        const byOrder = new Map([...available, ...assigned].map((order) => [order.order_number, order]));
+        setOrders([...byOrder.values()]);
+        setEarnings(riderEarnings);
       }
     } catch (err) { setError(err.message || "Unable to load dashboard"); }
   };
@@ -74,9 +80,13 @@ export default function OperationsDashboard() {
 
   const isShop = user?.role === "shop_owner";
   return (
-    <div className="page-container" style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+    <div className="page-container" style={{ display: "flex", flexDirection: "column", gap: "22px", maxWidth: "1180px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
-        <div><h2 style={{ margin: 0 }}>{isShop ? "Shop Dashboard" : "Rider Dashboard"}</h2><p style={{ color: "var(--text-secondary)" }}>Signed in as {user?.username}</p></div>
+        <div>
+          <p style={{ margin: 0, color: "var(--terracotta)", fontWeight: 700, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.08em" }}>KhetiTak Partner Portal</p>
+          <h2 style={{ margin: "5px 0 0" }}>{isShop ? "Shopkeeper Dashboard" : "Delivery Dashboard"}</h2>
+          <p style={{ color: "var(--text-secondary)", margin: "5px 0 0" }}>Welcome back, {user?.username}</p>
+        </div>
         <button className="btn-outline" onClick={logout}>Sign out</button>
       </div>
       {error && <div role="alert" style={{ color: "var(--terracotta)" }}>{error}</div>}
@@ -87,13 +97,15 @@ export default function OperationsDashboard() {
             <div className="ka-card"><strong>{money(earnings?.order_value)}</strong><div>This month value</div></div>
           </div>
           <h3>Incoming Orders</h3>
+          {!orders.length && <div className="ka-card">No incoming orders right now.</div>}
           {orders.map((order) => <OrderRow key={order.order_number} order={order} actions={
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               {order.status === "confirmed" || order.status === "placed" ? <><button className="btn-primary" onClick={() => updateShopStatus(order.order_number, "accepted")}>Accept</button><button className="btn-outline" onClick={() => updateShopStatus(order.order_number, "cancelled", "Unavailable from shop")}>Reject</button></> : null}
               {order.status === "accepted" && <button className="btn-primary" onClick={() => updateShopStatus(order.order_number, "packed")}>Mark packed</button>}
             </div>
           } />)}
-          <h3>Inventory</h3>
+          <h3>Products & Inventory</h3>
+          {!products.length && <div className="ka-card">No products assigned to this shop yet.</div>}
           {products.map((product) => <div className="ka-card" key={product.id} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr auto", gap: "8px", alignItems: "center" }}>
             <input className="input-field" value={product.name} onChange={(e) => setProducts((items) => items.map((item) => item.id === product.id ? { ...item, name: e.target.value } : item))} />
             <input className="input-field" type="number" value={product.price} onChange={(e) => setProducts((items) => items.map((item) => item.id === product.id ? { ...item, price: e.target.value } : item))} />
@@ -109,6 +121,7 @@ export default function OperationsDashboard() {
             <div className="ka-card"><strong>{money(earnings?.total_earning)}</strong><div>Current earnings (₹20 each)</div></div>
           </div>
           <h3>Available for Pickup</h3>
+          {!orders.some((order) => !order.rider_id) && <div className="ka-card">No orders are waiting for pickup.</div>}
           {orders.map((order) => <OrderRow key={order.order_number} order={order} actions={
             order.rider_id ? <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               {order.status === "accepted" || order.status === "packed" ? <button className="btn-primary" onClick={() => riderStatus(order.order_number, "picked_up")}>Picked up</button> : null}
@@ -116,7 +129,8 @@ export default function OperationsDashboard() {
               {order.status === "out_for_delivery" && <button className="btn-primary" onClick={() => riderStatus(order.order_number, "delivered")}>Delivered</button>}
             </div> : <button className="btn-primary" onClick={() => claim(order.order_number)}>Accept delivery</button>
           } />)}
-          <h3>Assigned delivery</h3>
+          <h3>My Active Deliveries</h3>
+          {!orders.some((order) => order.rider_id) && <div className="ka-card">You have no active deliveries.</div>}
           <button className="btn-outline" onClick={load}>Refresh deliveries</button>
         </>
       )}

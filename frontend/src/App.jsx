@@ -281,6 +281,18 @@ function MainApp() {
     );
   }
 
+  if (currentView === "operations") {
+    if (!["shop_owner", "rider"].includes(user?.role)) {
+      return (
+        <StaffLogin
+          onBackToFarmerLogin={() => setCurrentView("login")}
+          onLoginSuccess={() => setCurrentView("operations")}
+        />
+      );
+    }
+    return <OperationsDashboard />;
+  }
+
   // Render Page Content
   const renderContent = () => {
     // If on mobile and accessing any farm tool, present the unified tabbed FarmTools view
@@ -332,8 +344,6 @@ function MainApp() {
             defaultTool={selectedCropForCalc ? "fertilizer" : "crop"}
           />
         );
-      case "operations":
-        return <OperationsDashboard />;
       default:
         return <Dashboard setCurrentView={setCurrentView} />;
     }
