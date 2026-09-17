@@ -107,7 +107,7 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
     setError("");
     try {
       const data = await authApi.verifyLoginOtp({ challenge_id: otpChallenge, code: otpCode.trim() });
-      loginWithToken(username.trim(), data.access_token);
+      loginWithToken(username.trim(), data.access_token, data.role);
       if (data.refresh_token) localStorage.setItem("refreshToken", data.refresh_token);
       setSuccess("OTP verified. Redirecting...");
       setTimeout(() => onLoginSuccess?.(), 300);

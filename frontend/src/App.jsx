@@ -24,6 +24,7 @@ import Register from "./pages/Register";
 import PublicSeoPage from "./pages/PublicSeoPage";
 import LegalPage from "./pages/LegalPage";
 import Footer from "./components/Footer";
+import OperationsDashboard from "./pages/OperationsDashboard";
 import { KhetiTakSplash } from "./components/KhetiTakBranding";
 
 const viewPaths = {
@@ -41,6 +42,7 @@ const viewPaths = {
   orders: "/orders",
   profile: "/profile",
   tools: "/farm-tools",
+  operations: "/operations",
   login: "/login",
   register: "/register",
   terms: "/terms",
@@ -62,6 +64,7 @@ const protectedViews = new Set([
   "orders",
   "profile",
   "tools",
+  "operations",
 ]);
 const publicViews = new Set(["home", "about", "faq", "splash", "login", "register", "terms", "privacy", "refund-policy", "shipping-policy"]);
 
@@ -198,6 +201,12 @@ function MainApp() {
     updatePageMetadata(currentView);
   }, [currentView]);
 
+  useEffect(() => {
+    if (user?.role && user.role !== "farmer" && ["dashboard", "home"].includes(currentView)) {
+      setCurrentViewState("operations");
+    }
+  }, [user?.role, currentView]);
+
   // Auto-navigate splash screen after 1.8s matching native cold-start feel
   useEffect(() => {
     if (currentView === "splash") {
@@ -223,7 +232,7 @@ function MainApp() {
     return (
       <Login
         onSwitchToRegister={() => setCurrentView("register")}
-        onLoginSuccess={() => setCurrentView("dashboard")}
+        onLoginSuccess={() => setCurrentView(localStorage.getItem("userRole") === "farmer" ? "dashboard" : "operations")}
       />
     );
   }
@@ -255,7 +264,7 @@ function MainApp() {
     return (
       <Login
         onSwitchToRegister={() => setCurrentView("register")}
-        onLoginSuccess={() => setCurrentView("dashboard")}
+        onLoginSuccess={() => setCurrentView(localStorage.getItem("userRole") === "farmer" ? "dashboard" : "operations")}
       />
     );
   }
@@ -311,6 +320,8 @@ function MainApp() {
             defaultTool={selectedCropForCalc ? "fertilizer" : "crop"}
           />
         );
+      case "operations":
+        return <OperationsDashboard />;
       default:
         return <Dashboard setCurrentView={setCurrentView} />;
     }

@@ -18,6 +18,7 @@ class StoreProduct(Base):
     reviews_count = Column(Integer, default=0)
     in_stock = Column(Boolean, default=True)
     stock_quantity = Column(Integer, nullable=False, default=0)
+    shop_owner_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
     badge = Column(String)
     fertilizer_type = Column(String, index=True)  # NPK, organic, liquid, etc.
     suitable_crops = Column(Text)  # JSON array of suitable crops
@@ -82,12 +83,15 @@ class StoreOrder(Base):
     id = Column(Integer, primary_key=True, index=True)
     order_number = Column(String, unique=True, index=True)
     user_id = Column(Integer, nullable=True, index=True)
+    rider_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    shop_owner_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
     customer_name = Column(String)
     phone = Column(String)
     address = Column(Text)
     items_json = Column(Text)
     total_amount = Column(Float)
     status = Column(String, default="processing")
+    rejection_reason = Column(Text, nullable=True)
     payment_method = Column(String, default="cod")
     created_at = Column(DateTime, default=datetime.utcnow)
 

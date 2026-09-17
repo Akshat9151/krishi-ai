@@ -86,7 +86,7 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
     setError("");
     try {
       const data = await authApi.verifySignupOtp({ challenge_id: otpChallenge, code: otpCode.trim() });
-      loginWithToken(username.trim(), data.access_token);
+      loginWithToken(username.trim(), data.access_token, data.role);
       if (data.refresh_token) localStorage.setItem("refreshToken", data.refresh_token);
       localStorage.setItem("loggedInUser", username.trim());
       setSuccess("Account verified. You can now sign in.");

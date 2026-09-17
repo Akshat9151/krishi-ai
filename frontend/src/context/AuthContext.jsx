@@ -7,7 +7,8 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("loggedInUser");
     const token = localStorage.getItem("accessToken");
-    return savedUser ? { username: savedUser, token } : null;
+    const role = localStorage.getItem("userRole") || "farmer";
+    return savedUser ? { username: savedUser, token, role } : null;
   });
   const [loading, setLoading] = useState(true);
 
@@ -56,6 +57,7 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("loggedInUser");
+      localStorage.removeItem("userRole");
       setUser(null);
     };
     window.addEventListener("auth-session-expired", handleSessionExpired);
@@ -66,8 +68,10 @@ export function AuthProvider({ children }) {
       if (token && username) {
         try {
           // Verify with backend
-          await authApi.getMe();
-          setUser({ username, token });
+          const me = await authApi.getMe();
+          const role = me?.role || "farmer";
+          localStorage.setItem("userRole", role);
+          setUser({ username, token, role });
 
           // Fetch server-authoritative farmer profile
           try {
@@ -110,16 +114,19 @@ export function AuthProvider({ children }) {
       localStorage.setItem("accessToken", data.access_token);
       if (data.refresh_token) localStorage.setItem("refreshToken", data.refresh_token);
       localStorage.setItem("loggedInUser", username);
-      setUser({ username, token: data.access_token });
+      const role = data.role || "farmer";
+      localStorage.setItem("userRole", role);
+      setUser({ username, token: data.access_token, role });
       return data;
     }
     throw new Error("No token returned from server");
   };
 
-  const loginWithToken = (username, token) => {
+  const loginWithToken = (username, token, role = "farmer") => {
     localStorage.setItem("accessToken", token);
     localStorage.setItem("loggedInUser", username);
-    setUser({ username, token });
+    localStorage.setItem("userRole", role);
+    setUser({ username, token, role });
   };
 
   const register = async (username, password) => {
@@ -132,6 +139,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("userRole");
     setUser(null);
   };
 

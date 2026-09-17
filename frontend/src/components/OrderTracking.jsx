@@ -25,16 +25,6 @@ export default function OrderTracking({ order, onBack }) {
     setActiveStage(stageFromOrder(order));
   }, [order]);
 
-  useEffect(() => {
-    if (activeStage >= TRACKING_STAGES.length - 1) return undefined;
-
-    // Demo-only progression: replace this timer with rider/GPS events in production.
-    const timer = window.setInterval(() => {
-      setActiveStage((current) => Math.min(current + 1, TRACKING_STAGES.length - 1));
-    }, 12000);
-    return () => window.clearInterval(timer);
-  }, [activeStage]);
-
   const currentStage = TRACKING_STAGES[activeStage];
   const CurrentIcon = currentStage.icon;
 

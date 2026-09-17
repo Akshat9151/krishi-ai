@@ -308,6 +308,16 @@ export const profileApi = {
       body: JSON.stringify(data),
     });
   },
+  getOwnerOrders: async () => request('/api/store/owner/orders'),
+  updateOwnerOrderStatus: async (orderNumber, status, reason) => request(`/api/store/owner/orders/${encodeURIComponent(orderNumber)}/status`, { method: 'PATCH', body: JSON.stringify({ status, reason }) }),
+  getOwnerProducts: async () => request('/api/store/owner/products'),
+  updateOwnerProduct: async (productId, payload) => request(`/api/store/owner/products/${productId}`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  getOwnerEarnings: async () => request('/api/store/owner/earnings'),
+  getRiderOrders: async () => request('/api/store/rider/orders'),
+  claimRiderOrder: async (orderNumber) => request(`/api/store/rider/orders/${encodeURIComponent(orderNumber)}/claim`, { method: 'POST' }),
+  getRiderDeliveries: async () => request('/api/store/rider/deliveries'),
+  getRiderEarnings: async () => request('/api/store/rider/earnings'),
+  updateRiderStatus: async (orderNumber, status) => request(`/api/store/rider/orders/${encodeURIComponent(orderNumber)}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
 };
 
 export const mandiApi = {

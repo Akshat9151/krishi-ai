@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from typing import List, Optional, Any, Union
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from backend.database import get_db
 from backend.models_store import StoreProduct, ProductCategory, FertilizerRecommendation, StoreOrder, StoreOrderEvent
@@ -15,17 +15,12 @@ from services.config import settings
 
 router = APIRouter(prefix="/api/store", tags=["Store"])
 
-OWNER_STATUSES = ("placed", "accepted", "packed", "out_for_delivery", "delivered", "cancelled")
+OWNER_STATUSES = ("placed", "accepted", "packed", "picked_up", "out_for_delivery", "delivered", "cancelled")
 
 
-def _require_shop_owner(user: User) -> None:
-    identifiers = {
-        value.strip().lower()
-        for value in settings.SHOP_OWNER_IDENTIFIERS.split(",")
-        if value.strip()
-    }
-    if not identifiers or not ({str(user.id).lower(), (user.username or "").lower(), (user.email or "").lower()} & identifiers):
-        raise HTTPException(status_code=403, detail="Shop-owner access is not enabled for this account")
+def _require_role(user: User, role: str) -> None:
+    if (user.role or "farmer") != role:
+        raise HTTPException(status_code=403, detail=f"{role.replace('_', ' ').title()} access required")
 
 
 def _load_order_items(items_json: Optional[str]) -> list:
@@ -378,12 +373,22 @@ class OrderSummary(BaseModel):
     status: str
     total_amount: float
     payment_method: str
+    rejection_reason: Optional[str] = None
+    rider_id: Optional[int] = None
     created_at: datetime
     events: List[OrderEventResponse] = Field(default_factory=list)
 
 
 class UpdateOrderStatusRequest(BaseModel):
     status: str
+    reason: Optional[str] = None
+
+
+class ProductUpdateRequest(BaseModel):
+    name: Optional[str] = Field(None, min_length=2)
+    price: Optional[float] = Field(None, gt=0)
+    category: Optional[str] = Field(None, min_length=2)
+    stock_quantity: Optional[int] = Field(None, ge=0)
 
 
 def _order_summary(db: Session, order: StoreOrder) -> dict:
@@ -399,6 +404,8 @@ def _order_summary(db: Session, order: StoreOrder) -> dict:
         "status": order.status,
         "total_amount": order.total_amount,
         "payment_method": order.payment_method,
+        "rejection_reason": order.rejection_reason,
+        "rider_id": order.rider_id,
         "created_at": order.created_at,
         "events": [
             {
@@ -456,6 +463,8 @@ async def create_store_order(
             product.in_stock = product.stock_quantity > 0
 
         order_num = f"ORD{int(time.time() * 1000)}{secrets.token_hex(2).upper()}"
+        shop_owner_ids = {product.shop_owner_id for product in products if product.shop_owner_id}
+        shop_owner_id = shop_owner_ids.pop() if len(shop_owner_ids) == 1 else None
         store_order = StoreOrder(
             order_number=order_num,
             user_id=user.id,
@@ -465,7 +474,8 @@ async def create_store_order(
             items_json=json.dumps(snapshot_items, ensure_ascii=False),
             total_amount=total_amount,
             status="confirmed",
-            payment_method=order_data.payment_method or "cod"
+            payment_method=order_data.payment_method or "cod",
+            shop_owner_id=shop_owner_id,
         )
         db.add(store_order)
         db.flush()
@@ -550,8 +560,10 @@ async def get_shop_orders(
     user = db.query(User).filter(User.username == current_user).first()
     if not user:
         raise HTTPException(status_code=401, detail="Sign in again")
-    _require_shop_owner(user)
-    orders = db.query(StoreOrder).order_by(StoreOrder.created_at.desc()).all()
+    _require_role(user, "shop_owner")
+    orders = db.query(StoreOrder).filter(
+        (StoreOrder.shop_owner_id == user.id) | StoreOrder.shop_owner_id.is_(None)
+    ).order_by(StoreOrder.created_at.desc()).all()
     return [_order_summary(db, order) for order in orders]
 
 
@@ -566,11 +578,14 @@ async def update_shop_order_status(
     user = db.query(User).filter(User.username == current_user).first()
     if not user:
         raise HTTPException(status_code=401, detail="Sign in again")
-    _require_shop_owner(user)
+    _require_role(user, "shop_owner")
     new_status = status_data.status.strip().lower()
     if new_status not in OWNER_STATUSES:
         raise HTTPException(status_code=422, detail="Unsupported order status")
-    order = db.query(StoreOrder).filter(StoreOrder.order_number == order_number).first()
+    order = db.query(StoreOrder).filter(
+        StoreOrder.order_number == order_number,
+        (StoreOrder.shop_owner_id == user.id) | StoreOrder.shop_owner_id.is_(None),
+    ).first()
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     if order.status == new_status:
@@ -593,12 +608,160 @@ async def update_shop_order_status(
                 product.stock_quantity += int(item["quantity"])
                 product.in_stock = product.stock_quantity > 0
     order.status = new_status
+    if new_status == "cancelled":
+        order.rejection_reason = status_data.reason or "Rejected by shop"
     db.add(StoreOrderEvent(
         order_id=order.id,
         event_type="order_status_changed",
         status=new_status,
         message=f"Order status changed to {new_status}",
     ))
+    db.commit()
+    db.refresh(order)
+    return _order_summary(db, order)
+
+
+@router.get("/owner/products", response_model=List[ProductResponse])
+async def get_shop_products(
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    user = db.query(User).filter(User.username == current_user).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Sign in again")
+    _require_role(user, "shop_owner")
+    return db.query(StoreProduct).order_by(StoreProduct.name.asc()).all()
+
+
+@router.patch("/owner/products/{product_id}", response_model=ProductResponse)
+async def update_shop_product(
+    product_id: int,
+    update: ProductUpdateRequest,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    user = db.query(User).filter(User.username == current_user).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Sign in again")
+    _require_role(user, "shop_owner")
+    product = db.query(StoreProduct).filter(StoreProduct.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    for field in ("name", "price", "category", "stock_quantity"):
+        value = getattr(update, field)
+        if value is not None:
+            setattr(product, field, value)
+    product.in_stock = product.stock_quantity > 0
+    db.commit()
+    db.refresh(product)
+    return product
+
+
+@router.get("/owner/earnings")
+async def get_shop_earnings(
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    user = db.query(User).filter(User.username == current_user).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Sign in again")
+    _require_role(user, "shop_owner")
+    month_start = datetime.utcnow().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    orders = db.query(StoreOrder).filter(
+        StoreOrder.created_at >= month_start,
+        StoreOrder.status != "cancelled",
+    ).all()
+    return {"order_count": len(orders), "order_value": round(sum(order.total_amount or 0 for order in orders), 2)}
+
+
+@router.get("/rider/orders", response_model=List[OrderSummary])
+async def get_rider_orders(
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    rider = db.query(User).filter(User.username == current_user).first()
+    if not rider:
+        raise HTTPException(status_code=401, detail="Sign in again")
+    _require_role(rider, "rider")
+    orders = db.query(StoreOrder).filter(
+        ((StoreOrder.status.in_(["accepted", "packed"])) & StoreOrder.rider_id.is_(None))
+        | (StoreOrder.rider_id == rider.id),
+    ).order_by(StoreOrder.created_at.asc()).all()
+    return [_order_summary(db, order) for order in orders]
+
+
+@router.post("/rider/orders/{order_number}/claim", response_model=OrderSummary)
+async def claim_rider_order(
+    order_number: str,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    rider = db.query(User).filter(User.username == current_user).first()
+    if not rider:
+        raise HTTPException(status_code=401, detail="Sign in again")
+    _require_role(rider, "rider")
+    order = db.query(StoreOrder).filter(StoreOrder.order_number == order_number).with_for_update().first()
+    if not order or order.rider_id is not None or order.status not in {"accepted", "packed"}:
+        raise HTTPException(status_code=409, detail="Order is no longer available for delivery")
+    order.rider_id = rider.id
+    order.status = "picked_up" if order.status == "packed" else "accepted"
+    db.add(StoreOrderEvent(order_id=order.id, event_type="delivery_claimed", status=order.status, message="Rider claimed delivery"))
+    db.commit()
+    db.refresh(order)
+    return _order_summary(db, order)
+
+
+@router.get("/rider/deliveries", response_model=List[OrderSummary])
+async def get_rider_deliveries(
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    rider = db.query(User).filter(User.username == current_user).first()
+    if not rider:
+        raise HTTPException(status_code=401, detail="Sign in again")
+    _require_role(rider, "rider")
+    return [_order_summary(db, order) for order in db.query(StoreOrder).filter(
+        StoreOrder.rider_id == rider.id,
+        StoreOrder.status == "delivered",
+    ).order_by(StoreOrder.created_at.desc()).all()]
+
+
+@router.get("/rider/earnings")
+async def get_rider_earnings(
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    rider = db.query(User).filter(User.username == current_user).first()
+    if not rider:
+        raise HTTPException(status_code=401, detail="Sign in again")
+    _require_role(rider, "rider")
+    completed = db.query(StoreOrder).filter(
+        StoreOrder.rider_id == rider.id,
+        StoreOrder.status == "delivered",
+    ).count()
+    return {"completed_deliveries": completed, "earning_per_delivery": 20, "total_earning": completed * 20}
+
+
+@router.patch("/rider/orders/{order_number}/status", response_model=OrderSummary)
+async def update_rider_status(
+    order_number: str,
+    status_data: UpdateOrderStatusRequest,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    rider = db.query(User).filter(User.username == current_user).first()
+    if not rider:
+        raise HTTPException(status_code=401, detail="Sign in again")
+    _require_role(rider, "rider")
+    order = db.query(StoreOrder).filter(StoreOrder.order_number == order_number, StoreOrder.rider_id == rider.id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Assigned delivery not found")
+    new_status = status_data.status.strip().lower()
+    allowed = {"accepted": {"picked_up"}, "picked_up": {"out_for_delivery"}, "out_for_delivery": {"delivered"}}
+    if new_status not in allowed.get(order.status, set()):
+        raise HTTPException(status_code=409, detail=f"Cannot move delivery from {order.status} to {new_status}")
+    order.status = new_status
+    db.add(StoreOrderEvent(order_id=order.id, event_type="delivery_status_changed", status=new_status, message=f"Rider updated status to {new_status}"))
     db.commit()
     db.refresh(order)
     return _order_summary(db, order)

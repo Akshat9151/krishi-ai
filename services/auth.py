@@ -43,6 +43,7 @@ class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
     refresh_token: Optional[str] = None
+    role: str = "farmer"
 
 class UserResponse(BaseModel):
     id: int
@@ -100,7 +101,7 @@ def _issue_tokens(user: User) -> Token:
     subject = user.username or user.email or user.phone
     access = create_access_token(data={"sub": subject}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     refresh = create_refresh_token({"sub": subject})
-    return Token(access_token=access, refresh_token=refresh)
+    return Token(access_token=access, refresh_token=refresh, role=user.role or "farmer")
 
 
 def _hash_code(code: str) -> str:
@@ -305,4 +306,11 @@ def auth_providers():
 
 @router.get("/me")
 def get_current_user_info(current_user: str = Depends(get_current_user)):
-    return {"username": current_user, "message": "Successfully authenticated"}
+    db = SessionLocal()
+    try:
+        user = db.query(User).filter(_identifier_filter(current_user)).first()
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+        return {"username": current_user, "role": user.role or "farmer", "message": "Successfully authenticated"}
+    finally:
+        db.close()

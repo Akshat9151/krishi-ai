@@ -14,15 +14,18 @@ export default function MyOrders({ setCurrentView }) {
 
   useEffect(() => {
     let active = true;
-    storeApi.getMyOrders()
+    const loadOrders = () => storeApi.getMyOrders()
       .then((orders) => {
         if (active) setAccountOrders(Array.isArray(orders) ? orders : []);
       })
       .catch((err) => {
         console.error("Failed to load account orders:", err);
       });
+    loadOrders();
+    const refreshTimer = window.setInterval(loadOrders, 15000);
     return () => {
       active = false;
+      window.clearInterval(refreshTimer);
     };
   }, []);
 
@@ -160,8 +163,9 @@ export default function MyOrders({ setCurrentView }) {
                     <h3 style={{ fontSize: "17px", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
                       Order #{order.order_number}
                     </h3>
-                    <span className="badge-green">● Confirmed</span>
+                    <span className={order.status === "cancelled" ? "badge-red" : "badge-green"}>● {order.status.replaceAll("_", " ")}</span>
                   </div>
+                  {order.rejection_reason && <p style={{ color: "var(--terracotta)", fontSize: "13px" }}>Reason: {order.rejection_reason}</p>}
                   <p style={{ fontSize: "12.5px", color: "var(--text-muted)", marginTop: "4px" }}>
                     Placed on: {new Date(order.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
                   </p>
