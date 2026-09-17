@@ -15,3 +15,11 @@ services:
         sync: false
       - key: SHOP_OWNER_IDENTIFIERS
         sync: false
+      - key: EMAIL_PROVIDER
+        value: brevo
+      - key: BREVO_API_KEY
+        sync: false
+      - key: BREVO_SENDER_EMAIL
+        sync: false
+      - key: BREVO_SENDER_NAME
+        value: KhetiTak
