@@ -7,7 +7,7 @@ from datetime import datetime
 
 from backend.database import get_db
 from backend.models_store import StoreProduct, ProductCategory, FertilizerRecommendation, StoreOrder, StoreOrderEvent
-from backend.models import User
+from backend.models import FarmActivity, User
 from services.auth import get_current_user
 from services.logger import logger
 from services.validation import ValidationUtils
@@ -428,6 +428,12 @@ async def create_store_order(
             status=store_order.status,
             message="Order placed successfully",
         ))
+        db.add(FarmActivity(
+            username=current_user,
+            activity_type="order_placed",
+            title=f"Order placed: {order_num}",
+            details=f"{len(snapshot_items)} product line(s) • ₹{total_amount:.2f}",
+        ))
         db.commit()
         
         return CreateOrderResponse(
@@ -485,6 +491,67 @@ async def get_my_orders(
             ],
         })
     return result
+
+
+@router.post("/orders/{order_number}/cancel", response_model=OrderSummary)
+async def cancel_order(
+    order_number: str,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    """Cancel an owned COD order before dealer dispatch."""
+    user = db.query(User).filter(User.username == current_user).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Order not found")
+    order = db.query(StoreOrder).filter(
+        StoreOrder.order_number == order_number,
+        StoreOrder.user_id == user.id,
+    ).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    if order.payment_method.lower() != "cod":
+        raise HTTPException(status_code=409, detail="Only cash-on-delivery orders can be cancelled here")
+    if order.status.lower() not in {"confirmed", "processing", "placed"}:
+        raise HTTPException(status_code=409, detail="This order can no longer be cancelled")
+
+    order.status = "cancelled"
+    db.add(StoreOrderEvent(
+        order_id=order.id,
+        event_type="order_cancelled",
+        status="cancelled",
+        message="Order cancelled before dispatch",
+    ))
+    db.add(FarmActivity(
+        username=current_user,
+        activity_type="order_cancelled",
+        title=f"Order cancelled: {order.order_number}",
+        details="COD order cancelled before dispatch",
+    ))
+    db.commit()
+    db.refresh(order)
+    events = db.query(StoreOrderEvent).filter(
+        StoreOrderEvent.order_id == order.id
+    ).order_by(StoreOrderEvent.created_at.asc()).all()
+    return {
+        "order_number": order.order_number,
+        "customer_name": order.customer_name,
+        "phone": order.phone,
+        "address": order.address,
+        "items": _load_order_items(order.items_json),
+        "status": order.status,
+        "total_amount": order.total_amount,
+        "payment_method": order.payment_method,
+        "created_at": order.created_at,
+        "events": [
+            {
+                "event_type": event.event_type,
+                "status": event.status,
+                "message": event.message,
+                "created_at": event.created_at,
+            }
+            for event in events
+        ],
+    }
 
 @router.get("/orders/{order_number}")
 async def get_order_details(

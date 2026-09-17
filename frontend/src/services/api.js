@@ -265,6 +265,11 @@ export const storeApi = {
   getMyOrders: async () => {
     return request('/api/store/orders');
   },
+  cancelOrder: async (orderNumber) => {
+    return request(`/api/store/orders/${encodeURIComponent(orderNumber)}/cancel`, {
+      method: 'POST',
+    });
+  },
 };
 
 // ==========================================

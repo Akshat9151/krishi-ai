@@ -185,6 +185,12 @@ def weather_api(request: Request, data: WeatherRequest):
         weather = get_weather(data.location)
         recommendations = get_farming_recommendations(weather)
         logger.log_weather_api_call(data.location, True, weather["temperature"])
+        _record_activity(
+            _request_username(request),
+            "weather_check",
+            f"Weather checked: {data.location}",
+            f"{weather['temperature']}°C • {weather['humidity']}% humidity",
+        )
         return {
             "location": data.location,
             "temperature": weather["temperature"],
@@ -202,19 +208,30 @@ def weather_api(request: Request, data: WeatherRequest):
 
 
 @router.post("/fertilizer-dose")
-def fertilizer_dose(data: FertilizerDoseRequest):
+def fertilizer_dose(request: Request, data: FertilizerDoseRequest):
     if data.acres <= 0 or data.acres > 10000:
         raise HTTPException(status_code=400, detail="Farm area must be between 0.1 and 10,000 acres.")
     crop = data.crop.strip().lower()
-    base = FERTILIZER_DOSE_PER_ACRE.get(crop, FERTILIZER_DOSE_PER_ACRE["wheat"])
-    health_factor = {"low": 1.15, "medium": 1.0, "high": 0.9}.get(data.soil_health.lower(), 1.0)
+    if crop not in FERTILIZER_DOSE_PER_ACRE:
+        raise HTTPException(status_code=422, detail="Fertilizer guidance is not available for this crop yet.")
+    health = data.soil_health.strip().lower()
+    if health not in {"low", "medium", "high"}:
+        raise HTTPException(status_code=422, detail="Soil health must be low, medium or high.")
+    base = FERTILIZER_DOSE_PER_ACRE[crop]
+    health_factor = {"low": 1.15, "medium": 1.0, "high": 0.9}[health]
     urea_kg = round(base[0] * data.acres * health_factor)
     dap_kg = round(base[1] * data.acres * health_factor)
     mop_kg = round(base[2] * data.acres * health_factor)
+    _record_activity(
+        _request_username(request),
+        "fertilizer_calculation",
+        f"Fertilizer dose: {crop.title()}",
+        f"{data.acres:g} acres • {health} soil health",
+    )
     return {
         "crop": crop,
         "acres": data.acres,
-        "soil_health": data.soil_health.lower(),
+        "soil_health": health,
         "urea_kg": urea_kg,
         "urea_bags": round(urea_kg / 45, 1),
         "dap_kg": dap_kg,
@@ -315,6 +332,7 @@ def recommend_products(data: DiseaseRequest):
 
 @router.get("/mandi-bhav")
 def get_mandi_bhav(
+    request: Request,
     commodity: Optional[str] = None,
     state: Optional[str] = None,
     district: Optional[str] = None,
@@ -340,6 +358,12 @@ def get_mandi_bhav(
             )
 
         rows = query.order_by(MandiPrice.modal_price.desc()).limit(min(limit, 100)).all()
+        _record_activity(
+            _request_username(request),
+            "mandi_check",
+            "Mandi prices checked",
+            search or commodity or state or "All markets",
+        )
         return [
             {
                 "id": str(r.id),
