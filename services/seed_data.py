@@ -344,7 +344,7 @@ def seed_database(db: Session):
     # Seed the original catalog and its recommendations when the database is empty.
     if db.query(StoreProduct).count() == 0:
         for prod_data in PRODUCTS:
-            db.add(StoreProduct(**prod_data))
+            db.add(StoreProduct(**prod_data, stock_quantity=50, in_stock=True))
         db.commit()
 
         recs = [
@@ -382,7 +382,16 @@ def seed_database(db: Session):
     existing_skus = {sku for (sku,) in db.query(StoreProduct.sku).filter(StoreProduct.sku.isnot(None)).all()}
     for prod_data in DEMO_PRODUCTS:
         if prod_data["sku"] not in existing_skus:
-            db.add(StoreProduct(**prod_data))
+            db.add(StoreProduct(**prod_data, stock_quantity=50, in_stock=True))
+    db.commit()
+
+    # Existing catalogs predate quantity tracking; initialize only unknown stock.
+    db.query(StoreProduct).filter(StoreProduct.stock_quantity.is_(None)).update(
+        {StoreProduct.stock_quantity: 50},
+        synchronize_session=False,
+    )
+    for product in db.query(StoreProduct).all():
+        product.in_stock = product.stock_quantity > 0
     db.commit()
 
     normalize_catalog_images(db)

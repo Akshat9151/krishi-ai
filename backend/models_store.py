@@ -17,6 +17,7 @@ class StoreProduct(Base):
     rating = Column(Float, default=0.0)
     reviews_count = Column(Integer, default=0)
     in_stock = Column(Boolean, default=True)
+    stock_quantity = Column(Integer, nullable=False, default=0)
     badge = Column(String)
     fertilizer_type = Column(String, index=True)  # NPK, organic, liquid, etc.
     suitable_crops = Column(Text)  # JSON array of suitable crops

@@ -13,3 +13,5 @@ services:
         sync: false
       - key: SECRET_KEY
         sync: false
+      - key: SHOP_OWNER_IDENTIFIERS
+        sync: false

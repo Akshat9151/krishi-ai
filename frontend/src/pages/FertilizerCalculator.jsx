@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Calculator, ShoppingCart, Check, Info, ArrowRight, Sparkles } from "lucide-react";
-import { storeApi } from "../services/api";
+import { coreApi, storeApi } from "../services/api";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { getProductImage } from "../utils/productImages";
@@ -54,7 +54,7 @@ export default function FertilizerCalculator({ defaultCrop, setCurrentView }) {
   // Fetch verified fertilizer recommendations from backend
   useEffect(() => {
     let active = true;
-    storeApi.calculateFertilizer({ crop, acres: currentAcres, soil_health: soilHealth })
+    coreApi.calculateFertilizer({ crop, acres: currentAcres, soil_health: soilHealth })
       .then((result) => { if (active) setDose(result); })
       .catch((err) => console.warn("Fertilizer dose calculation error:", err));
     return () => { active = false; };

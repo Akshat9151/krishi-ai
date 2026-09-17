@@ -110,6 +110,7 @@ class Settings(BaseSettings):
     SENDGRID_API_KEY: str = ""
     OTP_EXPIRE_MINUTES: int = 10
     OTP_MAX_ATTEMPTS: int = 5
+    SHOP_OWNER_IDENTIFIERS: str = ""
     
     # Backup
     BACKUP_ENABLED: bool = False

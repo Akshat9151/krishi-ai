@@ -270,6 +270,11 @@ export const storeApi = {
       method: 'POST',
     });
   },
+  getShopOrders: async () => request('/api/store/owner/orders'),
+  updateShopOrderStatus: async (orderNumber, status) => request(
+    `/api/store/owner/orders/${encodeURIComponent(orderNumber)}/status`,
+    { method: 'PATCH', body: JSON.stringify({ status }) }
+  ),
 };
 
 // ==========================================

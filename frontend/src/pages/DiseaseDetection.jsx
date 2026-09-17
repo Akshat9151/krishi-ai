@@ -73,9 +73,9 @@ export default function DiseaseDetection({ setCurrentView }) {
 
   const handleAddToCart = (product) => {
     const cartProduct = {
-      id: product.id || Math.floor(Math.random() * 1000) + 100,
+      id: product.id,
       name: product.name,
-      price: product.price || 450,
+      price: product.price,
       image_url: getProductImage(product, 120),
       unit: "500ml / 1kg",
       brand: "KhetiTak Certified",

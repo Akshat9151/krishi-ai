@@ -11,8 +11,21 @@ from backend.models import FarmActivity, User
 from services.auth import get_current_user
 from services.logger import logger
 from services.validation import ValidationUtils
+from services.config import settings
 
 router = APIRouter(prefix="/api/store", tags=["Store"])
+
+OWNER_STATUSES = ("placed", "accepted", "packed", "out_for_delivery", "delivered", "cancelled")
+
+
+def _require_shop_owner(user: User) -> None:
+    identifiers = {
+        value.strip().lower()
+        for value in settings.SHOP_OWNER_IDENTIFIERS.split(",")
+        if value.strip()
+    }
+    if not identifiers or not ({str(user.id).lower(), (user.username or "").lower(), (user.email or "").lower()} & identifiers):
+        raise HTTPException(status_code=403, detail="Shop-owner access is not enabled for this account")
 
 
 def _load_order_items(items_json: Optional[str]) -> list:
@@ -38,6 +51,7 @@ class ProductResponse(BaseModel):
     rating: float = 0.0
     reviews_count: int = 0
     in_stock: bool = True
+    stock_quantity: int = 0
     badge: Optional[str] = None
     fertilizer_type: Optional[str] = None
     suitable_crops: Optional[Any] = None
@@ -367,6 +381,36 @@ class OrderSummary(BaseModel):
     created_at: datetime
     events: List[OrderEventResponse] = Field(default_factory=list)
 
+
+class UpdateOrderStatusRequest(BaseModel):
+    status: str
+
+
+def _order_summary(db: Session, order: StoreOrder) -> dict:
+    events = db.query(StoreOrderEvent).filter(
+        StoreOrderEvent.order_id == order.id
+    ).order_by(StoreOrderEvent.created_at.asc()).all()
+    return {
+        "order_number": order.order_number,
+        "customer_name": order.customer_name,
+        "phone": order.phone,
+        "address": order.address,
+        "items": _load_order_items(order.items_json),
+        "status": order.status,
+        "total_amount": order.total_amount,
+        "payment_method": order.payment_method,
+        "created_at": order.created_at,
+        "events": [
+            {
+                "event_type": event.event_type,
+                "status": event.status,
+                "message": event.message,
+                "created_at": event.created_at,
+            }
+            for event in events
+        ],
+    }
+
 @router.post("/orders", response_model=CreateOrderResponse)
 async def create_store_order(
     order_data: CreateOrderRequest,
@@ -384,7 +428,7 @@ async def create_store_order(
             raise HTTPException(status_code=422, detail="Your cart must contain at least one item")
 
         product_ids = [item.product_id for item in order_data.items]
-        products = db.query(StoreProduct).filter(StoreProduct.id.in_(product_ids)).all()
+        products = db.query(StoreProduct).filter(StoreProduct.id.in_(product_ids)).with_for_update().all()
         products_by_id = {product.id: product for product in products}
         if len(products_by_id) != len(set(product_ids)):
             raise HTTPException(status_code=422, detail="One or more products are no longer available")
@@ -393,8 +437,10 @@ async def create_store_order(
         total_amount = 0.0
         for item in order_data.items:
             product = products_by_id[item.product_id]
-            if not product.in_stock:
+            if product.stock_quantity <= 0:
                 raise HTTPException(status_code=409, detail=f"{product.name} is currently out of stock")
+            if product.stock_quantity < item.quantity:
+                raise HTTPException(status_code=409, detail=f"Only {product.stock_quantity} units of {product.name} are available")
             unit_price = round(float(product.price), 2)
             line_total = round(unit_price * item.quantity, 2)
             total_amount = round(total_amount + line_total, 2)
@@ -406,6 +452,8 @@ async def create_store_order(
                 "quantity": item.quantity,
                 "line_total": line_total,
             })
+            product.stock_quantity -= item.quantity
+            product.in_stock = product.stock_quantity > 0
 
         order_num = f"ORD{int(time.time() * 1000)}{secrets.token_hex(2).upper()}"
         store_order = StoreOrder(
@@ -493,6 +541,69 @@ async def get_my_orders(
     return result
 
 
+@router.get("/owner/orders", response_model=List[OrderSummary])
+async def get_shop_orders(
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    """Return incoming orders to the configured single-shop owner."""
+    user = db.query(User).filter(User.username == current_user).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Sign in again")
+    _require_shop_owner(user)
+    orders = db.query(StoreOrder).order_by(StoreOrder.created_at.desc()).all()
+    return [_order_summary(db, order) for order in orders]
+
+
+@router.patch("/owner/orders/{order_number}/status", response_model=OrderSummary)
+async def update_shop_order_status(
+    order_number: str,
+    status_data: UpdateOrderStatusRequest,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    """Advance one pilot order through the shop's operational statuses."""
+    user = db.query(User).filter(User.username == current_user).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Sign in again")
+    _require_shop_owner(user)
+    new_status = status_data.status.strip().lower()
+    if new_status not in OWNER_STATUSES:
+        raise HTTPException(status_code=422, detail="Unsupported order status")
+    order = db.query(StoreOrder).filter(StoreOrder.order_number == order_number).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    if order.status == new_status:
+        return _order_summary(db, order)
+    if order.status == "cancelled" or order.status == "delivered":
+        raise HTTPException(status_code=409, detail="This order can no longer change status")
+    allowed_next = {
+        "confirmed": {"accepted", "cancelled"},
+        "placed": {"accepted", "cancelled"},
+        "accepted": {"packed", "cancelled"},
+        "packed": {"out_for_delivery"},
+        "out_for_delivery": {"delivered"},
+    }
+    if new_status not in allowed_next.get(order.status, set()):
+        raise HTTPException(status_code=409, detail=f"Cannot move order from {order.status} to {new_status}")
+    if new_status == "cancelled":
+        for item in _load_order_items(order.items_json):
+            product = db.query(StoreProduct).filter(StoreProduct.id == item["product_id"]).with_for_update().first()
+            if product:
+                product.stock_quantity += int(item["quantity"])
+                product.in_stock = product.stock_quantity > 0
+    order.status = new_status
+    db.add(StoreOrderEvent(
+        order_id=order.id,
+        event_type="order_status_changed",
+        status=new_status,
+        message=f"Order status changed to {new_status}",
+    ))
+    db.commit()
+    db.refresh(order)
+    return _order_summary(db, order)
+
+
 @router.post("/orders/{order_number}/cancel", response_model=OrderSummary)
 async def cancel_order(
     order_number: str,
@@ -514,6 +625,11 @@ async def cancel_order(
     if order.status.lower() not in {"confirmed", "processing", "placed"}:
         raise HTTPException(status_code=409, detail="This order can no longer be cancelled")
 
+    for item in _load_order_items(order.items_json):
+        product = db.query(StoreProduct).filter(StoreProduct.id == item["product_id"]).with_for_update().first()
+        if product:
+            product.stock_quantity += int(item["quantity"])
+            product.in_stock = product.stock_quantity > 0
     order.status = "cancelled"
     db.add(StoreOrderEvent(
         order_id=order.id,
