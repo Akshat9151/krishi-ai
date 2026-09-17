@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowRight, CloudSun, Leaf, MessageCircle, Store, TrendingUp } from "lucide-react";
 import { KhetiTakLogo } from "../components/KhetiTakBranding";
+import Footer from "../components/Footer";
 
 const pageContent = {
   home: {
@@ -114,10 +115,8 @@ export default function PublicSeoPage({ page = "home", setCurrentView }) {
           </section>
         )}
 
-        <footer style={{ borderTop: "1px solid var(--card-border)", marginTop: "56px", paddingTop: "18px", color: "var(--text-muted)", fontSize: "13px" }}>
-          KhetiTak — agriculture decision-support tools for Indian farmers.
-        </footer>
       </div>
+      <Footer setCurrentView={setCurrentView} />
       {isFaq && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",

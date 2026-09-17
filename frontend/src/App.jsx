@@ -22,6 +22,8 @@ import FarmTools from "./pages/FarmTools";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PublicSeoPage from "./pages/PublicSeoPage";
+import LegalPage from "./pages/LegalPage";
+import Footer from "./components/Footer";
 import { KhetiTakSplash } from "./components/KhetiTakBranding";
 
 const viewPaths = {
@@ -41,6 +43,10 @@ const viewPaths = {
   tools: "/farm-tools",
   login: "/login",
   register: "/register",
+  terms: "/terms",
+  privacy: "/privacy",
+  "refund-policy": "/refund-policy",
+  "shipping-policy": "/shipping-policy",
 };
 
 const pathToView = Object.fromEntries(Object.entries(viewPaths).map(([view, path]) => [path, view]));
@@ -57,7 +63,7 @@ const protectedViews = new Set([
   "profile",
   "tools",
 ]);
-const publicViews = new Set(["home", "about", "faq", "splash", "login", "register"]);
+const publicViews = new Set(["home", "about", "faq", "splash", "login", "register", "terms", "privacy", "refund-policy", "shipping-policy"]);
 
 function updatePageMetadata(view) {
   const metadata = {
@@ -85,6 +91,26 @@ function updatePageMetadata(view) {
       title: "Create Account | KhetiTak",
       description: "Create your KhetiTak farmer account to access agriculture advisory and farm tools.",
       robots: "noindex,nofollow",
+    },
+    terms: {
+      title: "Terms & Conditions | KhetiTak",
+      description: "Terms for using KhetiTak agriculture advisory and local agri-input marketplace services.",
+      robots: "index,follow",
+    },
+    privacy: {
+      title: "Privacy Policy | KhetiTak",
+      description: "Learn how KhetiTak handles farmer account, recommendation and order information.",
+      robots: "index,follow",
+    },
+    "refund-policy": {
+      title: "Refund & Cancellation Policy | KhetiTak",
+      description: "KhetiTak policy for COD order cancellations, damaged items and wrong-item resolutions.",
+      robots: "index,follow",
+    },
+    "shipping-policy": {
+      title: "Shipping & Delivery Policy | KhetiTak",
+      description: "Delivery areas, timelines and delay handling for KhetiTak local dealer orders.",
+      robots: "index,follow",
     },
   }[view] || {
     title: `${view === "mandi" ? "Mandi Bhav" : "KhetiTak Agriculture Tools"} | KhetiTak`,
@@ -211,6 +237,10 @@ function MainApp() {
     );
   }
 
+  if (["terms", "privacy", "refund-policy", "shipping-policy"].includes(currentView)) {
+    return <LegalPage page={currentView} setCurrentView={setCurrentView} />;
+  }
+
   if (publicViews.has(currentView) && ["home", "about", "faq"].includes(currentView)) {
     return <PublicSeoPage page={currentView} setCurrentView={setCurrentView} />;
   }
@@ -295,6 +325,7 @@ function MainApp() {
       <div className="main-content-wrapper">
         <Header currentView={currentView} setCurrentView={setCurrentView} />
         <main style={{ flex: 1 }}>{renderContent()}</main>
+        <Footer setCurrentView={setCurrentView} />
       </div>
 
       {/* Mobile Bottom Navigation (<768px) */}

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Footer from "../components/Footer";
 import { Lock, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Globe } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { authApi } from "../services/api";
@@ -118,6 +119,7 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
   };
 
   return (
+    <>
     <div
       style={{
         minHeight: "100vh",
@@ -352,5 +354,7 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
 
       </div>
     </div>
+    <Footer />
+    </>
   );
 }
