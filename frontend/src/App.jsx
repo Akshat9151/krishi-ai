@@ -21,6 +21,9 @@ import Profile from "./pages/Profile";
 import FarmTools from "./pages/FarmTools";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import PartnerAuth from "./pages/PartnerAuth";
+import ShopDashboard from "./pages/ShopDashboard";
+import RiderDashboard from "./pages/RiderDashboard";
 import { KhetiTakSplash } from "./components/KhetiTakBranding";
 
 function MainApp() {
@@ -34,7 +37,9 @@ function MainApp() {
       if (path === "/splash" || hash === "splash") return "splash";
       if (path === "/login" || hash === "login") return "login";
       if (path === "/register" || hash === "register") return "register";
-      if (hash && ["splash", "dashboard", "crop", "disease", "assistant", "weather", "mandi", "fertilizer", "store", "orders", "profile", "tools"].includes(hash)) {
+      if (hash === "shop-login" || hash === "rider-login") return hash;
+      if (hash === "shop-dashboard" || hash === "rider-dashboard") return hash;
+      if (hash && ["splash", "dashboard", "crop", "disease", "assistant", "weather", "mandi", "fertilizer", "store", "orders", "profile", "tools", "shop-login", "rider-login", "shop-dashboard", "rider-dashboard"].includes(hash)) {
         return hash;
       }
 
@@ -73,7 +78,7 @@ function MainApp() {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     const handleHashChange = () => {
       const hash = window.location.hash.toLowerCase().replace("#", "");
-      if (hash && ["login", "register", "dashboard", "crop", "disease", "assistant", "weather", "mandi", "fertilizer", "store", "orders", "profile", "tools"].includes(hash)) {
+      if (hash && ["login", "register", "shop-login", "rider-login", "shop-dashboard", "rider-dashboard", "dashboard", "crop", "disease", "assistant", "weather", "mandi", "fertilizer", "store", "orders", "profile", "tools"].includes(hash)) {
         setCurrentViewState(hash);
       }
     };
@@ -91,8 +96,11 @@ function MainApp() {
     if (currentView === "splash") {
       const timer = setTimeout(() => {
         const token = localStorage.getItem("accessToken");
+        const role = localStorage.getItem("userRole");
         if (token || user) {
-          setCurrentView("dashboard");
+          if (role === "shop_owner") setCurrentView("shop-dashboard");
+          else if (role === "rider") setCurrentView("rider-dashboard");
+          else setCurrentView("dashboard");
         } else {
           setCurrentView("login");
         }
@@ -111,7 +119,13 @@ function MainApp() {
     return (
       <Login
         onSwitchToRegister={() => setCurrentView("register")}
-        onLoginSuccess={() => setCurrentView("dashboard")}
+        onNavigateShopLogin={() => setCurrentView("shop-login")}
+        onNavigateRiderLogin={() => setCurrentView("rider-login")}
+        onLoginSuccess={(role) => {
+          if (role === "shop_owner") setCurrentView("shop-dashboard");
+          else if (role === "rider") setCurrentView("rider-dashboard");
+          else setCurrentView("dashboard");
+        }}
       />
     );
   }
@@ -123,6 +137,35 @@ function MainApp() {
         onRegisterSuccess={() => setCurrentView("login")}
       />
     );
+  }
+
+  if (currentView === "shop-login") {
+    return (
+      <PartnerAuth
+        defaultRole="shop_owner"
+        onBackToFarmerLogin={() => setCurrentView("login")}
+        onLoginSuccess={(role) => setCurrentView(role === "rider" ? "rider-dashboard" : "shop-dashboard")}
+      />
+    );
+  }
+
+  if (currentView === "rider-login") {
+    return (
+      <PartnerAuth
+        defaultRole="rider"
+        onBackToFarmerLogin={() => setCurrentView("login")}
+        onLoginSuccess={(role) => setCurrentView(role === "shop_owner" ? "shop-dashboard" : "rider-dashboard")}
+      />
+    );
+  }
+
+  // Full-screen dedicated Partner Portals
+  if (currentView === "shop-dashboard") {
+    return <ShopDashboard setCurrentView={setCurrentView} />;
+  }
+
+  if (currentView === "rider-dashboard") {
+    return <RiderDashboard setCurrentView={setCurrentView} />;
   }
 
   // Render Page Content

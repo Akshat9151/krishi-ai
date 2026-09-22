@@ -155,6 +155,7 @@ export default function Header({ currentView, setCurrentView }) {
         {/* Cart Drawer Trigger */}
         <button
           onClick={() => setIsCartOpen(true)}
+          aria-label={t("cart", "Shopping Cart")}
           style={{
             position: "relative",
             display: "flex",
@@ -198,6 +199,7 @@ export default function Header({ currentView, setCurrentView }) {
         {isAuthenticated ? (
           <button
             onClick={() => setCurrentView("profile")}
+            aria-label="User Profile"
             className="mobile-only-profile"
             style={{
               display: "none",

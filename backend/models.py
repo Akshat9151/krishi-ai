@@ -13,6 +13,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=True)
     phone = Column(String, unique=True, index=True, nullable=True)
     google_sub = Column(String, unique=True, index=True, nullable=True)
+    role = Column(String, default="farmer", nullable=False, index=True)  # farmer, shop_owner, rider
     is_verified = Column(Boolean, default=False, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
@@ -21,6 +22,7 @@ class User(Base):
     # Composite index for potential future queries
     __table_args__ = (
         Index('idx_user_username', 'username'),
+        Index('idx_user_role', 'role'),
     )
 
 class OTPChallenge(Base):

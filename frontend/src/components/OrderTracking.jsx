@@ -1,39 +1,51 @@
 import React, { useEffect, useState } from "react";
 import { ArrowLeft, CheckCircle2, Clock3, MapPin, PackageCheck, Store, Truck } from "lucide-react";
 
+import { storeApi } from "../services/api";
+
 const TRACKING_STAGES = [
-  { key: "placed", label: "Order Placed", icon: PackageCheck },
-  { key: "accepted", label: "Accepted by Shop", icon: Store },
-  { key: "picked_up", label: "Rider Assigned", icon: Truck },
+  { key: "confirmed", label: "Order Placed", icon: PackageCheck },
+  { key: "preparing", label: "Accepted & Preparing in Shop", icon: Store },
+  { key: "ready_for_pickup", label: "Packed & Awaiting Rider", icon: Truck },
+  { key: "picked_up", label: "Picked Up by Delivery Partner", icon: Truck },
   { key: "out_for_delivery", label: "Out for Delivery", icon: Truck },
-  { key: "delivered", label: "Delivered", icon: CheckCircle2 },
+  { key: "delivered", label: "Delivered to Farmer", icon: CheckCircle2 },
 ];
 
 function stageFromOrder(order) {
-  const status = String(order?.status || "placed").toLowerCase();
-  if (status === "delivered") return 4;
-  if (status === "out_for_delivery") return 3;
-  if (status === "picked_up" || status === "rider_assigned") return 2;
-  if (status === "accepted" || status === "confirmed") return 1;
+  const status = String(order?.status || "confirmed").toLowerCase();
+  if (status === "delivered") return 5;
+  if (status === "out_for_delivery") return 4;
+  if (status === "picked_up") return 3;
+  if (status === "ready_for_pickup") return 2;
+  if (status === "preparing" || status === "accepted") return 1;
   return 0;
 }
 
 export default function OrderTracking({ order, onBack }) {
-  const [activeStage, setActiveStage] = useState(stageFromOrder(order));
+  const [currentOrder, setCurrentOrder] = useState(order);
+  const [activeStage, setActiveStage] = useState(() => stageFromOrder(order));
 
+  // Poll real backend status every 4 seconds
   useEffect(() => {
-    setActiveStage(stageFromOrder(order));
-  }, [order]);
+    if (!order?.order_number) return undefined;
 
-  useEffect(() => {
-    if (activeStage >= TRACKING_STAGES.length - 1) return undefined;
+    const pollStatus = async () => {
+      try {
+        const latest = await storeApi.getOrder(order.order_number);
+        if (latest && !latest.detail) {
+          setCurrentOrder(latest);
+          setActiveStage(stageFromOrder(latest));
+        }
+      } catch (e) {
+        // silent polling error
+      }
+    };
 
-    // Demo-only progression: replace this timer with rider/GPS events in production.
-    const timer = window.setInterval(() => {
-      setActiveStage((current) => Math.min(current + 1, TRACKING_STAGES.length - 1));
-    }, 12000);
+    pollStatus();
+    const timer = window.setInterval(pollStatus, 4000);
     return () => window.clearInterval(timer);
-  }, [activeStage]);
+  }, [order?.order_number]);
 
   const currentStage = TRACKING_STAGES[activeStage];
   const CurrentIcon = currentStage.icon;
@@ -57,7 +69,7 @@ export default function OrderTracking({ order, onBack }) {
         <div>
           <strong style={{ fontSize: "16px" }}>{currentStage.label}</strong>
           <p style={{ color: "var(--text-secondary)", fontSize: "13px", marginTop: "2px" }}>
-            Demo tracking updates automatically every 12 seconds.
+            Live status synced with shop & delivery partner in real-time.
           </p>
         </div>
       </div>

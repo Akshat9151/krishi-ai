@@ -101,7 +101,7 @@ export default function WeatherInsights() {
       {loading ? (
         <div className="ka-card" style={{ textAlign: "center", padding: "50px" }}>
           <span style={{ fontSize: "36px" }}>🌦️</span>
-          <h4 style={{ fontSize: "16px", marginTop: "12px" }}>Fetching live atmospheric readings...</h4>
+          <h3 style={{ fontSize: "16px", marginTop: "12px" }}>Fetching live atmospheric readings...</h3>
           <div className="growing-bar" style={{ maxWidth: "200px", margin: "14px auto 0 auto" }}></div>
         </div>
       ) : weather ? (
@@ -182,9 +182,9 @@ export default function WeatherInsights() {
             <div className="ka-card" style={{ borderLeft: "5px solid var(--growth-green)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
                 <AlertCircle size={20} color="var(--growth-green)" />
-                <h4 style={{ fontSize: "16px", fontWeight: "700", margin: 0 }}>
+                <h3 style={{ fontSize: "16px", fontWeight: "700", margin: 0 }}>
                   Official Agricultural Field Advisory (कृषि परामर्श)
-                </h4>
+                </h3>
               </div>
               <div style={{ fontSize: "14px", color: "var(--text-primary)", lineHeight: "1.6", whiteSpace: "pre-line", padding: "10px 14px", backgroundColor: "var(--bg-cream)", borderRadius: "var(--radius-sm)" }}>
                 {weather.recommendations}
@@ -195,9 +195,9 @@ export default function WeatherInsights() {
           {/* Field Operational Rules */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
             <div className="ka-card">
-              <h5 style={{ fontSize: "14px", fontWeight: "700", marginBottom: "6px", color: "var(--terracotta)" }}>
+              <h4 style={{ fontSize: "14px", fontWeight: "700", marginBottom: "6px", color: "var(--terracotta)" }}>
                 💧 Irrigation Guidance
-              </h5>
+              </h4>
               <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0 }}>
                 {weather.rainfall > 10
                   ? "Significant rainfall predicted. Postpone field irrigation and inspect drainage to avoid waterlogging."
@@ -206,9 +206,9 @@ export default function WeatherInsights() {
             </div>
 
             <div className="ka-card">
-              <h5 style={{ fontSize: "14px", fontWeight: "700", marginBottom: "6px", color: "var(--marigold-hover)" }}>
+              <h4 style={{ fontSize: "14px", fontWeight: "700", marginBottom: "6px", color: "var(--marigold-hover)" }}>
                 💨 Spraying Safety Window
-              </h5>
+              </h4>
               <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0 }}>
                 {weather.wind_speed > 15
                   ? "High wind speeds detected (>15 km/h). Avoid pesticide or herbicide spraying today to prevent chemical drift."

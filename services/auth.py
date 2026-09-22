@@ -33,6 +33,7 @@ class UserCreate(BaseModel):
     password: str = Field(min_length=6)
     email: Optional[str] = None
     phone: Optional[str] = None
+    role: Optional[str] = "farmer"
 
 class UserLogin(BaseModel):
     username: Optional[str] = None
@@ -43,11 +44,27 @@ class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
     refresh_token: Optional[str] = None
+    role: Optional[str] = "farmer"
 
 class UserResponse(BaseModel):
     id: int
     username: Optional[str] = None
+    role: Optional[str] = "farmer"
     message: str
+
+class PartnerLoginRequest(BaseModel):
+    identifier: Optional[str] = None
+    username: Optional[str] = None
+    password: str
+    required_role: str  # "shop_owner" or "rider"
+
+class PartnerRegisterRequest(BaseModel):
+    username: str
+    password: str = Field(min_length=6)
+    role: str           # "shop_owner" or "rider"
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    full_name: Optional[str] = None
 
 class OtpRequest(BaseModel):
     identifier: str
@@ -98,9 +115,13 @@ def _identifier_filter(identifier: str):
 
 def _issue_tokens(user: User) -> Token:
     subject = user.username or user.email or user.phone
-    access = create_access_token(data={"sub": subject}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-    refresh = create_refresh_token({"sub": subject})
-    return Token(access_token=access, refresh_token=refresh)
+    role = getattr(user, "role", None) or "farmer"
+    access = create_access_token(
+        data={"sub": subject, "role": role, "user_id": user.id},
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+    refresh = create_refresh_token({"sub": subject, "role": role})
+    return Token(access_token=access, refresh_token=refresh, role=role)
 
 
 def _hash_code(code: str) -> str:
@@ -167,6 +188,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         email=_clean(user.email),
         phone=_clean(user.phone),
         password=get_password_hash(user.password),
+        role=user.role or "farmer",
         is_verified=False,
     )
     db.add(new_user)
@@ -176,7 +198,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=400, detail="User already exists")
     db.refresh(new_user)
-    return UserResponse(id=new_user.id, username=new_user.username, message="Registration successful")
+    return UserResponse(id=new_user.id, username=new_user.username, role=new_user.role, message="Registration successful")
 
 
 @router.post("/login", response_model=Token)
@@ -188,6 +210,61 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     if not db_user or not db_user.password or not verify_password(user.password, db_user.password):
         raise HTTPException(status_code=401, detail="Invalid username or password")
     return _issue_tokens(db_user)
+
+
+@router.post("/partner-login", response_model=Token)
+def partner_login(data: PartnerLoginRequest, db: Session = Depends(get_db)):
+    identifier = data.identifier or data.username
+    if not identifier:
+        raise HTTPException(status_code=400, detail="Username, email, or phone is required")
+    db_user = db.query(User).filter(_identifier_filter(identifier)).first()
+    if not db_user or not db_user.password or not verify_password(data.password, db_user.password):
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+    
+    user_role = getattr(db_user, "role", "farmer") or "farmer"
+    if user_role != data.required_role:
+        role_label = "Shop/Agency Partner" if data.required_role == "shop_owner" else "Delivery Partner"
+        user_label = "Farmer" if user_role == "farmer" else ("Shop/Agency Partner" if user_role == "shop_owner" else "Delivery Partner")
+        raise HTTPException(
+            status_code=403,
+            detail=f"This account is registered as a {user_label}, not a {role_label}. Please use the {user_label} portal or register a {role_label} account."
+        )
+    return _issue_tokens(db_user)
+
+
+@router.post("/partner-register", response_model=UserResponse)
+def partner_register(data: PartnerRegisterRequest, db: Session = Depends(get_db)):
+    role = data.role.strip().lower()
+    if role not in ["shop_owner", "rider"]:
+        raise HTTPException(status_code=400, detail="Invalid partner role. Must be 'shop_owner' or 'rider'.")
+    
+    username = _clean(data.username)
+    if not username:
+        raise HTTPException(status_code=400, detail="Username is required")
+    
+    if db.query(User).filter(User.username == username).first():
+        raise HTTPException(status_code=400, detail="Username already registered. Please choose another or sign in.")
+    if data.phone and db.query(User).filter(User.phone == _clean(data.phone)).first():
+        raise HTTPException(status_code=400, detail="Phone number already registered")
+    if data.email and db.query(User).filter(User.email == _clean(data.email)).first():
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    new_user = User(
+        username=username,
+        phone=_clean(data.phone),
+        email=_clean(data.email),
+        password=get_password_hash(data.password),
+        role=role,
+        is_verified=True,
+    )
+    db.add(new_user)
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="User already exists")
+    db.refresh(new_user)
+    return UserResponse(id=new_user.id, username=new_user.username, role=new_user.role, message="Partner registered successfully")
 
 
 @router.post("/signup/request-otp")
@@ -304,5 +381,14 @@ def auth_providers():
 
 
 @router.get("/me")
-def get_current_user_info(current_user: str = Depends(get_current_user)):
-    return {"username": current_user, "message": "Successfully authenticated"}
+def get_current_user_info(current_user: str = Depends(get_current_user), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == current_user).first()
+    return {
+        "id": user.id if user else None,
+        "username": current_user,
+        "role": getattr(user, "role", "farmer") or "farmer",
+        "email": getattr(user, "email", None),
+        "phone": getattr(user, "phone", None),
+        "message": "Successfully authenticated"
+    }
+

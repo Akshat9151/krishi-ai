@@ -90,8 +90,10 @@ export default function MandiBhav() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
           {/* Commodity Dropdown */}
           <div>
-            <label className="input-label">Filter by Crop / Commodity</label>
+            <label htmlFor="mandi-commodity-select" className="input-label">Filter by Crop / Commodity</label>
             <select
+              id="mandi-commodity-select"
+              aria-label="Filter by Crop or Commodity"
               className="input-field"
               value={commodity}
               onChange={(e) => setCommodity(e.target.value)}
@@ -106,8 +108,10 @@ export default function MandiBhav() {
 
           {/* State Dropdown */}
           <div>
-            <label className="input-label">Filter by State (राज्य)</label>
+            <label htmlFor="mandi-state-select" className="input-label">Filter by State (राज्य)</label>
             <select
+              id="mandi-state-select"
+              aria-label="Filter by State"
               className="input-field"
               value={stateFilter}
               onChange={(e) => setStateFilter(e.target.value)}
@@ -122,16 +126,17 @@ export default function MandiBhav() {
 
           {/* Search Box */}
           <div>
-            <label className="input-label">Search Mandi or District</label>
+            <label htmlFor="mandi-search-input" className="input-label">Search Mandi or District</label>
             <form onSubmit={handleSearchSubmit} style={{ display: "flex", gap: "6px" }}>
               <input
+                id="mandi-search-input"
                 type="text"
                 className="input-field"
                 placeholder="e.g. Neemuch, Khanna, Lasalgaon"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <button type="submit" className="btn-primary" style={{ padding: "0 14px" }}>
+              <button type="submit" aria-label="Search Mandis" className="btn-primary" style={{ padding: "0 14px" }}>
                 <Search size={15} />
               </button>
             </form>

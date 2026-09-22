@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Lock, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Globe } from "lucide-react";
+import { Lock, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Globe, Store, Bike } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
 import { KhetiTakMark, KhetiTakLogo } from "../components/KhetiTakBranding";
 import GoogleSignInButton from "../components/GoogleSignInButton";
 
-export default function Login({ onSwitchToRegister, onLoginSuccess }) {
+export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateShopLogin, onNavigateRiderLogin }) {
   const { login } = useAuth();
   const { language, setLanguage, languages, t } = useTranslation();
 
@@ -26,10 +26,19 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
     setError("");
 
     try {
-      await login(username.trim(), password.trim());
+      const res = await login(username.trim(), password.trim());
       setSuccess(true);
       setTimeout(() => {
-        if (onLoginSuccess) onLoginSuccess();
+        if (res?.role === "shop_owner") {
+          if (onNavigateShopLogin) onNavigateShopLogin();
+          else window.location.hash = "shop-dashboard";
+        } else if (res?.role === "rider") {
+          if (onNavigateRiderLogin) onNavigateRiderLogin();
+          else window.location.hash = "rider-dashboard";
+        } else {
+          if (onLoginSuccess) onLoginSuccess();
+          else window.location.hash = "dashboard";
+        }
       }, 500);
     } catch (err) {
       console.error(err);
@@ -221,7 +230,7 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
         {loading && <div className="growing-bar" />}
 
         {/* Link to Register */}
-        <div style={{ textAlign: "center", marginTop: "24px", fontSize: "13.5px", color: "var(--text-secondary)" }}>
+        <div style={{ textAlign: "center", marginTop: "20px", fontSize: "13.5px", color: "var(--text-secondary)" }}>
           <span>{t("newToKrishi", "New to KhetiTak?")} </span>
           <button
             onClick={onSwitchToRegister}
@@ -238,7 +247,79 @@ export default function Login({ onSwitchToRegister, onLoginSuccess }) {
           </button>
         </div>
 
+        {/* Dedicated Partner Access Section */}
+        <div
+          style={{
+            marginTop: "24px",
+            paddingTop: "16px",
+            borderTop: "1px dashed var(--card-border)",
+            textAlign: "center",
+          }}
+        >
+          <p style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "10px" }}>
+            KhetiTak Partner Portals
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+            <button
+              type="button"
+              onClick={() => {
+                if (onNavigateShopLogin) onNavigateShopLogin();
+                else window.location.hash = "shop-login";
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                padding: "8px 10px",
+                borderRadius: "var(--radius-sm)",
+                border: "1px solid var(--card-border)",
+                background: "var(--bg-cream)",
+                color: "var(--text-primary)",
+                fontSize: "12px",
+                fontWeight: "600",
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--marigold)")}
+              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--card-border)")}
+            >
+              <Store size={14} color="var(--terracotta)" />
+              <span>Shop / Agency</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                if (onNavigateRiderLogin) onNavigateRiderLogin();
+                else window.location.hash = "rider-login";
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                padding: "8px 10px",
+                borderRadius: "var(--radius-sm)",
+                border: "1px solid var(--card-border)",
+                background: "var(--bg-cream)",
+                color: "var(--text-primary)",
+                fontSize: "12px",
+                fontWeight: "600",
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--marigold)")}
+              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--card-border)")}
+            >
+              <Bike size={14} color="var(--growth-green)" />
+              <span>Delivery Rider</span>
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   );
 }
+

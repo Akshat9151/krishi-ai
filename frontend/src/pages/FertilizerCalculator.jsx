@@ -92,9 +92,10 @@ export default function FertilizerCalculator({ defaultCrop, setCurrentView }) {
 
           {/* Land Area and Unit */}
           <div>
-            <label className="input-label">Farm Land Area (खेत का आकार)</label>
+            <label htmlFor="fert-land-area" className="input-label">Farm Land Area (खेत का आकार)</label>
             <div style={{ display: "flex", gap: "8px" }}>
               <input
+                id="fert-land-area"
                 type="number"
                 min="0.1"
                 step="0.5"
@@ -105,6 +106,8 @@ export default function FertilizerCalculator({ defaultCrop, setCurrentView }) {
                 style={{ flex: 1 }}
               />
               <select
+                id="fert-land-unit"
+                aria-label="Land Unit (Acres, Bigha, Hectares)"
                 className="input-field"
                 value={landUnit}
                 onChange={(e) => setLandUnit(e.target.value)}
@@ -122,8 +125,10 @@ export default function FertilizerCalculator({ defaultCrop, setCurrentView }) {
 
           {/* Crop Selector */}
           <div>
-            <label className="input-label">Target Crop (फसल)</label>
+            <label htmlFor="fert-crop-select" className="input-label">Target Crop (फसल)</label>
             <select
+              id="fert-crop-select"
+              aria-label="Target Crop"
               className="input-field"
               value={crop}
               onChange={(e) => setCrop(e.target.value)}
@@ -138,8 +143,10 @@ export default function FertilizerCalculator({ defaultCrop, setCurrentView }) {
 
           {/* Soil Status */}
           <div>
-            <label className="input-label">Soil Nutrient Level (मिट्टी का स्वास्थ्य)</label>
+            <label htmlFor="fert-soil-health" className="input-label">Soil Nutrient Level (मिट्टी का स्वास्थ्य)</label>
             <select
+              id="fert-soil-health"
+              aria-label="Soil Nutrient Level"
               className="input-field"
               value={soilHealth}
               onChange={(e) => setSoilHealth(e.target.value)}

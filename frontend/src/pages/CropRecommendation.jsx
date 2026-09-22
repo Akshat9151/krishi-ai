@@ -120,8 +120,10 @@ export default function CropRecommendation({ setCurrentView, setSelectedCropForC
 
           {/* Soil Type */}
           <div>
-            <label className="input-label">Soil Type (मिट्टी का प्रकार)</label>
+            <label htmlFor="soil-type-select" className="input-label">Soil Type (मिट्टी का प्रकार)</label>
             <select
+              id="soil-type-select"
+              aria-label="Soil Type"
               className="input-field"
               value={soilType}
               onChange={(e) => setSoilType(e.target.value)}

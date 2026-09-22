@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { authApi, profileApi } from "../services/api";
+import { authApi, partnerAuthApi, profileApi } from "../services/api";
 
 const AuthContext = createContext(null);
 
@@ -7,7 +7,8 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("loggedInUser");
     const token = localStorage.getItem("accessToken");
-    return savedUser ? { username: savedUser, token } : null;
+    const role = localStorage.getItem("userRole") || "farmer";
+    return savedUser ? { username: savedUser, token, role } : null;
   });
   const [loading, setLoading] = useState(true);
 
@@ -57,30 +58,34 @@ export function AuthProvider({ children }) {
       const username = localStorage.getItem("loggedInUser");
       if (token && username) {
         try {
-          // Verify with backend
-          await authApi.getMe();
-          setUser({ username, token });
+          // Verify with backend and obtain current role
+          const me = await authApi.getMe();
+          const role = me.role || "farmer";
+          localStorage.setItem("userRole", role);
+          setUser({ username, token, role });
 
-          // Fetch server-authoritative farmer profile
-          try {
-            const serverProfile = await profileApi.getProfile();
-            if (serverProfile) {
-              setPreferences((prev) => {
-                const synced = {
-                  ...prev,
-                  language: serverProfile.language || prev.language,
-                  farmLocation: serverProfile.farmLocation || prev.farmLocation,
-                  landSize: serverProfile.landSize || prev.landSize,
-                  landUnit: serverProfile.landUnit || prev.landUnit,
-                  primaryCrop: serverProfile.primaryCrop || prev.primaryCrop,
-                  soundEnabled: serverProfile.soundEnabled !== undefined ? serverProfile.soundEnabled : prev.soundEnabled,
-                };
-                localStorage.setItem("krishi_preferences", JSON.stringify(synced));
-                return synced;
-              });
+          // Fetch server-authoritative farmer profile only for farmers
+          if (role === "farmer") {
+            try {
+              const serverProfile = await profileApi.getProfile();
+              if (serverProfile) {
+                setPreferences((prev) => {
+                  const synced = {
+                    ...prev,
+                    language: serverProfile.language || prev.language,
+                    farmLocation: serverProfile.farmLocation || prev.farmLocation,
+                    landSize: serverProfile.landSize || prev.landSize,
+                    landUnit: serverProfile.landUnit || prev.landUnit,
+                    primaryCrop: serverProfile.primaryCrop || prev.primaryCrop,
+                    soundEnabled: serverProfile.soundEnabled !== undefined ? serverProfile.soundEnabled : prev.soundEnabled,
+                  };
+                  localStorage.setItem("krishi_preferences", JSON.stringify(synced));
+                  return synced;
+                });
+              }
+            } catch {
+              // Profile fetch optional on offline/cold start
             }
-          } catch {
-            // Profile fetch optional on offline/cold start
           }
         } catch (err) {
           console.warn("Token expired or invalid:", err);
@@ -98,21 +103,41 @@ export function AuthProvider({ children }) {
   const login = async (username, password) => {
     const data = await authApi.login(username, password);
     if (data && data.access_token) {
+      const role = data.role || "farmer";
       localStorage.setItem("accessToken", data.access_token);
       localStorage.setItem("loggedInUser", username);
-      setUser({ username, token: data.access_token });
-      return data;
+      localStorage.setItem("userRole", role);
+      setUser({ username, token: data.access_token, role });
+      return { ...data, role };
     }
     throw new Error("No token returned from server");
   };
 
-  const loginWithToken = (username, token) => {
-    localStorage.setItem("accessToken", token);
-    localStorage.setItem("loggedInUser", username);
-    setUser({ username, token });
+  const loginPartner = async (identifier, password, requiredRole) => {
+    const data = await partnerAuthApi.login(identifier, password, requiredRole);
+    if (data && data.access_token) {
+      const role = data.role || requiredRole;
+      localStorage.setItem("accessToken", data.access_token);
+      localStorage.setItem("loggedInUser", identifier);
+      localStorage.setItem("userRole", role);
+      setUser({ username: identifier, token: data.access_token, role });
+      return { ...data, role };
+    }
+    throw new Error("No token returned from server");
   };
 
-  const register = async (username, password) => {
+  const registerPartner = async (partnerData) => {
+    return await partnerAuthApi.register(partnerData);
+  };
+
+  const loginWithToken = (username, token, role = "farmer") => {
+    localStorage.setItem("accessToken", token);
+    localStorage.setItem("loggedInUser", username);
+    localStorage.setItem("userRole", role);
+    setUser({ username, token, role });
+  };
+
+  const register = async (username, password, role = "farmer") => {
     const data = await authApi.register(username, password);
     return data;
   };
@@ -120,6 +145,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("userRole");
     setUser(null);
   };
 
@@ -128,10 +154,15 @@ export function AuthProvider({ children }) {
       value={{
         user,
         isAuthenticated: !!user,
+        role: user?.role || "farmer",
+        isShopOwner: user?.role === "shop_owner",
+        isRider: user?.role === "rider",
         loading,
         preferences,
         updatePreferences,
         login,
+        loginPartner,
+        registerPartner,
         loginWithToken,
         register,
         logout,
@@ -143,3 +174,4 @@ export function AuthProvider({ children }) {
 }
 
 export const useAuth = () => useContext(AuthContext);
+

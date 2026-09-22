@@ -81,12 +81,25 @@ class StoreOrder(Base):
     id = Column(Integer, primary_key=True, index=True)
     order_number = Column(String, unique=True, index=True)
     user_id = Column(Integer, nullable=True, index=True)
+    shop_id = Column(Integer, nullable=True, index=True)       # Assigned Shop/Agency user ID
+    rider_id = Column(Integer, nullable=True, index=True)      # Assigned Delivery Rider user ID
     customer_name = Column(String)
     phone = Column(String)
     address = Column(Text)
     items_json = Column(Text)
     total_amount = Column(Float)
-    status = Column(String, default="processing")
+    status = Column(String, default="confirmed", index=True)   # confirmed, preparing, ready_for_pickup, picked_up, out_for_delivery, delivered, cancelled
     payment_method = Column(String, default="cod")
+    shop_notes = Column(String, nullable=True)
+    cancellation_reason = Column(String, nullable=True)
+    delivered_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (
+        Index('idx_store_order_status', 'status'),
+        Index('idx_store_order_shop', 'shop_id'),
+        Index('idx_store_order_rider', 'rider_id'),
+    )
+
 

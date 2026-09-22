@@ -302,3 +302,87 @@ export const mandiApi = {
   }
 };
 
+// ==========================================
+// 🤝 PARTNER AUTH APIS (Shop / Agency & Delivery Rider)
+// ==========================================
+export const partnerAuthApi = {
+  login: async (identifier, password, required_role) => {
+    return request('/auth/partner-login', {
+      method: 'POST',
+      body: JSON.stringify({ identifier, password, required_role }),
+    });
+  },
+
+  register: async ({ username, password, role, phone, email, full_name }) => {
+    return request('/auth/partner-register', {
+      method: 'POST',
+      body: JSON.stringify({ username, password, role, phone, email, full_name }),
+    });
+  },
+};
+
+// ==========================================
+// 🏪 SHOP / AGENCY APIS (Zomato/Swiggy UX)
+// ==========================================
+export const shopApi = {
+  getOrders: async (status = 'all') => {
+    return request(`/api/store/shop/orders?status=${status}`);
+  },
+
+  updateOrderAction: async (orderNumber, action, notes = '') => {
+    return request(`/api/store/shop/orders/${orderNumber}/action`, {
+      method: 'POST',
+      body: JSON.stringify({ action, notes }),
+    });
+  },
+
+  getStats: async () => {
+    return request('/api/store/shop/stats');
+  },
+
+  getInventory: async (search = '', category = '') => {
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    if (category) params.append('category', category);
+    return request(`/api/store/shop/inventory?${params.toString()}`);
+  },
+
+  updateStock: async (productId, { in_stock, price }) => {
+    return request(`/api/store/shop/inventory/${productId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ in_stock, price }),
+    });
+  },
+};
+
+// ==========================================
+// 🛵 DELIVERY RIDER APIS (Rapido UX)
+// ==========================================
+export const riderApi = {
+  getAvailable: async () => {
+    return request('/api/store/rider/available');
+  },
+
+  acceptOrder: async (orderNumber) => {
+    return request(`/api/store/rider/orders/${orderNumber}/accept`, {
+      method: 'POST',
+    });
+  },
+
+  getMyDeliveries: async () => {
+    return request('/api/store/rider/my-deliveries');
+  },
+
+  updateStatus: async (orderNumber, status, notes = '') => {
+    return request(`/api/store/rider/orders/${orderNumber}/status`, {
+      method: 'POST',
+      body: JSON.stringify({ status, notes }),
+    });
+  },
+
+  getEarnings: async () => {
+    return request('/api/store/rider/earnings');
+  },
+};
+
+

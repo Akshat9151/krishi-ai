@@ -164,7 +164,7 @@ export default function DiseaseDetection({ setCurrentView }) {
           {loading ? (
             <div className="ka-card" style={{ textAlign: "center", padding: "40px" }}>
               <span style={{ fontSize: "36px" }}>🔬</span>
-              <h4 style={{ fontSize: "16px", marginTop: "12px" }}>Analyzing pathology patterns...</h4>
+              <h3 style={{ fontSize: "16px", marginTop: "12px" }}>Analyzing pathology patterns...</h3>
               <div className="growing-bar" style={{ maxWidth: "200px", margin: "14px auto 0 auto" }}></div>
             </div>
           ) : diagnosis ? (

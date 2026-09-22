@@ -101,8 +101,9 @@ export default function Profile({ setCurrentView }) {
         {/* Location & Primary Crop */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px" }}>
           <div>
-            <label className="input-label">Default Farm Location / District</label>
+            <label htmlFor="profile-farm-location" className="input-label">Default Farm Location / District</label>
             <input
+              id="profile-farm-location"
               type="text"
               className="input-field"
               value={farmLocation}
@@ -112,8 +113,10 @@ export default function Profile({ setCurrentView }) {
           </div>
 
           <div>
-            <label className="input-label">Primary Standing Crop</label>
+            <label htmlFor="profile-primary-crop" className="input-label">Primary Standing Crop</label>
             <select
+              id="profile-primary-crop"
+              aria-label="Primary Standing Crop"
               className="input-field"
               value={primaryCrop}
               onChange={(e) => setPrimaryCrop(e.target.value)}
@@ -133,8 +136,9 @@ export default function Profile({ setCurrentView }) {
         {/* Land Size */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px" }}>
           <div>
-            <label className="input-label">Total Cultivated Area</label>
+            <label htmlFor="profile-land-size" className="input-label">Total Cultivated Area</label>
             <input
+              id="profile-land-size"
               type="number"
               step="0.5"
               className="input-field"
@@ -144,8 +148,10 @@ export default function Profile({ setCurrentView }) {
           </div>
 
           <div>
-            <label className="input-label">Measurement Unit</label>
+            <label htmlFor="profile-land-unit" className="input-label">Measurement Unit</label>
             <select
+              id="profile-land-unit"
+              aria-label="Measurement Unit"
               className="input-field"
               value={landUnit}
               onChange={(e) => setLandUnit(e.target.value)}
@@ -164,8 +170,10 @@ export default function Profile({ setCurrentView }) {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px" }}>
           <div>
-            <label className="input-label">Preferred Advisory Language (भाषा)</label>
+            <label htmlFor="profile-language-select" className="input-label">Preferred Advisory Language (भाषा)</label>
             <select
+              id="profile-language-select"
+              aria-label="Preferred Advisory Language"
               className="input-field"
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
