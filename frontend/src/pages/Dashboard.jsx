@@ -20,34 +20,48 @@ import { coreApi } from "../services/api";
 import { AgriStoreConceptCard, KhetiTakMark } from "../components/KhetiTakBranding";
 
 export default function Dashboard({ setCurrentView }) {
-  const { user, preferences } = useAuth();
+  const { user, loading: authLoading, preferences } = useAuth();
   const { t } = useTranslation();
   const [weather, setWeather] = useState(null);
   const [activities, setActivities] = useState([]);
   const [loadingWeather, setLoadingWeather] = useState(true);
 
   useEffect(() => {
+    if (authLoading || !user) {
+      return undefined;
+    }
+
+    let cancelled = false;
     const fetchDashboardData = async () => {
       try {
         const city = preferences?.farmLocation?.split(",")[0]?.trim() || "Jaipur";
         const wData = await coreApi.getWeather(city);
-        setWeather(wData);
+        if (!cancelled) {
+          setWeather(wData);
+        }
       } catch (err) {
         console.warn("Weather fetch error on dashboard:", err);
       } finally {
-        setLoadingWeather(false);
+        if (!cancelled) {
+          setLoadingWeather(false);
+        }
       }
 
       try {
         const acts = await coreApi.getActivities();
-        setActivities(acts);
+        if (!cancelled) {
+          setActivities(acts);
+        }
       } catch (err) {
         console.warn("Activities fetch error:", err);
       }
     };
 
     fetchDashboardData();
-  }, [preferences?.farmLocation]);
+    return () => {
+      cancelled = true;
+    };
+  }, [authLoading, user, preferences?.farmLocation]);
 
   const quickActions = [
     {

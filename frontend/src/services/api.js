@@ -1,15 +1,15 @@
 /**
  * KhetiTak — Central API Service Client
- * Connects to the existing Render FastAPI backend: https://krishi-ai-2-4j3k.onrender.com
+ * Connects to the production Render FastAPI backend.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '' : 'https://krishi-ai-2-4j3k.onrender.com');
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '' : 'https://krishi-ai-j359.onrender.com');
 const REQUEST_TIMEOUT_MS = 20000;
 
 export const getApiBaseUrl = () => API_BASE_URL;
 
 // Helper to make authenticated/unauthenticated API calls
-async function request(endpoint, options = {}) {
+async function request(endpoint, options = {}, allowRefresh = true) {
   const token = localStorage.getItem('accessToken');
   const headers = {
     'Content-Type': 'application/json',
@@ -41,9 +41,34 @@ async function request(endpoint, options = {}) {
       data = await response.text();
     }
 
+    if (response.status === 401 && allowRefresh && !endpoint.startsWith('/auth/')) {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (refreshToken) {
+        try {
+          const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: refreshToken }),
+          });
+          const refreshed = await refreshResponse.json();
+          if (refreshResponse.ok && refreshed.access_token) {
+            localStorage.setItem('accessToken', refreshed.access_token);
+            return request(endpoint, options, false);
+          }
+        } catch (refreshError) {
+          console.warn('Session refresh failed:', refreshError);
+        }
+      }
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      window.dispatchEvent(new CustomEvent('auth-session-expired'));
+    }
+
     if (!response.ok) {
       const errorMsg = data?.detail || data?.message || (typeof data === 'string' ? data : 'Request failed');
-      throw new Error(errorMsg);
+      const error = new Error(errorMsg);
+      error.status = response.status;
+      throw error;
     }
 
     return data;
@@ -84,6 +109,13 @@ export const authApi = {
       body: JSON.stringify({ credential }),
     });
   },
+  requestSignupOtp: async (payload) => request('/auth/signup/request-otp', { method: 'POST', body: JSON.stringify(payload) }),
+  verifySignupOtp: async (payload) => request('/auth/signup/verify-otp', { method: 'POST', body: JSON.stringify(payload) }),
+  requestLoginOtp: async (payload) => request('/auth/login/request-otp', { method: 'POST', body: JSON.stringify(payload) }),
+  verifyLoginOtp: async (payload) => request('/auth/login/verify-otp', { method: 'POST', body: JSON.stringify(payload) }),
+  requestPasswordResetOtp: async (identifier) => request('/auth/forgot-password/request-otp', { method: 'POST', body: JSON.stringify({ identifier }) }),
+  resetPassword: async (payload) => request('/auth/reset-password', { method: 'POST', body: JSON.stringify(payload) }),
+  logout: async () => request('/auth/logout', { method: 'POST' }, false),
 };
 
 // ==========================================
@@ -109,10 +141,10 @@ export const coreApi = {
   },
 
   // Disease Prediction
-  predictDisease: async (crop) => {
+  predictDisease: async (crop, symptoms = '') => {
     return request('/api/predict-disease', {
       method: 'POST',
-      body: JSON.stringify({ crop: crop.toLowerCase() }),
+      body: JSON.stringify({ crop: crop.toLowerCase(), symptoms }),
     });
   },
 
@@ -131,6 +163,10 @@ export const coreApi = {
       body: JSON.stringify({ location }),
     });
   },
+  calculateFertilizer: async ({ crop, acres, soil_health }) => request('/api/fertilizer-dose', {
+    method: 'POST',
+    body: JSON.stringify({ crop, acres, soil_health }),
+  }),
 
   // AI Assistant Chatbot
   askAiAssistant: async (message) => {
@@ -225,6 +261,20 @@ export const storeApi = {
   getOrder: async (orderNumber) => {
     return request(`/api/store/orders/${orderNumber}`);
   },
+
+  getMyOrders: async () => {
+    return request('/api/store/orders');
+  },
+  cancelOrder: async (orderNumber) => {
+    return request(`/api/store/orders/${encodeURIComponent(orderNumber)}/cancel`, {
+      method: 'POST',
+    });
+  },
+  getShopOrders: async () => request('/api/store/owner/orders'),
+  updateShopOrderStatus: async (orderNumber, status) => request(
+    `/api/store/owner/orders/${encodeURIComponent(orderNumber)}/status`,
+    { method: 'PATCH', body: JSON.stringify({ status }) }
+  ),
 };
 
 // ==========================================
@@ -258,6 +308,16 @@ export const profileApi = {
       body: JSON.stringify(data),
     });
   },
+  getOwnerOrders: async () => request('/api/store/owner/orders'),
+  updateOwnerOrderStatus: async (orderNumber, status, reason) => request(`/api/store/owner/orders/${encodeURIComponent(orderNumber)}/status`, { method: 'PATCH', body: JSON.stringify({ status, reason }) }),
+  getOwnerProducts: async () => request('/api/store/owner/products'),
+  updateOwnerProduct: async (productId, payload) => request(`/api/store/owner/products/${productId}`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  getOwnerEarnings: async () => request('/api/store/owner/earnings'),
+  getRiderOrders: async () => request('/api/store/rider/orders'),
+  claimRiderOrder: async (orderNumber) => request(`/api/store/rider/orders/${encodeURIComponent(orderNumber)}/claim`, { method: 'POST' }),
+  getRiderDeliveries: async () => request('/api/store/rider/deliveries'),
+  getRiderEarnings: async () => request('/api/store/rider/earnings'),
+  updateRiderStatus: async (orderNumber, status) => request(`/api/store/rider/orders/${encodeURIComponent(orderNumber)}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
 };
 
 export const mandiApi = {
@@ -301,7 +361,6 @@ export const mandiApi = {
     return results;
   }
 };
-
 // ==========================================
 // 🤝 PARTNER AUTH APIS (Shop / Agency & Delivery Rider)
 // ==========================================
@@ -384,5 +443,3 @@ export const riderApi = {
     return request('/api/store/rider/earnings');
   },
 };
-
-

@@ -75,7 +75,7 @@ export default function GoogleSignInButton({ onSuccess, variant = "login" }) {
 
       // Store tokens
       const username = data.username || data.email || "google-user";
-      loginWithToken(username, data.access_token);
+      loginWithToken(username, data.access_token, data.role);
 
       // Call success callback
       if (onSuccess) {

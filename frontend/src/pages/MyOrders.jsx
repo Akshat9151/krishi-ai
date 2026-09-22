@@ -1,16 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PackageCheck, Search, CheckCircle2, Clock, Truck, MapPin, ArrowRight } from "lucide-react";
 import { storeApi } from "../services/api";
-import { useCart } from "../context/CartContext";
 import OrderTracking from "../components/OrderTracking";
 
 export default function MyOrders({ setCurrentView }) {
-  const { placedOrders } = useCart();
   const [searchNum, setSearchNum] = useState("");
   const [searchedOrder, setSearchedOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [trackingOrder, setTrackingOrder] = useState(null);
+  const [accountOrders, setAccountOrders] = useState([]);
+  const [cancellingOrder, setCancellingOrder] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    const loadOrders = () => storeApi.getMyOrders()
+      .then((orders) => {
+        if (active) setAccountOrders(Array.isArray(orders) ? orders : []);
+      })
+      .catch((err) => {
+        console.error("Failed to load account orders:", err);
+      });
+    loadOrders();
+    const refreshTimer = window.setInterval(loadOrders, 15000);
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+    };
+  }, []);
 
   const handleLookup = async (e) => {
     e.preventDefault();
@@ -31,7 +48,26 @@ export default function MyOrders({ setCurrentView }) {
     }
   };
 
-  const displayOrders = searchedOrder ? [searchedOrder] : placedOrders;
+  const handleCancel = async (order) => {
+    if (!window.confirm("Cancel this COD order before dispatch?")) return;
+    setCancellingOrder(order.order_number);
+    setError("");
+    try {
+      const cancelled = await storeApi.cancelOrder(order.order_number);
+      setAccountOrders((orders) => orders.map((item) => (
+        item.order_number === cancelled.order_number ? cancelled : item
+      )));
+      if (searchedOrder?.order_number === cancelled.order_number) {
+        setSearchedOrder(cancelled);
+      }
+    } catch (err) {
+      setError(err.message || "This order cannot be cancelled.");
+    } finally {
+      setCancellingOrder("");
+    }
+  };
+
+  const displayOrders = searchedOrder ? [searchedOrder] : accountOrders;
 
   if (trackingOrder) {
     return <OrderTracking order={trackingOrder} onBack={() => setTrackingOrder(null)} />;
@@ -127,8 +163,9 @@ export default function MyOrders({ setCurrentView }) {
                     <h3 style={{ fontSize: "17px", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
                       Order #{order.order_number}
                     </h3>
-                    <span className="badge-green">● Confirmed</span>
+                    <span className={order.status === "cancelled" ? "badge-red" : "badge-green"}>● {order.status.replaceAll("_", " ")}</span>
                   </div>
+                  {order.rejection_reason && <p style={{ color: "var(--terracotta)", fontSize: "13px" }}>Reason: {order.rejection_reason}</p>}
                   <p style={{ fontSize: "12.5px", color: "var(--text-muted)", marginTop: "4px" }}>
                     Placed on: {new Date(order.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
                   </p>
@@ -181,14 +218,24 @@ export default function MyOrders({ setCurrentView }) {
                 </div>
               )}
 
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "16px" }}>
+                <button
+                  className="btn-primary"
+                  onClick={() => setTrackingOrder(order)}
+                >
+                  <Truck size={16} />
+                  <span>Track Order</span>
+                </button>
+                {["confirmed", "processing", "placed"].includes(String(order.status).toLowerCase()) && (
                   <button
-                    className="btn-primary"
-                    style={{ marginTop: "16px" }}
-                    onClick={() => setTrackingOrder(order)}
+                    className="btn-outline"
+                    disabled={cancellingOrder === order.order_number}
+                    onClick={() => handleCancel(order)}
                   >
-                    <Truck size={16} />
-                    <span>Track Order</span>
+                    {cancellingOrder === order.order_number ? "Cancelling..." : "Cancel COD Order"}
                   </button>
+                )}
+              </div>
             </div>
           ))}
         </div>

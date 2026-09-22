@@ -46,7 +46,6 @@ export default function OrderTracking({ order, onBack }) {
     const timer = window.setInterval(pollStatus, 4000);
     return () => window.clearInterval(timer);
   }, [order?.order_number]);
-
   const currentStage = TRACKING_STAGES[activeStage];
   const CurrentIcon = currentStage.icon;
 

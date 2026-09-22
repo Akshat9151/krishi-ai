@@ -107,9 +107,12 @@ class Settings(BaseSettings):
     AWS_SNS_REGION: str = ""
     RESEND_API_KEY: str = ""
     BREVO_API_KEY: str = ""
+    BREVO_SENDER_EMAIL: Optional[str] = None
+    BREVO_SENDER_NAME: str = "KhetiTak"
     SENDGRID_API_KEY: str = ""
     OTP_EXPIRE_MINUTES: int = 10
     OTP_MAX_ATTEMPTS: int = 5
+    SHOP_OWNER_IDENTIFIERS: str = ""
     
     # Backup
     BACKUP_ENABLED: bool = False

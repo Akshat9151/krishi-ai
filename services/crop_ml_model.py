@@ -1,225 +1,150 @@
-CROP_PROFILES = [
-    {
-        "crop": "Rice",
-        "soil_types": ["clay", "alluvial", "loamy"],
-        "seasons": ["kharif", "monsoon"],
-        "recommended_fertilizer": "NPK 12-32-16 or Urea + DAP",
-        "tips": "Keep the soil flooded during early growth and control weeds regularly.",
-        "water_requirement": "High",
-        "soil_compatibility": "Clay, Alluvial, Loamy",
-        "icon": "🌾",
-        "description": "Best for wet, warm growing conditions with ample rainfall.",
-        "temp_range": [22, 32],
-        "humidity_range": [70, 100],
-        "rainfall_range": [50, 250]
-    },
-    {
-        "crop": "Wheat",
-        "soil_types": ["loamy", "alluvial", "black"],
-        "seasons": ["rabi", "winter"],
-        "recommended_fertilizer": "Nitrogen-rich fertilizer such as Urea and DAP",
-        "tips": "Sow in cool weather and avoid waterlogging during the early stage.",
-        "water_requirement": "Moderate",
-        "soil_compatibility": "Loamy, Alluvial, Black",
-        "icon": "🌾",
-        "description": "Suitable for cool, dry winters and well-drained soils.",
-        "temp_range": [10, 25],
-        "humidity_range": [40, 70],
-        "rainfall_range": [5, 50]
-    },
-    {
-        "crop": "Maize",
-        "soil_types": ["loamy", "sandy", "alluvial", "red"],
-        "seasons": ["kharif", "zaid", "summer"],
-        "recommended_fertilizer": "Balanced NPK 20-20-20 or DAP",
-        "tips": "Keep the soil moist and apply side-dressing after 25-30 days.",
-        "water_requirement": "Moderate",
-        "soil_compatibility": "Loamy, Sandy, Alluvial, Red",
-        "icon": "🌽",
-        "description": "Good choice for warm seasons with moderate rainfall.",
-        "temp_range": [20, 32],
-        "humidity_range": [50, 80],
-        "rainfall_range": [20, 100]
-    },
-    {
-        "crop": "Cotton",
-        "soil_types": ["black", "loamy", "alluvial", "red"],
-        "seasons": ["kharif", "summer"],
-        "recommended_fertilizer": "NPK 10-26-26 with boron application",
-        "tips": "Plant after rains and avoid excess moisture during boll formation.",
-        "water_requirement": "Moderate",
-        "soil_compatibility": "Black, Loamy, Alluvial, Red",
-        "icon": "🌿",
-        "description": "Prefers warm, dry periods after initial rains.",
-        "temp_range": [25, 35],
-        "humidity_range": [40, 70],
-        "rainfall_range": [30, 100]
-    },
-    {
-        "crop": "Mustard",
-        "soil_types": ["loamy", "clay", "alluvial"],
-        "seasons": ["rabi", "winter"],
-        "recommended_fertilizer": "DAP and potash fertilizer for strong growth",
-        "tips": "Use well-drained land and avoid waterlogging during flowering.",
-        "water_requirement": "Low",
-        "soil_compatibility": "Loamy, Clay, Alluvial",
-        "icon": "🌱",
-        "description": "Good for cool winter season with moderate soil moisture.",
-        "temp_range": [8, 22],
-        "humidity_range": [30, 60],
-        "rainfall_range": [5, 40]
-    },
-    {
-        "crop": "Groundnut",
-        "soil_types": ["sandy", "loamy", "red"],
-        "seasons": ["kharif", "summer"],
-        "recommended_fertilizer": "Rhizobium inoculation and single super phosphate",
-        "tips": "Ensure proper drainage and do not plant in waterlogged soil.",
-        "water_requirement": "Moderate",
-        "soil_compatibility": "Sandy, Loamy, Red",
-        "icon": "🥜",
-        "description": "Best on light, well-drained soils in warm seasons.",
-        "temp_range": [20, 32],
-        "humidity_range": [40, 70],
-        "rainfall_range": [30, 80]
-    },
-    {
-        "crop": "Potato",
-        "soil_types": ["loamy", "sandy", "alluvial"],
-        "seasons": ["rabi", "winter", "spring"],
-        "recommended_fertilizer": "High-potash fertilizer with DAP",
-        "tips": "Prepare loose soil and maintain even moisture during tuber formation.",
-        "water_requirement": "Moderate",
-        "soil_compatibility": "Loamy, Sandy, Alluvial",
-        "icon": "🥔",
-        "description": "Ideal for cool months with good drainage.",
-        "temp_range": [15, 24],
-        "humidity_range": [50, 80],
-        "rainfall_range": [10, 50]
-    },
-    {
-        "crop": "Sugarcane",
-        "soil_types": ["loamy", "alluvial", "black"],
-        "seasons": ["kharif", "monsoon"],
-        "recommended_fertilizer": "High NPK fertilizer and organic manure",
-        "tips": "Maintain steady irrigation and avoid water stress.",
-        "water_requirement": "High",
-        "soil_compatibility": "Loamy, Alluvial, Black",
-        "icon": "🍬",
-        "description": "Thrives in warm, humid climates with steady water supply.",
-        "temp_range": [22, 34],
-        "humidity_range": [60, 90],
-        "rainfall_range": [70, 200]
+"""Crop recommendation model trained from Crop_Recommendation.csv."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+import joblib
+import pandas as pd
+
+
+MODEL_PATH = Path(__file__).resolve().parents[1] / "models" / "crop_recommendation.joblib"
+FEATURES = (
+    "Nitrogen",
+    "Phosphorus",
+    "Potassium",
+    "Temperature",
+    "Humidity",
+    "pH_Value",
+    "Rainfall",
+)
+
+_CROP_METADATA = {
+    "Rice": ("🌾", "High", "NPK 12-32-16 or Urea + DAP", "Keep the soil moist and control weeds regularly."),
+    "Wheat": ("🌾", "Moderate", "Nitrogen-rich fertilizer such as Urea and DAP", "Sow in cool weather and avoid waterlogging."),
+    "Maize": ("🌽", "Moderate", "Balanced NPK 20-20-20 or DAP", "Keep the soil moist and apply side-dressing after 25-30 days."),
+    "Cotton": ("🌿", "Moderate", "NPK 10-26-26 with boron application", "Avoid excess moisture during boll formation."),
+    "ChickPea": ("🫘", "Low", "DAP with sulphur", "Use well-drained soil and avoid excess irrigation."),
+    "KidneyBeans": ("🫘", "Moderate", "Balanced NPK with phosphorus", "Maintain even moisture during flowering."),
+    "PigeonPeas": ("🌱", "Low", "DAP and potash", "Avoid standing water and provide good drainage."),
+    "MothBeans": ("🌱", "Low", "Phosphorus-rich fertilizer", "A suitable choice for warm, dry conditions."),
+    "MungBean": ("🌱", "Low", "Rhizobium seed treatment and DAP", "Do not over-irrigate this short-duration pulse."),
+    "Blackgram": ("🌱", "Low", "DAP and potash", "Use clean seed and avoid waterlogging."),
+    "Lentil": ("🌱", "Low", "DAP with sulphur", "Prefer cool weather and well-drained soil."),
+    "Pomegranate": ("🍎", "Moderate", "Balanced NPK with micronutrients", "Maintain drainage and use drip irrigation where possible."),
+    "Banana": ("🍌", "High", "Potash-rich NPK and organic manure", "Maintain regular moisture and protect from strong winds."),
+    "Mango": ("🥭", "Moderate", "Farmyard manure with balanced NPK", "Use well-drained soil and manage flowering irrigation."),
+    "Grapes": ("🍇", "Moderate", "Potash-rich fertilizer with micronutrients", "Use trellising and avoid excess humidity."),
+    "Watermelon": ("🍉", "Moderate", "Balanced NPK with potash", "Use sandy, well-drained beds and steady irrigation."),
+    "Muskmelon": ("🍈", "Moderate", "Balanced NPK with potash", "Provide warm conditions and avoid waterlogging."),
+    "Apple": ("🍎", "Moderate", "Compost with balanced orchard fertilizer", "Needs cool conditions and well-drained soil."),
+    "Orange": ("🍊", "Moderate", "Balanced NPK with micronutrients", "Use drainage and regular but measured irrigation."),
+    "Papaya": ("🥭", "High", "Potash-rich NPK and compost", "Protect roots from standing water."),
+    "Coconut": ("🥥", "High", "Potash, magnesium and organic manure", "Maintain moisture and mulch around mature palms."),
+    "Jute": ("🌿", "High", "Nitrogen-rich fertilizer", "Needs warm, humid weather and adequate moisture."),
+    "Coffee": ("☕", "Moderate", "Compost with balanced NPK", "Prefer shaded, well-drained and humid conditions."),
+}
+
+_SEASON_PREFERENCES = {
+    "rabi": {"Wheat", "ChickPea", "Lentil", "Peas", "Mustard"},
+    "kharif": {"Rice", "Maize", "Cotton", "PigeonPeas", "MungBean", "Blackgram", "Jute"},
+    "zaid": {"Maize", "MungBean", "Watermelon", "Muskmelon", "Cucumber"},
+}
+
+
+def _load_model() -> dict[str, Any]:
+    if not MODEL_PATH.exists():
+        raise RuntimeError(
+            f"Trained crop model is missing at {MODEL_PATH}. "
+            "Run `python scripts/train_crop_model.py` before starting the API."
+        )
+    artifact = joblib.load(MODEL_PATH)
+    if not isinstance(artifact, dict) or "model" not in artifact:
+        raise RuntimeError("Crop model artifact is invalid; retrain it with scripts/train_crop_model.py.")
+    return artifact
+
+
+_ARTIFACT = _load_model()
+_MODEL = _ARTIFACT["model"]
+_MEDIANS = _ARTIFACT["medians"]
+
+
+def _number(value: Any, feature: str) -> float:
+    if value is None or value == "":
+        return float(_MEDIANS[feature])
+    try:
+        return float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{feature} must be numeric") from exc
+
+
+def _context_adjustment(crop: str, soil: str, season: str) -> float:
+    """Use UI context only as a small tie-breaker; it is not presented as trained data."""
+    adjustment = 0.0
+    if season in _SEASON_PREFERENCES and crop in _SEASON_PREFERENCES[season]:
+        adjustment += 0.04
+    if soil == "sandy" and crop in {"Watermelon", "Muskmelon", "Groundnut", "MothBeans"}:
+        adjustment += 0.03
+    if soil == "clay" and crop in {"Rice", "Cotton", "Lentil"}:
+        adjustment += 0.03
+    if soil == "loamy" and crop in {"Wheat", "Maize", "ChickPea", "Potato"}:
+        adjustment += 0.03
+    return adjustment
+
+
+def predict_crop_ml(
+    soil_type: str,
+    season: str,
+    location: str,
+    weather: dict,
+    top_n: int = 3,
+    nitrogen: float | None = None,
+    phosphorus: float | None = None,
+    potassium: float | None = None,
+    ph: float | None = None,
+) -> list[dict[str, Any]]:
+    """Return top crops from the trained classifier plus contextual metadata."""
+    values = {
+        "Nitrogen": _number(nitrogen, "Nitrogen"),
+        "Phosphorus": _number(phosphorus, "Phosphorus"),
+        "Potassium": _number(potassium, "Potassium"),
+        "Temperature": _number(weather.get("temperature"), "Temperature"),
+        "Humidity": _number(weather.get("humidity"), "Humidity"),
+        "pH_Value": _number(ph, "pH_Value"),
+        "Rainfall": _number(weather.get("rainfall"), "Rainfall"),
     }
-]
+    row = pd.DataFrame([[values[feature] for feature in FEATURES]], columns=FEATURES)
+    probabilities = _MODEL.predict_proba(row)[0]
+    classes = _MODEL.classes_
+    soil = (soil_type or "loamy").strip().lower()
+    normalized_season = (season or "kharif").strip().lower()
 
-VALID_SOIL_MAP = {
-    "alluvial": "alluvial",
-    "black": "black",
-    "clay": "clay",
-    "loamy": "loamy",
-    "red": "red",
-    "sandy": "sandy",
-    "silty": "loamy",
-    "peaty": "loamy",
-    "chalky": "loamy",
-    "forest": "loamy",
-    "desert": "sandy",
-    "mountain": "loamy"
-}
+    ranked = sorted(
+        (
+            (str(crop), float(probability) + _context_adjustment(str(crop), soil, normalized_season))
+            for crop, probability in zip(classes, probabilities)
+        ),
+        key=lambda item: item[1],
+        reverse=True,
+    )[: max(1, min(int(top_n), 5))]
 
-SEASON_MAP = {
-    "spring": "spring",
-    "summer": "summer",
-    "monsoon": "monsoon",
-    "autumn": "autumn",
-    "winter": "winter",
-    "kharif": "kharif",
-    "rabi": "rabi",
-    "zaid": "zaid"
-}
-
-
-def _normalize_value(value: str, mapping: dict, default: str):
-    if not value:
-        return default
-    value = value.strip().lower()
-    return mapping.get(value, default)
-
-
-def _compute_fit_score(profile, soil, season, weather):
-    score = 0.0
-
-    # soil match
-    if soil in profile["soil_types"]:
-        score += 0.35
-
-    # season compatibility
-    if season in profile["seasons"]:
-        score += 0.25
-
-    # temperature fit
-    temp = weather.get("temperature", 25)
-    min_t, max_t = profile["temp_range"]
-    if min_t <= temp <= max_t:
-        score += 0.18
-    else:
-        score -= min(abs(temp - max_t), abs(temp - min_t)) * 0.007
-
-    # humidity fit
-    humidity = weather.get("humidity", 60)
-    min_h, max_h = profile["humidity_range"]
-    if min_h <= humidity <= max_h:
-        score += 0.12
-    else:
-        score -= min(abs(humidity - max_h), abs(humidity - min_h)) * 0.003
-
-    # rainfall fit
-    rainfall = weather.get("rainfall", 20)
-    min_r, max_r = profile["rainfall_range"]
-    if min_r <= rainfall <= max_r:
-        score += 0.10
-    else:
-        score -= min(abs(rainfall - max_r), abs(rainfall - min_r)) * 0.002
-
-    return max(0.0, min(score, 1.0))
-
-
-def predict_crop_ml(soil_type: str, season: str, location: str, weather: dict, top_n=3):
-    """Predict crops based on soil type, season, location and live weather."""
-    soil = _normalize_value(soil_type, VALID_SOIL_MAP, "loamy")
-    season = _normalize_value(season, SEASON_MAP, "kharif")
-
-    scored = []
-    for profile in CROP_PROFILES:
-        score = _compute_fit_score(profile, soil, season, weather)
-        if score > 0.05:
-            entry = {
-                "crop": profile["crop"],
-                "confidence": float(round(score, 3)),
-                "suitable_season": ", ".join(profile["seasons"]),
-                "recommended_fertilizer": profile["recommended_fertilizer"],
-                "tips": profile["tips"],
-                "water_requirement": profile["water_requirement"],
-                "soil_compatibility": profile["soil_compatibility"],
-                "icon": profile["icon"],
-                "description": profile["description"]
-            }
-            scored.append(entry)
-
-    if not scored:
-        fallback = CROP_PROFILES[0]
-        scored = [{
-            "crop": fallback["crop"],
-            "confidence": 0.45,
-            "suitable_season": ", ".join(fallback["seasons"]),
-            "recommended_fertilizer": fallback["recommended_fertilizer"],
-            "tips": fallback["tips"],
-            "water_requirement": fallback["water_requirement"],
-            "soil_compatibility": fallback["soil_compatibility"],
-            "icon": fallback["icon"],
-            "description": fallback["description"]
-        }]
-
-    scored.sort(key=lambda x: x["confidence"], reverse=True)
-    return scored[:top_n]
+    max_score = max(score for _, score in ranked) or 1.0
+    results = []
+    for crop, score in ranked:
+        icon, water, fertilizer, tips = _CROP_METADATA.get(
+            crop, ("🌱", "Moderate", "Balanced NPK fertilizer", "Use a soil test to fine-tune the fertilizer plan.")
+        )
+        results.append({
+            "crop": crop,
+            "confidence": round(min(score / max_score, 1.0), 3),
+            "model": "RandomForest trained on Crop_Recommendation.csv",
+            "suitable_season": normalized_season.title(),
+            "recommended_fertilizer": fertilizer,
+            "tips": tips,
+            "water_requirement": water,
+            "soil_compatibility": soil.title(),
+            "icon": icon,
+            "description": f"Predicted from N-P-K, temperature, humidity, pH and rainfall for {location or 'your farm'}.",
+        })
+    return results

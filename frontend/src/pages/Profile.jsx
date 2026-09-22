@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { User, MapPin, Globe, Bell, Volume2, BotMessageSquare, LogOut, Save, Check } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
+import { storeApi } from "../services/api";
 
 export default function Profile({ setCurrentView }) {
   const { user, preferences, updatePreferences, logout } = useAuth();
@@ -14,6 +15,19 @@ export default function Profile({ setCurrentView }) {
   const [language, setLanguage] = useState(appLang || preferences?.language || "hi");
   const [soundEnabled, setSoundEnabled] = useState(preferences?.soundEnabled ?? true);
   const [saved, setSaved] = useState(false);
+  const [shopOrders, setShopOrders] = useState(null);
+
+  useEffect(() => {
+    if (!user) return;
+    storeApi.getShopOrders().then(setShopOrders).catch(() => setShopOrders(null));
+  }, [user]);
+
+  const updateShopStatus = async (orderNumber, status) => {
+    const updated = await storeApi.updateShopOrderStatus(orderNumber, status);
+    setShopOrders((orders) => orders.map((order) => (
+      order.order_number === updated.order_number ? updated : order
+    )));
+  };
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -229,6 +243,25 @@ export default function Profile({ setCurrentView }) {
           </button>
         </div>
       </form>
+
+      {shopOrders && (
+        <div className="ka-card">
+          <h3 style={{ fontSize: "16px", fontWeight: "700", marginTop: 0 }}>Shop Orders</h3>
+          {shopOrders.length === 0 ? (
+            <p style={{ color: "var(--text-secondary)", fontSize: "13px" }}>No incoming orders yet.</p>
+          ) : shopOrders.map((order) => (
+            <div key={order.order_number} style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "center", borderTop: "1px solid var(--card-border)", padding: "12px 0", flexWrap: "wrap" }}>
+              <div>
+                <strong>{order.order_number}</strong>
+                <div style={{ color: "var(--text-secondary)", fontSize: "12px" }}>{order.customer_name} · ₹{order.total_amount}</div>
+              </div>
+              <select className="input-field" value={order.status} onChange={(event) => updateShopStatus(order.order_number, event.target.value)} style={{ width: "190px" }}>
+                {["confirmed", "accepted", "packed", "out_for_delivery", "delivered", "cancelled"].map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}
+              </select>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Account Security & Sign Out */}
       <div className="ka-card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>

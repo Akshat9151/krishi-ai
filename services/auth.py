@@ -382,13 +382,14 @@ def auth_providers():
 
 @router.get("/me")
 def get_current_user_info(current_user: str = Depends(get_current_user), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.username == current_user).first()
+    user = db.query(User).filter(_identifier_filter(current_user)).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
     return {
-        "id": user.id if user else None,
-        "username": current_user,
+        "id": user.id,
+        "username": user.username or current_user,
         "role": getattr(user, "role", "farmer") or "farmer",
         "email": getattr(user, "email", None),
         "phone": getattr(user, "phone", None),
         "message": "Successfully authenticated"
     }
-

@@ -83,13 +83,13 @@ export default function Header({ currentView, setCurrentView }) {
         >
           <Globe size={15} color="var(--growth-green)" />
           <select
+            id="language-select"
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
             aria-label="Select Language"
             style={{
               background: "transparent",
               border: "none",
-              outline: "none",
               fontSize: "12.5px",
               fontWeight: "600",
               color: "var(--text-primary)",
@@ -226,7 +226,18 @@ export default function Header({ currentView, setCurrentView }) {
       <style>{`
         @media (max-width: 767px) {
           .mobile-brand-title { display: flex !important; }
-          .desktop-view-title { display: none !important; }
+          .desktop-view-title {
+            display: block !important;
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+          }
           .mobile-only-profile { display: flex !important; }
           .hide-on-compact { display: none !important; }
           header.app-header {

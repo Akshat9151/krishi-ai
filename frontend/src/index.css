@@ -77,6 +77,16 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-2px);
 }
 
+.khetitak-footer-grid {
+  grid-template-columns: minmax(220px, 1.4fr) repeat(3, minmax(160px, 1fr));
+}
+
+@media (max-width: 767px) {
+  .khetitak-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* BUTTONS */
 .btn-primary {
   display: inline-flex;
@@ -151,6 +161,15 @@ textarea {
   touch-action: manipulation;
 }
 
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--marigold);
+  outline-offset: 2px;
+}
+
 /* FORM INPUTS */
 .input-field {
   width: 100%;
@@ -208,7 +227,7 @@ textarea {
   align-items: center;
   gap: 4px;
   background-color: var(--growth-green-light);
-  color: var(--growth-green);
+  color: #477236;
   padding: 3px 8px;
   border-radius: var(--radius-full);
   font-size: 12px;
@@ -232,7 +251,7 @@ textarea {
   align-items: center;
   gap: 4px;
   background-color: var(--marigold-light);
-  color: #A36B18;
+  color: #956216;
   padding: 3px 8px;
   border-radius: var(--radius-full);
   font-size: 12px;

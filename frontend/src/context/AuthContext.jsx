@@ -53,6 +53,15 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
+    const handleSessionExpired = () => {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("loggedInUser");
+      localStorage.removeItem("userRole");
+      setUser(null);
+    };
+    window.addEventListener("auth-session-expired", handleSessionExpired);
+
     const initAuth = async () => {
       const token = localStorage.getItem("accessToken");
       const username = localStorage.getItem("loggedInUser");
@@ -60,7 +69,7 @@ export function AuthProvider({ children }) {
         try {
           // Verify with backend and obtain current role
           const me = await authApi.getMe();
-          const role = me.role || "farmer";
+          const role = me?.role || "farmer";
           localStorage.setItem("userRole", role);
           setUser({ username, token, role });
 
@@ -98,6 +107,7 @@ export function AuthProvider({ children }) {
       setLoading(false);
     };
     initAuth();
+    return () => window.removeEventListener("auth-session-expired", handleSessionExpired);
   }, []);
 
   const login = async (username, password) => {
@@ -105,6 +115,7 @@ export function AuthProvider({ children }) {
     if (data && data.access_token) {
       const role = data.role || "farmer";
       localStorage.setItem("accessToken", data.access_token);
+      if (data.refresh_token) localStorage.setItem("refreshToken", data.refresh_token);
       localStorage.setItem("loggedInUser", username);
       localStorage.setItem("userRole", role);
       setUser({ username, token: data.access_token, role });
@@ -143,7 +154,9 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    authApi.logout().catch((err) => console.warn("Backend logout failed:", err));
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     localStorage.removeItem("loggedInUser");
     localStorage.removeItem("userRole");
     setUser(null);

@@ -12,6 +12,7 @@ class User(Base):
     password = Column(String, nullable=True)
     email = Column(String, unique=True, index=True, nullable=True)
     phone = Column(String, unique=True, index=True, nullable=True)
+    role = Column(String, nullable=False, default="farmer", index=True)
     google_sub = Column(String, unique=True, index=True, nullable=True)
     role = Column(String, default="farmer", nullable=False, index=True)  # farmer, shop_owner, rider
     is_verified = Column(Boolean, default=False, nullable=False)
@@ -185,4 +186,3 @@ class MandiPrice(Base):
         Index('idx_mandi_commodity_state', 'commodity', 'state'),
         Index('idx_mandi_market', 'market'),
     )
-

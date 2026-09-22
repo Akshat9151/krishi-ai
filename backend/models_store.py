@@ -17,6 +17,8 @@ class StoreProduct(Base):
     rating = Column(Float, default=0.0)
     reviews_count = Column(Integer, default=0)
     in_stock = Column(Boolean, default=True)
+    stock_quantity = Column(Integer, nullable=False, default=0)
+    shop_owner_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
     badge = Column(String)
     fertilizer_type = Column(String, index=True)  # NPK, organic, liquid, etc.
     suitable_crops = Column(Text)  # JSON array of suitable crops
@@ -81,14 +83,16 @@ class StoreOrder(Base):
     id = Column(Integer, primary_key=True, index=True)
     order_number = Column(String, unique=True, index=True)
     user_id = Column(Integer, nullable=True, index=True)
-    shop_id = Column(Integer, nullable=True, index=True)       # Assigned Shop/Agency user ID
-    rider_id = Column(Integer, nullable=True, index=True)      # Assigned Delivery Rider user ID
+    shop_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)       # Assigned Shop/Agency user ID
+    shop_owner_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True) # Backward compatibility alias
+    rider_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)      # Assigned Delivery Rider user ID
     customer_name = Column(String)
     phone = Column(String)
     address = Column(Text)
     items_json = Column(Text)
     total_amount = Column(Float)
     status = Column(String, default="confirmed", index=True)   # confirmed, preparing, ready_for_pickup, picked_up, out_for_delivery, delivered, cancelled
+    rejection_reason = Column(Text, nullable=True)
     payment_method = Column(String, default="cod")
     shop_notes = Column(String, nullable=True)
     cancellation_reason = Column(String, nullable=True)
@@ -103,3 +107,13 @@ class StoreOrder(Base):
     )
 
 
+
+class StoreOrderEvent(Base):
+    __tablename__ = "store_order_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(Integer, ForeignKey("store_orders.id"), nullable=False, index=True)
+    event_type = Column(String, nullable=False, index=True)
+    status = Column(String, nullable=False)
+    message = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)

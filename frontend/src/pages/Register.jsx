@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import Footer from "../components/Footer";
 import { Lock, User, ArrowRight, CheckCircle2, AlertCircle, Globe } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { authApi } from "../services/api";
 import { useTranslation } from "../context/LanguageContext";
 import { KhetiTakMark } from "../components/KhetiTakBranding";
 import GoogleSignInButton from "../components/GoogleSignInButton";
 
 export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
-  const { register } = useAuth();
+  const { register, loginWithToken } = useAuth();
   const { language, setLanguage, languages, t } = useTranslation();
 
   const [username, setUsername] = useState("");
@@ -15,6 +17,9 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [otpMode, setOtpMode] = useState(false);
+  const [otpChallenge, setOtpChallenge] = useState("");
+  const [otpCode, setOtpCode] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,7 +57,49 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
     }
   };
 
+  const requestSignupOtp = async (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      const data = await authApi.requestSignupOtp({
+        identifier: username.trim(),
+        username: username.trim(),
+        password,
+      });
+      setOtpChallenge(data.challenge_id);
+      setSuccess(data.dev_code ? `OTP sent. Development OTP: ${data.dev_code}` : "OTP sent successfully.");
+    } catch (err) {
+      setError(err.message || "Could not send signup OTP.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifySignupOtp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const data = await authApi.verifySignupOtp({ challenge_id: otpChallenge, code: otpCode.trim() });
+      loginWithToken(username.trim(), data.access_token, data.role);
+      if (data.refresh_token) localStorage.setItem("refreshToken", data.refresh_token);
+      localStorage.setItem("loggedInUser", username.trim());
+      setSuccess("Account verified. You can now sign in.");
+      setTimeout(() => onSwitchToLogin?.(), 500);
+    } catch (err) {
+      setError(err.message || "Invalid OTP.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
+    <>
     <div
       style={{
         minHeight: "100vh",
@@ -236,6 +283,22 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
             <ArrowRight size={16} />
           </button>
         </form>
+        <button type="button" onClick={() => { setOtpMode(!otpMode); setOtpChallenge(""); setError(""); }} style={{ alignSelf: "center", background: "transparent", border: "none", color: "var(--growth-green)", cursor: "pointer", fontSize: "13px", fontWeight: "700" }}>
+          {otpMode ? "Use password registration" : "Register with OTP"}
+        </button>
+        {otpMode && (
+          <form onSubmit={otpChallenge ? verifySignupOtp : requestSignupOtp} style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "10px" }}>
+            <input className="input-field" placeholder="Username, email or phone" value={username} onChange={(e) => setUsername(e.target.value)} required />
+            {!otpChallenge && (
+              <>
+                <input className="input-field" type="password" placeholder="Create password" value={password} onChange={(e) => setPassword(e.target.value)} minLength={6} required />
+                <input className="input-field" type="password" placeholder="Confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} minLength={6} required />
+              </>
+            )}
+            {otpChallenge && <input className="input-field" inputMode="numeric" placeholder="6-digit OTP" value={otpCode} onChange={(e) => setOtpCode(e.target.value)} minLength={6} maxLength={6} required />}
+            <button className="btn-secondary" disabled={loading}>{loading ? "Please wait..." : otpChallenge ? "Verify OTP" : "Send Signup OTP"}</button>
+          </form>
+        )}
 
         {loading && <div className="growing-bar" />}
 
@@ -269,5 +332,7 @@ export default function Register({ onSwitchToLogin, onRegisterSuccess }) {
 
       </div>
     </div>
+    <Footer />
+    </>
   );
 }

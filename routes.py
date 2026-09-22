@@ -110,6 +110,7 @@ class CropRequest(BaseModel):
 
 class DiseaseRequest(BaseModel):
     crop: str
+    symptoms: Optional[str] = ""
 
     @validator('crop')
     def validate_crop(cls, v):
@@ -122,6 +123,24 @@ class WeatherRequest(BaseModel):
     @validator('location')
     def validate_location(cls, v):
         return ValidationUtils.validate_location(v)
+
+
+class FertilizerDoseRequest(BaseModel):
+    crop: str
+    acres: float
+    soil_health: str = "medium"
+
+
+FERTILIZER_DOSE_PER_ACRE = {
+    "wheat": (55, 50, 20),
+    "rice": (65, 45, 25),
+    "maize": (70, 50, 30),
+    "cotton": (60, 40, 35),
+    "mustard": (45, 40, 15),
+    "potato": (80, 75, 60),
+    "sugarcane": (110, 60, 50),
+    "soybean": (20, 50, 20),
+}
 
 
 class AssistantRequest(BaseModel):
@@ -166,6 +185,12 @@ def weather_api(request: Request, data: WeatherRequest):
         weather = get_weather(data.location)
         recommendations = get_farming_recommendations(weather)
         logger.log_weather_api_call(data.location, True, weather["temperature"])
+        _record_activity(
+            _request_username(request),
+            "weather_check",
+            f"Weather checked: {data.location}",
+            f"{weather['temperature']}°C • {weather['humidity']}% humidity",
+        )
         return {
             "location": data.location,
             "temperature": weather["temperature"],
@@ -180,6 +205,41 @@ def weather_api(request: Request, data: WeatherRequest):
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"Weather service unavailable: {str(e)}"
         )
+
+
+@router.post("/fertilizer-dose")
+def fertilizer_dose(request: Request, data: FertilizerDoseRequest):
+    if data.acres <= 0 or data.acres > 10000:
+        raise HTTPException(status_code=400, detail="Farm area must be between 0.1 and 10,000 acres.")
+    crop = data.crop.strip().lower()
+    if crop not in FERTILIZER_DOSE_PER_ACRE:
+        raise HTTPException(status_code=422, detail="Fertilizer guidance is not available for this crop yet.")
+    health = data.soil_health.strip().lower()
+    if health not in {"low", "medium", "high"}:
+        raise HTTPException(status_code=422, detail="Soil health must be low, medium or high.")
+    base = FERTILIZER_DOSE_PER_ACRE[crop]
+    health_factor = {"low": 1.15, "medium": 1.0, "high": 0.9}[health]
+    urea_kg = round(base[0] * data.acres * health_factor)
+    dap_kg = round(base[1] * data.acres * health_factor)
+    mop_kg = round(base[2] * data.acres * health_factor)
+    _record_activity(
+        _request_username(request),
+        "fertilizer_calculation",
+        f"Fertilizer dose: {crop.title()}",
+        f"{data.acres:g} acres • {health} soil health",
+    )
+    return {
+        "crop": crop,
+        "acres": data.acres,
+        "soil_health": health,
+        "urea_kg": urea_kg,
+        "urea_bags": round(urea_kg / 45, 1),
+        "dap_kg": dap_kg,
+        "dap_bags": round(dap_kg / 50, 1),
+        "mop_kg": mop_kg,
+        "mop_bags": round(mop_kg / 50, 1),
+        "source": "KhetiTak agronomy baseline; confirm with a local soil test.",
+    }
 
 
 # =========================
@@ -198,7 +258,11 @@ def predict_crop(request: Request, data: CropRequest):
             season=data.season,
             location=data.location,
             weather=weather,
-            top_n=3
+            top_n=3,
+            nitrogen=data.N,
+            phosphorus=data.P,
+            potassium=data.K,
+            ph=data.ph,
         )
 
         recommended = preds
@@ -237,7 +301,7 @@ def predict_crop(request: Request, data: CropRequest):
 
 @router.post("/predict-disease")
 def disease_api(request: Request, data: DiseaseRequest):
-    result = predict_disease(data.crop)
+    result = predict_disease(data.crop, data.symptoms)
     _record_activity(
         _request_username(request),
         "disease_check",
@@ -268,6 +332,7 @@ def recommend_products(data: DiseaseRequest):
 
 @router.get("/mandi-bhav")
 def get_mandi_bhav(
+    request: Request,
     commodity: Optional[str] = None,
     state: Optional[str] = None,
     district: Optional[str] = None,
@@ -293,6 +358,12 @@ def get_mandi_bhav(
             )
 
         rows = query.order_by(MandiPrice.modal_price.desc()).limit(min(limit, 100)).all()
+        _record_activity(
+            _request_username(request),
+            "mandi_check",
+            "Mandi prices checked",
+            search or commodity or state or "All markets",
+        )
         return [
             {
                 "id": str(r.id),
@@ -431,9 +502,13 @@ def update_farmer_profile(request: Request, data: ProfileUpdateRequest):
 
 @router.get("/health")
 def health_check():
+    from backend.database import engine
+
     return {
         "status": "ok",
-        "service": "KhetiTak"
+        "service": "KhetiTak",
+        "database": engine.dialect.name,
+        "persistent_storage": engine.dialect.name not in {"sqlite"},
     }
 
 

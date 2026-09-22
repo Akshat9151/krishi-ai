@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import Footer from "../components/Footer";
 import { Lock, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Globe, Store, Bike } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { authApi } from "../services/api";
 import { useTranslation } from "../context/LanguageContext";
 import { KhetiTakMark, KhetiTakLogo } from "../components/KhetiTakBranding";
 import GoogleSignInButton from "../components/GoogleSignInButton";
 
-export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateShopLogin, onNavigateRiderLogin }) {
-  const { login } = useAuth();
+export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateShopLogin, onNavigateRiderLogin, onStaffLogin }) {
+  const { login, loginWithToken } = useAuth();
   const { language, setLanguage, languages, t } = useTranslation();
 
   const [username, setUsername] = useState("");
@@ -14,6 +16,15 @@ export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateSh
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [recovery, setRecovery] = useState(false);
+  const [recoveryStep, setRecoveryStep] = useState("request");
+  const [recoveryIdentifier, setRecoveryIdentifier] = useState("");
+  const [recoveryCode, setRecoveryCode] = useState("");
+  const [recoveryChallenge, setRecoveryChallenge] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [otpMode, setOtpMode] = useState(false);
+  const [otpChallenge, setOtpChallenge] = useState("");
+  const [otpCode, setOtpCode] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,7 +59,76 @@ export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateSh
     }
   };
 
+  const requestRecoveryOtp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const data = await authApi.requestPasswordResetOtp(recoveryIdentifier.trim());
+      setRecoveryChallenge(data.challenge_id);
+      setRecoveryStep("verify");
+      setSuccess(false);
+    } catch (err) {
+      setError(err.message || "Could not send reset OTP.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetAccountPassword = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      await authApi.resetPassword({
+        challenge_id: recoveryChallenge,
+        code: recoveryCode.trim(),
+        new_password: newPassword,
+      });
+      setRecovery(false);
+      setRecoveryStep("request");
+      setSuccess(true);
+    } catch (err) {
+      setError(err.message || "Could not reset password.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const requestLoginOtp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const data = await authApi.requestLoginOtp({ identifier: username.trim(), password });
+      setOtpChallenge(data.challenge_id);
+      setSuccess(data.dev_code ? `OTP sent. Development OTP: ${data.dev_code}` : "OTP sent successfully.");
+    } catch (err) {
+      setError(err.message || "Could not send login OTP.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyLoginOtp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const data = await authApi.verifyLoginOtp({ challenge_id: otpChallenge, code: otpCode.trim() });
+      loginWithToken(username.trim(), data.access_token, data.role);
+      if (data.refresh_token) localStorage.setItem("refreshToken", data.refresh_token);
+      setSuccess("OTP verified. Redirecting...");
+      setTimeout(() => onLoginSuccess?.(), 300);
+    } catch (err) {
+      setError(err.message || "Invalid OTP.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
+    <>
     <div
       style={{
         minHeight: "100vh",
@@ -172,6 +252,25 @@ export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateSh
           </div>
         )}
 
+        {recovery ? (
+          <form onSubmit={recoveryStep === "request" ? requestRecoveryOtp : resetAccountPassword} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {recoveryStep === "request" ? (
+              <>
+                <h3>Reset your password</h3>
+                <input className="input-field" placeholder="Username, email or phone" value={recoveryIdentifier} onChange={(e) => setRecoveryIdentifier(e.target.value)} required />
+                <button className="btn-primary" disabled={loading}>{loading ? "Sending OTP..." : "Send reset OTP"}</button>
+              </>
+            ) : (
+              <>
+                <h3>Enter OTP and new password</h3>
+                <input className="input-field" inputMode="numeric" placeholder="6-digit OTP" value={recoveryCode} onChange={(e) => setRecoveryCode(e.target.value)} required />
+                <input className="input-field" type="password" placeholder="New password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} minLength={6} required />
+                <button className="btn-primary" disabled={loading}>{loading ? "Updating..." : "Update password"}</button>
+              </>
+            )}
+            <button type="button" className="btn-outline" onClick={() => { setRecovery(false); setError(""); }}>Back to login</button>
+          </form>
+        ) : (<>
         {/* Login Form */}
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div>
@@ -216,6 +315,20 @@ export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateSh
             <ArrowRight size={16} />
           </button>
         </form>
+        <button type="button" onClick={() => { setOtpMode(!otpMode); setOtpChallenge(""); setError(""); }} style={{ alignSelf: "center", background: "transparent", border: "none", color: "var(--growth-green)", cursor: "pointer", fontSize: "13px", fontWeight: "700" }}>
+          {otpMode ? "Use password login" : "Login with OTP"}
+        </button>
+        {otpMode && (
+          <form onSubmit={otpChallenge ? verifyLoginOtp : requestLoginOtp} style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "10px" }}>
+            <input className="input-field" placeholder="Username, email or phone" value={username} onChange={(e) => setUsername(e.target.value)} required />
+            {!otpChallenge && <input className="input-field" type="password" placeholder="Your password" value={password} onChange={(e) => setPassword(e.target.value)} required />}
+            {otpChallenge && <input className="input-field" inputMode="numeric" placeholder="6-digit OTP" value={otpCode} onChange={(e) => setOtpCode(e.target.value)} minLength={6} maxLength={6} required />}
+            <button className="btn-secondary" disabled={loading}>{loading ? "Please wait..." : otpChallenge ? "Verify OTP" : "Send Login OTP"}</button>
+          </form>
+        )}
+        <button type="button" onClick={() => { setRecovery(true); setError(""); setSuccess(false); }} style={{ alignSelf: "flex-end", background: "transparent", border: "none", color: "var(--terracotta)", cursor: "pointer", fontSize: "12px" }}>
+          Forgot password?
+        </button>
 
         {/* Divider */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "20px 0", opacity: 0.5 }}>
@@ -246,6 +359,12 @@ export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateSh
             {t("createAccount", "Create an account")} →
           </button>
         </div>
+        {onStaffLogin && (
+          <button type="button" onClick={onStaffLogin} style={{ display: "block", margin: "16px auto 0", background: "transparent", border: "none", color: "var(--growth-green)", cursor: "pointer", fontSize: "13px", fontWeight: "700" }}>
+            Staff / Partner login
+          </button>
+        )}
+        </>)}
 
         {/* Dedicated Partner Access Section */}
         <div
@@ -320,6 +439,8 @@ export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateSh
 
       </div>
     </div>
+    <Footer />
+    </>
   );
 }
 

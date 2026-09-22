@@ -1,4 +1,5 @@
 import random
+import os
 import requests
 
 from utils.config import OLLAMA_MODEL, OLLAMA_BASE_URL, MAX_NEW_TOKENS, TOP_P, TOP_K
@@ -21,6 +22,18 @@ def farmer_style(sentence: str) -> str:
 
 def _normalize_text(text: str) -> str:
     return text.lower().strip()
+
+
+def _greeting_reply(question: str) -> str:
+    """Return a natural welcome for greetings instead of farming advice."""
+    normalized = _normalize_text(question)
+    greeting_words = {
+        "hi", "hii", "hiii", "hello", "hey", "heyy", "namaste",
+        "namaskar", "नमस्ते", "नमस्कार",
+    }
+    if normalized in greeting_words:
+        return "Namaste! Main KhetiTak hoon. Aap fasal, mausam, mitti ya kheti se juda sawal pooch sakte hain."
+    return ""
 
 
 def _keyword_reply(question: str) -> str:
@@ -117,48 +130,52 @@ Answer:
             return ""
 
 
-import os
-
-def _gemini_reply(question: str) -> str:
-    """Call Google Gemini API if GEMINI_API_KEY is configured."""
-    api_key = os.environ.get("GEMINI_API_KEY")
+def _groq_reply(question: str) -> str:
+    """Call Groq's OpenAI-compatible API when GROQ_API_KEY is configured."""
+    api_key = os.environ.get("GROQ_API_KEY")
     if not api_key:
         return ""
-    
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-    system_prompt = (
-        "You are KhetiTak, an expert Indian agriculture assistant and farming companion. "
-        "Rules: "
-        "- Answer in Hindi / Hinglish / English (matching user language, farmer-friendly). "
-        "- Give practical, concise advice for crops, pests, disease, fertilizer, soil, and weather. "
-        "- Format with clear bullet points if giving actionable steps. "
-        "- Never recommend banned or lethal agrochemicals."
-    )
-    payload = {
-        "contents": [
-            {
-                "parts": [
-                    {"text": f"{system_prompt}\n\nFarmer Question: {question}"}
-                ]
-            }
-        ],
-        "generationConfig": {
-            "temperature": 0.6,
-            "maxOutputTokens": 400
-        }
-    }
+
+    response = None
     try:
-        resp = requests.post(url, json=payload, timeout=12)
-        if resp.status_code == 200:
-            data = resp.json()
-            candidates = data.get("candidates", [])
-            if candidates:
-                parts = candidates[0].get("content", {}).get("parts", [])
-                if parts:
-                    return parts[0].get("text", "").strip()
-    except Exception as e:
-        print("Gemini API call exception:", e)
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant"),
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are KhetiTak, an expert Indian agriculture assistant. "
+                            "Reply in the farmer's language (Hindi, Hinglish, or English). "
+                            "Give concise, practical advice about crops, pests, disease, "
+                            "fertilizer, soil, and weather. Never recommend banned or "
+                            "lethal agrochemicals. For uncertain diagnoses, advise a "
+                            "local agriculture expert or Krishi Vigyan Kendra."
+                        ),
+                    },
+                    {"role": "user", "content": question},
+                ],
+                "temperature": 0.6,
+                "max_tokens": 400,
+            },
+            timeout=12,
+        )
+        if response.status_code != 200:
+            print(f"Groq API returned HTTP {response.status_code}")
+            return ""
+
+        choices = response.json().get("choices", [])
+        if choices:
+            return choices[0].get("message", {}).get("content", "").strip()
+    except (requests.RequestException, ValueError) as exc:
+        print(f"Groq API call failed: {exc}")
     return ""
+
 
 ollama = OllamaChat(OLLAMA_MODEL)
 
@@ -177,12 +194,13 @@ def krishi_ai_reply(question: str) -> str:
     if not question or not question.strip():
         return "Kripya apna farming sawal likhiye."
 
-    # 1. Try Gemini Cloud AI first if API key configured
-    gemini_resp = _gemini_reply(question)
-    if gemini_resp:
-        return gemini_resp
+    greeting = _greeting_reply(question)
+    if greeting:
+        return greeting
 
-    # 2. Try Ollama local if available
+    groq_resp = _groq_reply(question)
+    if groq_resp:
+        return groq_resp
     if ollama.available:
         reply = ollama.generate(question)
         if reply:
@@ -190,4 +208,3 @@ def krishi_ai_reply(question: str) -> str:
 
     # 3. Deterministic expert agriculture knowledge fallback
     return farmer_style(_keyword_reply(question))
-

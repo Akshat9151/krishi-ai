@@ -73,6 +73,8 @@ def _send_brevo_email(destination: str, code: str, message: str) -> bool:
     """Send OTP via Brevo (formerly Sendinblue)."""
     if not settings.BREVO_API_KEY:
         raise RuntimeError("BREVO_API_KEY not configured")
+    if not settings.BREVO_SENDER_EMAIL:
+        raise RuntimeError("BREVO_SENDER_EMAIL not configured")
     
     response = requests.post(
         "https://api.brevo.com/v3/smtp/email",
@@ -82,7 +84,7 @@ def _send_brevo_email(destination: str, code: str, message: str) -> bool:
             "content-type": "application/json",
         },
         json={
-            "sender": {"name": "KhetiTak", "email": "noreply@khetitak.in"},
+            "sender": {"name": settings.BREVO_SENDER_NAME, "email": settings.BREVO_SENDER_EMAIL},
             "to": [{"email": destination}],
             "subject": "KhetiTak verification code",
             "htmlContent": f"<p>Your KhetiTak verification code is <strong>{code}</strong>.</p>"

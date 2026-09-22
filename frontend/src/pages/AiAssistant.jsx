@@ -136,6 +136,7 @@ export default function AiAssistant() {
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
+            aria-label={soundEnabled ? "Turn assistant voice off" : "Turn assistant voice on"}
             style={{
               background: "transparent",
               border: "1px solid var(--card-border)",
@@ -156,6 +157,7 @@ export default function AiAssistant() {
 
           <button
             onClick={handleClearChat}
+            aria-label="Clear assistant conversation"
             style={{
               background: "transparent",
               border: "1px solid var(--card-border)",
@@ -179,6 +181,9 @@ export default function AiAssistant() {
       {/* Messages Scroll Area */}
       <div
         className="ka-card"
+        role="log"
+        aria-live="polite"
+        aria-label="Assistant conversation"
         style={{
           flex: 1,
           overflowY: "auto",
@@ -223,7 +228,7 @@ export default function AiAssistant() {
         })}
 
         {loading && (
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-secondary)", fontSize: "13px" }}>
+          <div role="status" style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-secondary)", fontSize: "13px" }}>
             <Sparkles size={16} color="var(--marigold)" />
             <span>KhetiTak is formulating farming advice...</span>
           </div>
@@ -266,6 +271,7 @@ export default function AiAssistant() {
         <button
           type="submit"
           className="btn-primary"
+          aria-label="Send message"
           style={{ padding: "0 20px" }}
           disabled={loading || !inputMessage.trim()}
         >

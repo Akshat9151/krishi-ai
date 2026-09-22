@@ -3,6 +3,7 @@ import { ScanSearch, AlertTriangle, ShieldCheck, ShoppingCart, Check, Sparkles }
 import { coreApi, storeApi } from "../services/api";
 import { useCart } from "../context/CartContext";
 import { useTranslation } from "../context/LanguageContext";
+import { getProductImage } from "../utils/productImages";
 
 export default function DiseaseDetection({ setCurrentView }) {
   const { addToCart } = useCart();
@@ -35,7 +36,7 @@ export default function DiseaseDetection({ setCurrentView }) {
 
     try {
       // 1. Predict disease
-      const diseaseData = await coreApi.predictDisease(selectedCrop);
+      const diseaseData = await coreApi.predictDisease(selectedCrop, symptomsInput);
       setDiagnosis(diseaseData);
 
       // 2. Recommend products
@@ -72,10 +73,10 @@ export default function DiseaseDetection({ setCurrentView }) {
 
   const handleAddToCart = (product) => {
     const cartProduct = {
-      id: product.id || Math.floor(Math.random() * 1000) + 100,
+      id: product.id,
       name: product.name,
-      price: product.price || 450,
-      image_url: product.image_url || "https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?w=120",
+      price: product.price,
+      image_url: getProductImage(product, 120),
       unit: "500ml / 1kg",
       brand: "KhetiTak Certified",
     };

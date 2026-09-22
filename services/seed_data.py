@@ -3,6 +3,18 @@ from sqlalchemy.orm import Session
 from backend.models_store import StoreProduct, ProductCategory, FertilizerRecommendation
 from backend.models import MandiPrice
 
+CATALOG_IMAGE_URLS = {
+    "seeds": "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80",
+    "rice-seeds": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80",
+    "maize-seeds": "https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=600&auto=format&fit=crop&q=80",
+    "mustard-seeds": "https://images.unsplash.com/photo-1473445361085-b9a07f55608b?w=600&auto=format&fit=crop&q=80",
+    "fertilizer": "https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=600&auto=format&fit=crop&q=80",
+    "crop-protection": "https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?w=600&auto=format&fit=crop&q=80",
+    "tools": "https://images.unsplash.com/photo-1589652043056-ba1a2c4830a7?w=600&auto=format&fit=crop&q=80",
+    "irrigation": "https://images.unsplash.com/photo-1560493676-04071c5f467b?w=600&auto=format&fit=crop&q=80",
+    "organic": "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=600&auto=format&fit=crop&q=80",
+}
+
 CATEGORIES = [
     {
         "name": "vegetable-seeds",
@@ -332,7 +344,7 @@ def seed_database(db: Session):
     # Seed the original catalog and its recommendations when the database is empty.
     if db.query(StoreProduct).count() == 0:
         for prod_data in PRODUCTS:
-            db.add(StoreProduct(**prod_data))
+            db.add(StoreProduct(**prod_data, stock_quantity=50, in_stock=True))
         db.commit()
 
         recs = [
@@ -370,8 +382,19 @@ def seed_database(db: Session):
     existing_skus = {sku for (sku,) in db.query(StoreProduct.sku).filter(StoreProduct.sku.isnot(None)).all()}
     for prod_data in DEMO_PRODUCTS:
         if prod_data["sku"] not in existing_skus:
-            db.add(StoreProduct(**prod_data))
+            db.add(StoreProduct(**prod_data, stock_quantity=50, in_stock=True))
     db.commit()
+
+    # Existing catalogs predate quantity tracking; initialize only unknown stock.
+    db.query(StoreProduct).filter(StoreProduct.stock_quantity.is_(None)).update(
+        {StoreProduct.stock_quantity: 50},
+        synchronize_session=False,
+    )
+    for product in db.query(StoreProduct).all():
+        product.in_stock = product.stock_quantity > 0
+    db.commit()
+
+    normalize_catalog_images(db)
 
     # Seed Mandi market prices idempotently
     if db.query(MandiPrice).count() == 0:
@@ -396,3 +419,38 @@ def seed_database(db: Session):
             db.add(MandiPrice(**m))
         db.commit()
 
+
+def normalize_catalog_images(db: Session):
+    """Replace legacy placeholder/reused catalog images with category-specific assets."""
+    products = db.query(StoreProduct).all()
+    for product in products:
+        text = " ".join(
+            value or ""
+            for value in (product.name, product.category, product.subcategory, product.sku)
+        ).lower()
+
+        if product.category == "vegetable-seeds" and ("rice" in text or "paddy" in text or "धान" in text):
+            image_url = CATALOG_IMAGE_URLS["rice-seeds"]
+        elif product.category == "vegetable-seeds" and ("maize" in text or "corn" in text or "मक्का" in text):
+            image_url = CATALOG_IMAGE_URLS["maize-seeds"]
+        elif product.category == "vegetable-seeds" and ("mustard" in text or "सरसों" in text):
+            image_url = CATALOG_IMAGE_URLS["mustard-seeds"]
+        elif product.category == "vegetable-seeds":
+            image_url = CATALOG_IMAGE_URLS["seeds"]
+        elif product.category == "organic-fertilizers":
+            image_url = CATALOG_IMAGE_URLS["fertilizer"]
+        elif product.category == "crop-protection":
+            image_url = CATALOG_IMAGE_URLS["crop-protection"]
+        elif product.category == "farming-tools":
+            image_url = CATALOG_IMAGE_URLS["tools"]
+        elif product.category == "irrigation":
+            image_url = CATALOG_IMAGE_URLS["irrigation"]
+        elif product.category in {"organic-bio", "organic"}:
+            image_url = CATALOG_IMAGE_URLS["organic"]
+        else:
+            continue
+
+        if product.image_url != image_url:
+            product.image_url = image_url
+
+    db.commit()
