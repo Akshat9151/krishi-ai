@@ -103,10 +103,10 @@ export default function PartnerAuth({ defaultRole = "shop_owner", onBackToFarmer
         }}
       >
         {/* Back link */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
           <button
             type="button"
-            onClick={onBackToFarmerLogin || (() => (window.location.hash = "login"))}
+            onClick={onBackToFarmerLogin || (() => (window.location.hash = "home"))}
             style={{
               background: "transparent",
               border: "none",
@@ -121,100 +121,51 @@ export default function PartnerAuth({ defaultRole = "shop_owner", onBackToFarmer
             }}
           >
             <ArrowLeft size={14} />
-            <span>Farmer App Login</span>
+            <span>Back to KhetiTak</span>
           </button>
           <span
             style={{
               fontSize: "11px",
               fontWeight: "700",
-              color: isShop ? "var(--terracotta)" : "var(--growth-green)",
-              backgroundColor: isShop ? "var(--terracotta-light)" : "var(--growth-green-light)",
-              padding: "3px 8px",
+              color: "var(--terracotta)",
+              backgroundColor: "rgba(196, 92, 53, 0.12)",
+              padding: "4px 10px",
               borderRadius: "var(--radius-full)",
               display: "flex",
               alignItems: "center",
-              gap: "4px",
+              gap: "5px",
             }}
           >
-            <ShieldCheck size={12} />
-            Partner Portal
+            <ShieldCheck size={13} />
+            {isShop ? "Shop Partner Portal" : "Rider Partner Portal"}
           </span>
         </div>
 
-        {/* Role Switcher Pill Tabs */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "4px",
-            padding: "4px",
-            backgroundColor: "var(--bg-cream)",
-            borderRadius: "var(--radius-sm)",
-            border: "1px solid var(--card-border)",
-            marginBottom: "22px",
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => handleSwitchRole("shop_owner")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "6px",
-              padding: "9px 12px",
-              borderRadius: "6px",
-              border: "none",
-              background: isShop ? "#FFFFFF" : "transparent",
-              color: isShop ? "var(--terracotta)" : "var(--text-secondary)",
-              fontWeight: isShop ? "700" : "500",
-              fontSize: "13px",
-              cursor: "pointer",
-              boxShadow: isShop ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
-              transition: "all 0.15s ease",
-            }}
-          >
-            <Store size={16} color={isShop ? "var(--terracotta)" : "var(--text-muted)"} />
-            <span>Shop / Agency</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleSwitchRole("rider")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "6px",
-              padding: "9px 12px",
-              borderRadius: "6px",
-              border: "none",
-              background: !isShop ? "#FFFFFF" : "transparent",
-              color: !isShop ? "var(--growth-green)" : "var(--text-secondary)",
-              fontWeight: !isShop ? "700" : "500",
-              fontSize: "13px",
-              cursor: "pointer",
-              boxShadow: !isShop ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
-              transition: "all 0.15s ease",
-            }}
-          >
-            <Bike size={16} color={!isShop ? "var(--growth-green)" : "var(--text-muted)"} />
-            <span>Delivery Fleet</span>
-          </button>
-        </div>
-
         {/* Portal Header */}
-        <div style={{ textAlign: "center", marginBottom: "20px" }}>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
-            <KhetiTakMark size={48} />
+        <div style={{ textAlign: "center", marginBottom: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+            <div
+              style={{
+                width: "56px",
+                height: "56px",
+                borderRadius: "14px",
+                backgroundColor: "rgba(196, 92, 53, 0.12)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "var(--terracotta)",
+              }}
+            >
+              {isShop ? <Store size={28} /> : <Bike size={28} />}
+            </div>
           </div>
-          <h1 style={{ fontSize: "20px", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 4px" }}>
-            {isShop ? "Shop & Agency Dashboard" : "Delivery Partner Fleet App"}
+          <h1 style={{ fontSize: "20px", fontWeight: "800", color: "var(--soil-dark, #24201D)", margin: "0 0 6px" }}>
+            {isShop ? "Shop & Agency Partner Portal" : "Delivery Partner Fleet Portal"}
           </h1>
-          <p style={{ fontSize: "12.5px", color: "var(--text-secondary)", margin: 0 }}>
+          <p style={{ fontSize: "13px", color: "var(--text-secondary, #524B42)", margin: 0, lineHeight: 1.4 }}>
             {isShop
-              ? "Manage incoming farmer orders, package preparations & inventory"
-              : "Accept local deliveries, navigate village drops & track daily earnings"}
+              ? "Manage incoming farmer orders, package preparations & mandi store inventory."
+              : "Accept village deliveries, navigate farm drops & track earnings per trip."}
           </p>
         </div>
 
@@ -225,12 +176,12 @@ export default function PartnerAuth({ defaultRole = "shop_owner", onBackToFarmer
             onClick={() => { setMode("login"); setError(""); }}
             style={{
               flex: 1,
-              padding: "8px",
+              padding: "10px 8px",
               textAlign: "center",
               fontSize: "13px",
               fontWeight: mode === "login" ? "700" : "500",
-              color: mode === "login" ? (isShop ? "var(--terracotta)" : "var(--growth-green)") : "var(--text-muted)",
-              borderBottom: mode === "login" ? `2px solid ${isShop ? "var(--terracotta)" : "var(--growth-green)"}` : "none",
+              color: mode === "login" ? "var(--terracotta)" : "var(--text-muted)",
+              borderBottom: mode === "login" ? "2px solid var(--terracotta)" : "none",
               background: "transparent",
               border: "none",
               cursor: "pointer",
@@ -243,12 +194,12 @@ export default function PartnerAuth({ defaultRole = "shop_owner", onBackToFarmer
             onClick={() => { setMode("register"); setError(""); }}
             style={{
               flex: 1,
-              padding: "8px",
+              padding: "10px 8px",
               textAlign: "center",
               fontSize: "13px",
               fontWeight: mode === "register" ? "700" : "500",
-              color: mode === "register" ? (isShop ? "var(--terracotta)" : "var(--growth-green)") : "var(--text-muted)",
-              borderBottom: mode === "register" ? `2px solid ${isShop ? "var(--terracotta)" : "var(--growth-green)"}` : "none",
+              color: mode === "register" ? "var(--terracotta)" : "var(--text-muted)",
+              borderBottom: mode === "register" ? "2px solid var(--terracotta)" : "none",
               background: "transparent",
               border: "none",
               cursor: "pointer",
@@ -370,8 +321,8 @@ export default function PartnerAuth({ defaultRole = "shop_owner", onBackToFarmer
               width: "100%",
               padding: "12px",
               marginTop: "6px",
-              backgroundColor: isShop ? "var(--terracotta)" : "var(--growth-green)",
-              borderColor: isShop ? "var(--terracotta)" : "var(--growth-green)",
+              backgroundColor: "var(--terracotta)",
+              borderColor: "var(--terracotta)",
             }}
           >
             <span>

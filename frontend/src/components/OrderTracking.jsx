@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ArrowLeft, CheckCircle2, Clock3, MapPin, PackageCheck, Store, Truck } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock3, MapPin, PackageCheck, Store, Truck, XCircle } from "lucide-react";
 
 import { storeApi } from "../services/api";
 
@@ -26,6 +26,9 @@ export default function OrderTracking({ order, onBack }) {
   const [currentOrder, setCurrentOrder] = useState(order);
   const [activeStage, setActiveStage] = useState(() => stageFromOrder(order));
 
+  const status = String(currentOrder?.status || "").toLowerCase();
+  const isCancelled = status === "cancelled" || status === "rejected";
+
   // Poll real backend status every 4 seconds
   useEffect(() => {
     if (!order?.order_number) return undefined;
@@ -46,8 +49,8 @@ export default function OrderTracking({ order, onBack }) {
     const timer = window.setInterval(pollStatus, 4000);
     return () => window.clearInterval(timer);
   }, [order?.order_number]);
-  const currentStage = TRACKING_STAGES[activeStage];
-  const CurrentIcon = currentStage.icon;
+  const currentStage = TRACKING_STAGES[activeStage] || TRACKING_STAGES[0];
+  const CurrentIcon = isCancelled ? XCircle : currentStage.icon;
 
   return (
     <div className="page-container" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -59,19 +62,33 @@ export default function OrderTracking({ order, onBack }) {
       <div>
         <h2 style={{ fontSize: "22px", fontWeight: "800" }}>Track Order #{order.order_number}</h2>
         <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginTop: "4px" }}>
-          Expected delivery: today or tomorrow, depending on local route availability.
+          {isCancelled
+            ? "This order was cancelled."
+            : "Expected delivery: today or tomorrow, depending on local route availability."}
         </p>
       </div>
 
-      <div className="ka-card" style={{ display: "flex", alignItems: "center", gap: "12px", borderLeft: "5px solid var(--terracotta)" }}>
-        <CurrentIcon size={26} color="var(--terracotta)" />
-        <div>
-          <strong style={{ fontSize: "16px" }}>{currentStage.label}</strong>
-          <p style={{ color: "var(--text-secondary)", fontSize: "13px", marginTop: "2px" }}>
-            Live status synced with shop & delivery partner in real-time.
-          </p>
+      {isCancelled ? (
+        <div className="ka-card" style={{ display: "flex", alignItems: "flex-start", gap: "12px", borderLeft: "5px solid #C53030", backgroundColor: "#FFF5F5" }}>
+          <XCircle size={26} color="#C53030" style={{ flexShrink: 0, marginTop: "2px" }} />
+          <div>
+            <strong style={{ fontSize: "16px", color: "#9B2C2C" }}>Order Cancelled</strong>
+            <p style={{ color: "#742A2A", fontSize: "13px", marginTop: "4px" }}>
+              {currentOrder.rejection_reason || currentOrder.cancellation_reason || "This order could not be fulfilled by the shop partner."}
+            </p>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="ka-card" style={{ display: "flex", alignItems: "center", gap: "12px", borderLeft: "5px solid var(--terracotta)" }}>
+          <CurrentIcon size={26} color="var(--terracotta)" />
+          <div>
+            <strong style={{ fontSize: "16px" }}>{currentStage.label}</strong>
+            <p style={{ color: "var(--text-secondary)", fontSize: "13px", marginTop: "2px" }}>
+              Live status synced with shop & delivery partner in real-time.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="ka-card">
         <h3 style={{ fontSize: "16px", marginBottom: "18px" }}>Delivery progress</h3>

@@ -288,7 +288,7 @@ export default function ShopDashboard({ setCurrentView }) {
 
       {/* Content wrapper */}
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px 16px" }}>
-        {/* KPI Summary Cards (Zomato Merchant style) */}
+        {/* KPI Summary Cards (Merchant Dashboard) */}
         <div
           style={{
             display: "grid",
@@ -297,44 +297,44 @@ export default function ShopDashboard({ setCurrentView }) {
             marginBottom: "24px",
           }}
         >
-          <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "12px", border: "1px solid #E6DEC8", borderLeft: "4px solid #C45C35" }}>
-            <div style={{ fontSize: "12px", color: "#524B42", fontWeight: 600 }}>NEW ORDERS</div>
-            <div style={{ fontSize: "24px", fontWeight: "800", color: "#C45C35", marginTop: "4px" }}>
+          <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "14px", border: "1px solid var(--card-border, #E6DEC8)", borderLeft: "4px solid var(--terracotta, #C1440E)", boxShadow: "0 2px 8px rgba(36, 32, 29, 0.04)" }}>
+            <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", fontWeight: 700 }}>NEW ORDERS</div>
+            <div style={{ fontSize: "24px", fontWeight: "800", color: "var(--terracotta, #C1440E)", marginTop: "4px" }}>
               {stats.new_orders || 0}
             </div>
-            <div style={{ fontSize: "11px", color: "#6B645A", marginTop: "2px" }}>Action needed</div>
+            <div style={{ fontSize: "11px", color: "var(--text-sub, #5C554E)", marginTop: "2px" }}>Action needed</div>
           </div>
 
-          <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "12px", border: "1px solid #E6DEC8", borderLeft: "4px solid #DD6B20" }}>
-            <div style={{ fontSize: "12px", color: "#524B42", fontWeight: 600 }}>PREPARING / PACKING</div>
-            <div style={{ fontSize: "24px", fontWeight: "800", color: "#DD6B20", marginTop: "4px" }}>
+          <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "14px", border: "1px solid var(--card-border, #E6DEC8)", borderLeft: "4px solid var(--marigold, #E8A33D)", boxShadow: "0 2px 8px rgba(36, 32, 29, 0.04)" }}>
+            <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", fontWeight: 700 }}>PREPARING / PACKING</div>
+            <div style={{ fontSize: "24px", fontWeight: "800", color: "var(--marigold, #E8A33D)", marginTop: "4px" }}>
               {stats.preparing || 0}
             </div>
-            <div style={{ fontSize: "11px", color: "#6B645A", marginTop: "2px" }}>In shop prep</div>
+            <div style={{ fontSize: "11px", color: "var(--text-sub, #5C554E)", marginTop: "2px" }}>In shop prep</div>
           </div>
 
-          <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "12px", border: "1px solid #E6DEC8", borderLeft: "4px solid #2B6CB0" }}>
-            <div style={{ fontSize: "12px", color: "#524B42", fontWeight: 600 }}>READY FOR RIDER</div>
-            <div style={{ fontSize: "24px", fontWeight: "800", color: "#2B6CB0", marginTop: "4px" }}>
+          <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "14px", border: "1px solid var(--card-border, #E6DEC8)", borderLeft: "4px solid var(--soil-dark, #24201D)", boxShadow: "0 2px 8px rgba(36, 32, 29, 0.04)" }}>
+            <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", fontWeight: 700 }}>READY FOR RIDER</div>
+            <div style={{ fontSize: "24px", fontWeight: "800", color: "var(--soil-dark, #24201D)", marginTop: "4px" }}>
               {stats.ready_for_pickup || 0}
             </div>
-            <div style={{ fontSize: "11px", color: "#6B645A", marginTop: "2px" }}>Awaiting pickup</div>
+            <div style={{ fontSize: "11px", color: "var(--text-sub, #5C554E)", marginTop: "2px" }}>Awaiting pickup</div>
           </div>
 
-          <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "12px", border: "1px solid #E6DEC8", borderLeft: "4px solid #276749" }}>
-            <div style={{ fontSize: "12px", color: "#524B42", fontWeight: 600 }}>COMPLETED</div>
-            <div style={{ fontSize: "24px", fontWeight: "800", color: "#276749", marginTop: "4px" }}>
+          <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "14px", border: "1px solid var(--card-border, #E6DEC8)", borderLeft: "4px solid var(--growth-green, #4C7A3A)", boxShadow: "0 2px 8px rgba(36, 32, 29, 0.04)" }}>
+            <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", fontWeight: 700 }}>COMPLETED</div>
+            <div style={{ fontSize: "24px", fontWeight: "800", color: "var(--growth-green, #4C7A3A)", marginTop: "4px" }}>
               {stats.delivered || 0}
             </div>
-            <div style={{ fontSize: "11px", color: "#6B645A", marginTop: "2px" }}>Successfully delivered</div>
+            <div style={{ fontSize: "11px", color: "var(--text-sub, #5C554E)", marginTop: "2px" }}>Successfully delivered</div>
           </div>
 
-          <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "12px", border: "1px solid #E6DEC8", borderLeft: "4px solid #319795" }}>
-            <div style={{ fontSize: "12px", color: "#524B42", fontWeight: 600 }}>TOTAL REVENUE</div>
-            <div style={{ fontSize: "24px", fontWeight: "800", color: "#24201D", marginTop: "4px" }}>
+          <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "14px", border: "1px solid var(--card-border, #E6DEC8)", borderLeft: "4px solid var(--terracotta, #C1440E)", boxShadow: "0 2px 8px rgba(36, 32, 29, 0.04)" }}>
+            <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", fontWeight: 700 }}>TOTAL REVENUE</div>
+            <div style={{ fontSize: "24px", fontWeight: "800", color: "var(--soil-dark, #24201D)", marginTop: "4px" }}>
               ₹{(stats.total_revenue || 0).toLocaleString("en-IN")}
             </div>
-            <div style={{ fontSize: "11px", color: "#6B645A", marginTop: "2px" }}>Gross sales</div>
+            <div style={{ fontSize: "11px", color: "var(--text-sub, #5C554E)", marginTop: "2px" }}>Gross sales</div>
           </div>
         </div>
 
@@ -343,7 +343,7 @@ export default function ShopDashboard({ setCurrentView }) {
           style={{
             display: "flex",
             gap: "8px",
-            borderBottom: "1px solid #E6DEC8",
+            borderBottom: "1px solid var(--card-border, #E6DEC8)",
             marginBottom: "20px",
           }}
         >
@@ -353,10 +353,10 @@ export default function ShopDashboard({ setCurrentView }) {
               padding: "10px 18px",
               background: "none",
               border: "none",
-              borderBottom: activeTab === "orders" ? "3px solid var(--terracotta, #C45C35)" : "3px solid transparent",
+              borderBottom: activeTab === "orders" ? "3px solid var(--terracotta, #C1440E)" : "3px solid transparent",
               fontWeight: 700,
               fontSize: "14px",
-              color: activeTab === "orders" ? "var(--terracotta, #C45C35)" : "#524B42",
+              color: activeTab === "orders" ? "var(--terracotta, #C1440E)" : "var(--text-sub, #5C554E)",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -371,10 +371,10 @@ export default function ShopDashboard({ setCurrentView }) {
               padding: "10px 18px",
               background: "none",
               border: "none",
-              borderBottom: activeTab === "inventory" ? "3px solid var(--terracotta, #C45C35)" : "3px solid transparent",
+              borderBottom: activeTab === "inventory" ? "3px solid var(--terracotta, #C1440E)" : "3px solid transparent",
               fontWeight: 700,
               fontSize: "14px",
-              color: activeTab === "inventory" ? "var(--terracotta, #C45C35)" : "#524B42",
+              color: activeTab === "inventory" ? "var(--terracotta, #C1440E)" : "var(--text-sub, #5C554E)",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -406,11 +406,11 @@ export default function ShopDashboard({ setCurrentView }) {
                   style={{
                     padding: "6px 14px",
                     borderRadius: "20px",
-                    border: orderFilter === f.key ? "1px solid #C45C35" : "1px solid #E6DEC8",
-                    backgroundColor: orderFilter === f.key ? "rgba(196, 92, 53, 0.1)" : "#FFFFFF",
-                    color: orderFilter === f.key ? "#C45C35" : "#524B42",
+                    border: orderFilter === f.key ? "1px solid var(--terracotta, #C1440E)" : "1px solid var(--card-border, #E6DEC8)",
+                    backgroundColor: orderFilter === f.key ? "rgba(193, 68, 14, 0.1)" : "#FFFFFF",
+                    color: orderFilter === f.key ? "var(--terracotta, #C1440E)" : "var(--text-sub, #5C554E)",
                     fontSize: "13px",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     cursor: "pointer",
                     whiteSpace: "nowrap",
                   }}
@@ -421,7 +421,7 @@ export default function ShopDashboard({ setCurrentView }) {
             </div>
 
             {loadingOrders ? (
-              <div style={{ textAlign: "center", padding: "48px 0", color: "#524B42" }}>
+              <div style={{ textAlign: "center", padding: "48px 0", color: "var(--text-sub, #5C554E)" }}>
                 <RefreshCw size={24} className="spin" style={{ marginBottom: "8px" }} />
                 <p>Loading live merchant orders...</p>
               </div>
@@ -430,14 +430,14 @@ export default function ShopDashboard({ setCurrentView }) {
                 style={{
                   background: "#FFFFFF",
                   padding: "48px 24px",
-                  borderRadius: "12px",
-                  border: "1px solid #E6DEC8",
+                  borderRadius: "14px",
+                  border: "1px dashed var(--card-border, #E6DEC8)",
                   textAlign: "center",
                 }}
               >
-                <Package size={48} style={{ color: "#E6DEC8", margin: "0 auto 12px" }} />
-                <h3 style={{ fontSize: "16px", color: "#24201D", marginBottom: "4px" }}>No orders in this stage</h3>
-                <p style={{ fontSize: "13px", color: "#524B42" }}>New farmer orders will appear here automatically.</p>
+                <Package size={48} style={{ color: "var(--card-border, #E6DEC8)", margin: "0 auto 12px" }} />
+                <h3 style={{ fontSize: "16px", color: "var(--soil-dark, #24201D)", marginBottom: "4px", fontWeight: 700 }}>No orders in this stage</h3>
+                <p style={{ fontSize: "13px", color: "var(--text-sub, #5C554E)" }}>New farmer orders will appear here automatically.</p>
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
@@ -449,22 +449,22 @@ export default function ShopDashboard({ setCurrentView }) {
                   const isPickedUp = status === "picked_up" || status === "out_for_delivery";
                   const isDelivered = status === "delivered";
 
-                  let statusBadge = { bg: "#EDF2F7", color: "#4A5568", label: status };
-                  if (isIncoming) statusBadge = { bg: "#FEFCBF", color: "#744210", label: "New Order • Action Required" };
-                  if (isPreparing) statusBadge = { bg: "#FEEBC8", color: "#7B341E", label: "Preparing in Shop" };
-                  if (isReady) statusBadge = { bg: "#BEE3F8", color: "#2A4365", label: "Ready for Rider" };
-                  if (isPickedUp) statusBadge = { bg: "#EBF8FF", color: "#2B6CB0", label: "Rider Out For Delivery" };
-                  if (isDelivered) statusBadge = { bg: "#C6F6D5", color: "#22543D", label: "Delivered & Settled" };
+                  let statusBadge = { bg: "rgba(36, 32, 29, 0.08)", color: "#5C554E", label: status };
+                  if (isIncoming) statusBadge = { bg: "rgba(232, 163, 61, 0.18)", color: "var(--terracotta, #C1440E)", label: "New Order • Action Required" };
+                  if (isPreparing) statusBadge = { bg: "rgba(193, 68, 14, 0.12)", color: "var(--terracotta, #C1440E)", label: "Preparing in Shop" };
+                  if (isReady) statusBadge = { bg: "rgba(232, 163, 61, 0.22)", color: "var(--soil-dark, #24201D)", label: "Ready for Rider" };
+                  if (isPickedUp) statusBadge = { bg: "rgba(36, 32, 29, 0.08)", color: "var(--soil-dark, #24201D)", label: "Rider Out For Delivery" };
+                  if (isDelivered) statusBadge = { bg: "rgba(76, 122, 58, 0.12)", color: "var(--growth-green, #4C7A3A)", label: "Delivered & Settled" };
 
                   return (
                     <div
                       key={order.order_number}
                       style={{
                         background: "#FFFFFF",
-                        borderRadius: "12px",
-                        border: isIncoming ? "2px solid #C45C35" : "1px solid #E6DEC8",
+                        borderRadius: "14px",
+                        border: isIncoming ? "1.5px solid var(--terracotta, #C1440E)" : "1px solid var(--card-border, #E6DEC8)",
                         padding: "18px",
-                        boxShadow: isIncoming ? "0 4px 12px rgba(196, 92, 53, 0.12)" : "none",
+                        boxShadow: isIncoming ? "0 4px 14px rgba(193, 68, 14, 0.12)" : "0 2px 8px rgba(36, 32, 29, 0.04)",
                       }}
                     >
                       <div
@@ -472,7 +472,7 @@ export default function ShopDashboard({ setCurrentView }) {
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "flex-start",
-                          borderBottom: "1px solid #F0EAE1",
+                          borderBottom: "1px solid var(--card-border, #E6DEC8)",
                           paddingBottom: "12px",
                           marginBottom: "12px",
                           flexWrap: "wrap",
@@ -481,7 +481,7 @@ export default function ShopDashboard({ setCurrentView }) {
                       >
                         <div>
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <span style={{ fontSize: "16px", fontWeight: "800", color: "#24201D" }}>
+                            <span style={{ fontSize: "16px", fontWeight: "800", color: "var(--soil-dark, #24201D)" }}>
                               #{order.order_number}
                             </span>
                             <span
@@ -497,17 +497,17 @@ export default function ShopDashboard({ setCurrentView }) {
                               {statusBadge.label}
                             </span>
                           </div>
-                          <div style={{ fontSize: "12px", color: "#524B42", marginTop: "4px" }}>
+                          <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", marginTop: "4px" }}>
                             Placed {order.created_at ? new Date(order.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Recently"}
                             {" • "} Payment: <strong>{order.payment_method || "COD"}</strong>
                           </div>
                         </div>
 
                         <div style={{ textAlign: "right" }}>
-                          <div style={{ fontSize: "18px", fontWeight: "800", color: "#C45C35" }}>
+                          <div style={{ fontSize: "18px", fontWeight: "800", color: "var(--terracotta, #C1440E)" }}>
                             ₹{(order.total_amount || 0).toLocaleString("en-IN")}
                           </div>
-                          <div style={{ fontSize: "12px", color: "#524B42" }}>
+                          <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)" }}>
                             {order.items?.length || 1} item(s)
                           </div>
                         </div>
@@ -516,8 +516,9 @@ export default function ShopDashboard({ setCurrentView }) {
                       {/* Customer Delivery info */}
                       <div
                         style={{
-                          backgroundColor: "#FAF8F5",
-                          borderRadius: "8px",
+                          backgroundColor: "var(--bg-cream, #FAF8F5)",
+                          border: "1px solid var(--card-border, #E6DEC8)",
+                          borderRadius: "10px",
                           padding: "10px 14px",
                           marginBottom: "12px",
                           fontSize: "13px",
@@ -527,18 +528,18 @@ export default function ShopDashboard({ setCurrentView }) {
                         }}
                       >
                         <div>
-                          <span style={{ color: "#524B42", fontWeight: 600 }}>Farmer / Customer:</span>
-                          <div style={{ fontWeight: 700, color: "#24201D" }}>{order.customer_name || "Valued Farmer"}</div>
+                          <span style={{ color: "var(--text-sub, #5C554E)", fontWeight: 600 }}>Farmer / Customer:</span>
+                          <div style={{ fontWeight: 700, color: "var(--soil-dark, #24201D)" }}>{order.customer_name || "Valued Farmer"}</div>
                           {order.phone && (
-                            <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#276749" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "var(--growth-green, #4C7A3A)", fontWeight: 600, marginTop: "2px" }}>
                               <Phone size={12} /> {order.phone}
                             </div>
                           )}
                         </div>
                         <div>
-                          <span style={{ color: "#524B42", fontWeight: 600 }}>Delivery Address:</span>
-                          <div style={{ color: "#24201D", display: "flex", alignItems: "flex-start", gap: "4px" }}>
-                            <MapPin size={14} style={{ marginTop: "2px", flexShrink: 0, color: "#C45C35" }} />
+                          <span style={{ color: "var(--text-sub, #5C554E)", fontWeight: 600 }}>Delivery Address:</span>
+                          <div style={{ color: "var(--soil-dark, #24201D)", display: "flex", alignItems: "flex-start", gap: "4px", marginTop: "2px" }}>
+                            <MapPin size={14} style={{ marginTop: "2px", flexShrink: 0, color: "var(--terracotta, #C1440E)" }} />
                             <span>{order.address || "Address not provided"}</span>
                           </div>
                         </div>
@@ -546,7 +547,7 @@ export default function ShopDashboard({ setCurrentView }) {
 
                       {/* Items table */}
                       <div style={{ marginBottom: "16px" }}>
-                        <div style={{ fontSize: "12px", fontWeight: 700, color: "#524B42", marginBottom: "6px", textTransform: "uppercase" }}>
+                        <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-sub, #5C554E)", marginBottom: "6px", textTransform: "uppercase" }}>
                           Order Items
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
@@ -555,17 +556,18 @@ export default function ShopDashboard({ setCurrentView }) {
                               key={idx}
                               style={{
                                 display: "flex",
+                                justifyBetween: "space-between",
                                 justifyContent: "space-between",
                                 fontSize: "13px",
                                 padding: "4px 0",
-                                borderBottom: "1px dashed #E6DEC8",
+                                borderBottom: "1px dashed var(--card-border, #E6DEC8)",
                               }}
                             >
                               <div>
-                                <span style={{ fontWeight: 600, color: "#24201D" }}>{item.name || item.product_name || "Agri Supply Item"}</span>
-                                <span style={{ color: "#524B42", marginLeft: "6px" }}>x {item.quantity}</span>
+                                <span style={{ fontWeight: 600, color: "var(--soil-dark, #24201D)" }}>{item.name || item.product_name || "Agri Supply Item"}</span>
+                                <span style={{ color: "var(--text-sub, #5C554E)", marginLeft: "6px" }}>x {item.quantity}</span>
                               </div>
-                              <div style={{ fontWeight: 600, color: "#24201D" }}>
+                              <div style={{ fontWeight: 700, color: "var(--soil-dark, #24201D)" }}>
                                 ₹{((item.price || 0) * (item.quantity || 1)).toLocaleString("en-IN")}
                               </div>
                             </div>
@@ -573,7 +575,7 @@ export default function ShopDashboard({ setCurrentView }) {
                         </div>
                       </div>
 
-                      {/* Action buttons (Zomato-style flow) */}
+                      {/* Action buttons */}
                       <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", flexWrap: "wrap" }}>
                         {isIncoming && (
                           <>
@@ -583,10 +585,10 @@ export default function ShopDashboard({ setCurrentView }) {
                               style={{
                                 padding: "9px 16px",
                                 borderRadius: "8px",
-                                border: "1px solid #E2E8F0",
+                                border: "1px solid #FEB2B2",
                                 background: "#FFF",
-                                color: "#E53E3E",
-                                fontWeight: 600,
+                                color: "#C53030",
+                                fontWeight: 700,
                                 fontSize: "13px",
                                 cursor: "pointer",
                                 display: "flex",
@@ -603,7 +605,7 @@ export default function ShopDashboard({ setCurrentView }) {
                                 padding: "9px 20px",
                                 borderRadius: "8px",
                                 border: "none",
-                                background: "var(--terracotta, #C45C35)",
+                                background: "var(--terracotta, #C1440E)",
                                 color: "#FFF",
                                 fontWeight: 700,
                                 fontSize: "13px",
@@ -611,6 +613,7 @@ export default function ShopDashboard({ setCurrentView }) {
                                 display: "flex",
                                 alignItems: "center",
                                 gap: "6px",
+                                boxShadow: "0 2px 8px rgba(193, 68, 14, 0.25)",
                               }}
                             >
                               <Check size={15} /> Accept Order (Start Packing)
@@ -626,7 +629,7 @@ export default function ShopDashboard({ setCurrentView }) {
                               padding: "9px 20px",
                               borderRadius: "8px",
                               border: "none",
-                              background: "#2B6CB0",
+                              background: "var(--terracotta, #C1440E)",
                               color: "#FFF",
                               fontWeight: 700,
                               fontSize: "13px",
@@ -634,6 +637,7 @@ export default function ShopDashboard({ setCurrentView }) {
                               display: "flex",
                               alignItems: "center",
                               gap: "6px",
+                              boxShadow: "0 2px 8px rgba(193, 68, 14, 0.25)",
                             }}
                           >
                             <CheckCircle2 size={15} /> Packed & Ready For Rider Pickup
@@ -641,19 +645,19 @@ export default function ShopDashboard({ setCurrentView }) {
                         )}
 
                         {isReady && (
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "#2B6CB0", fontWeight: 600 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--terracotta, #C1440E)", fontWeight: 700 }}>
                             <Clock size={16} /> Waiting for delivery rider to accept & pick up...
                           </div>
                         )}
 
                         {isPickedUp && (
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "#276749", fontWeight: 600 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--soil-dark, #24201D)", fontWeight: 700 }}>
                             <CheckCircle2 size={16} /> Rider has picked up package • In transit to farmer
                           </div>
                         )}
 
                         {isDelivered && (
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "#276749", fontWeight: 600 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--growth-green, #4C7A3A)", fontWeight: 700 }}>
                             <CheckCircle2 size={16} /> Order Completed & Delivered
                           </div>
                         )}
@@ -742,7 +746,7 @@ export default function ShopDashboard({ setCurrentView }) {
                         <td style={{ padding: "12px 16px", color: "#524B42", textTransform: "capitalize" }}>
                           {item.category || "General"}
                         </td>
-                        <td style={{ padding: "12px 16px", fontWeight: 700, color: "#C45C35" }}>
+                        <td style={{ padding: "12px 16px", fontWeight: 700, color: "var(--terracotta, #C1440E)" }}>
                           ₹{item.price}
                         </td>
                         <td style={{ padding: "12px 16px" }}>
@@ -751,9 +755,9 @@ export default function ShopDashboard({ setCurrentView }) {
                               padding: "3px 8px",
                               borderRadius: "12px",
                               fontSize: "12px",
-                              fontWeight: 600,
-                              backgroundColor: item.in_stock ? "#C6F6D5" : "#FED7D7",
-                              color: item.in_stock ? "#22543D" : "#9B2C2C",
+                              fontWeight: 700,
+                              backgroundColor: item.in_stock ? "rgba(76, 122, 58, 0.12)" : "#FFF5F5",
+                              color: item.in_stock ? "var(--growth-green, #4C7A3A)" : "#C53030",
                             }}
                           >
                             {item.in_stock ? "In Stock" : "Out of Stock"}
@@ -766,9 +770,9 @@ export default function ShopDashboard({ setCurrentView }) {
                               background: "none",
                               border: "none",
                               cursor: "pointer",
-                              color: item.in_stock ? "#276749" : "#C53030",
+                              color: item.in_stock ? "var(--growth-green, #4C7A3A)" : "#C53030",
                               fontSize: "13px",
-                              fontWeight: 600,
+                              fontWeight: 700,
                               display: "inline-flex",
                               alignItems: "center",
                               gap: "4px",

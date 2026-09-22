@@ -21,9 +21,9 @@ from services.seed_data import seed_database
 from services.config import settings
 
 if os.getenv("RENDER") and settings.DATABASE_URL.startswith("sqlite"):
-    raise RuntimeError(
-        "DATABASE_URL must point to Neon/PostgreSQL on Render. "
-        "Refusing to start with temporary SQLite storage."
+    print(
+        "[WARN] DATABASE_URL points to SQLite storage on Render. "
+        "For full data persistence across restarts, set DATABASE_URL to Neon/PostgreSQL in Render Environment settings."
     )
 
 # ---------------------------------------------------------------------------

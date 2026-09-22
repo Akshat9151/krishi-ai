@@ -142,12 +142,12 @@ export default function RiderDashboard({ setCurrentView }) {
   const completedOrders = myDeliveries.filter((o) => o.status === "delivered");
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F7FAFC", paddingBottom: "80px" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "var(--bg-cream, #FAF8F5)", paddingBottom: "80px", fontFamily: "var(--font-body, Inter, sans-serif)" }}>
       {/* Rider Header */}
       <header
         style={{
-          backgroundColor: "#1A202C",
-          color: "#FFFFFF",
+          backgroundColor: "#FFFFFF",
+          color: "var(--soil-dark, #24201D)",
           padding: "16px 20px",
           display: "flex",
           alignItems: "center",
@@ -155,34 +155,49 @@ export default function RiderDashboard({ setCurrentView }) {
           position: "sticky",
           top: 0,
           zIndex: 20,
+          borderBottom: "1px solid var(--card-border, #E6DEC8)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <div
             style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              backgroundColor: "#38A169",
+              width: "42px",
+              height: "42px",
+              borderRadius: "12px",
+              backgroundColor: "rgba(196, 92, 53, 0.12)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#FFF",
+              color: "var(--terracotta, #C45C35)",
             }}
           >
             <Bike size={22} />
           </div>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <h1 style={{ fontSize: "16px", fontWeight: "700", margin: 0, color: "#FFF" }}>
-                KhetiTak Captain
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <h1 style={{ fontSize: "17px", fontWeight: "700", margin: 0, color: "var(--soil-dark, #24201D)", fontFamily: "var(--font-heading, 'Baloo 2', Poppins, sans-serif)" }}>
+                KhetiTak Delivery Partner
               </h1>
-              <span style={{ fontSize: "10px", backgroundColor: "#276749", padding: "2px 6px", borderRadius: "10px" }}>
-                ONLINE
+              <span
+                style={{
+                  fontSize: "10.5px",
+                  fontWeight: 700,
+                  backgroundColor: "var(--growth-green-light, #EAF3E7)",
+                  color: "var(--growth-green, #4C7A3A)",
+                  border: "1px solid rgba(76, 122, 58, 0.2)",
+                  padding: "2px 8px",
+                  borderRadius: "12px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                }}
+              >
+                <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "var(--growth-green, #4C7A3A)" }} />
+                Online
               </span>
             </div>
-            <p style={{ fontSize: "12px", color: "#A0AEC0", margin: 0 }}>
-              {user?.username || "Rider Partner"} • Earn ₹60 / Drop
+            <p style={{ fontSize: "12px", color: "var(--text-secondary, #524B42)", margin: 0 }}>
+              {user?.username || "Rider"} • ₹60 / Trip Payout
             </p>
           </div>
         </div>
@@ -193,15 +208,16 @@ export default function RiderDashboard({ setCurrentView }) {
               if (setCurrentView) setCurrentView("dashboard");
               else window.location.hash = "dashboard";
             }}
+            className="btn btn-secondary"
             style={{
-              background: "#2D3748",
-              border: "1px solid #4A5568",
-              color: "#FFF",
               padding: "8px 12px",
+              backgroundColor: "var(--bg-cream, #FAF8F5)",
+              border: "1px solid var(--card-border, #E6DEC8)",
               borderRadius: "8px",
               cursor: "pointer",
               fontSize: "12px",
               fontWeight: 600,
+              color: "var(--text-primary, #24201D)",
             }}
           >
             🌱 Farmer App
@@ -211,17 +227,19 @@ export default function RiderDashboard({ setCurrentView }) {
               refreshAll();
               showToast("Synced live requests");
             }}
+            className="btn btn-secondary"
             style={{
-              background: "#2D3748",
-              border: "none",
-              color: "#FFF",
               padding: "8px 12px",
+              backgroundColor: "var(--bg-cream, #FAF8F5)",
+              border: "1px solid var(--card-border, #E6DEC8)",
               borderRadius: "8px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               gap: "4px",
               fontSize: "12px",
+              fontWeight: 600,
+              color: "var(--text-primary, #24201D)",
             }}
           >
             <RefreshCw size={13} className={loading ? "spin" : ""} /> Refresh
@@ -229,13 +247,15 @@ export default function RiderDashboard({ setCurrentView }) {
           <button
             onClick={handleLogout}
             style={{
-              background: "#742A2A",
-              border: "none",
-              color: "#FFF",
+              backgroundColor: "#FFF5F5",
+              color: "#C53030",
+              border: "1px solid #FEB2B2",
               padding: "8px 12px",
               borderRadius: "8px",
               cursor: "pointer",
               fontSize: "12px",
+              display: "flex",
+              alignItems: "center",
             }}
           >
             <LogOut size={13} />
@@ -251,12 +271,13 @@ export default function RiderDashboard({ setCurrentView }) {
             bottom: "80px",
             left: "50%",
             transform: "translateX(-50%)",
-            backgroundColor: "#2D3748",
+            backgroundColor: "var(--soil-dark, #24201D)",
             color: "#FFF",
             padding: "10px 18px",
             borderRadius: "30px",
             fontSize: "13px",
-            boxShadow: "0 6px 16px rgba(0,0,0,0.25)",
+            fontWeight: 600,
+            boxShadow: "0 6px 20px rgba(43, 33, 24, 0.25)",
             zIndex: 9999,
             whiteSpace: "nowrap",
           }}
@@ -265,12 +286,12 @@ export default function RiderDashboard({ setCurrentView }) {
         </div>
       )}
 
-      {/* Rider Tab Bar (Rapido Mobile-Friendly Bar) */}
+      {/* Rider Tab Bar (KhetiTak Brand Bar) */}
       <div
         style={{
           display: "flex",
           backgroundColor: "#FFFFFF",
-          borderBottom: "1px solid #E2E8F0",
+          borderBottom: "1px solid var(--card-border, #E6DEC8)",
           position: "sticky",
           top: "68px",
           zIndex: 10,
@@ -282,13 +303,14 @@ export default function RiderDashboard({ setCurrentView }) {
             flex: 1,
             padding: "14px 8px",
             border: "none",
-            borderBottom: activeTab === "feed" ? "3px solid #38A169" : "3px solid transparent",
+            borderBottom: activeTab === "feed" ? "3px solid var(--terracotta, #C1440E)" : "3px solid transparent",
             background: "none",
-            color: activeTab === "feed" ? "#22543D" : "#718096",
-            fontWeight: 700,
+            color: activeTab === "feed" ? "var(--terracotta, #C1440E)" : "var(--text-secondary, #524B42)",
+            fontWeight: activeTab === "feed" ? 800 : 600,
             fontSize: "13px",
             cursor: "pointer",
             textAlign: "center",
+            transition: "all 0.15s ease",
           }}
         >
           Available Orders ({availableOrders.length})
@@ -300,13 +322,14 @@ export default function RiderDashboard({ setCurrentView }) {
             flex: 1,
             padding: "14px 8px",
             border: "none",
-            borderBottom: activeTab === "active" ? "3px solid #38A169" : "3px solid transparent",
+            borderBottom: activeTab === "active" ? "3px solid var(--terracotta, #C1440E)" : "3px solid transparent",
             background: "none",
-            color: activeTab === "active" ? "#22543D" : "#718096",
-            fontWeight: 700,
+            color: activeTab === "active" ? "var(--terracotta, #C1440E)" : "var(--text-secondary, #524B42)",
+            fontWeight: activeTab === "active" ? 800 : 600,
             fontSize: "13px",
             cursor: "pointer",
             textAlign: "center",
+            transition: "all 0.15s ease",
           }}
         >
           Active Trips ({activeOrders.length})
@@ -318,13 +341,14 @@ export default function RiderDashboard({ setCurrentView }) {
             flex: 1,
             padding: "14px 8px",
             border: "none",
-            borderBottom: activeTab === "earnings" ? "3px solid #38A169" : "3px solid transparent",
+            borderBottom: activeTab === "earnings" ? "3px solid var(--terracotta, #C1440E)" : "3px solid transparent",
             background: "none",
-            color: activeTab === "earnings" ? "#22543D" : "#718096",
-            fontWeight: 700,
+            color: activeTab === "earnings" ? "var(--terracotta, #C1440E)" : "var(--text-secondary, #524B42)",
+            fontWeight: activeTab === "earnings" ? 800 : 600,
             fontSize: "13px",
             cursor: "pointer",
             textAlign: "center",
+            transition: "all 0.15s ease",
           }}
         >
           Earnings (₹{earnings.today_earnings || 0})
@@ -336,24 +360,25 @@ export default function RiderDashboard({ setCurrentView }) {
         {/* ================= TAB 1: AVAILABLE TRIPS FEED (RAPIDO CARD UX) ================= */}
         {activeTab === "feed" && (
           <div>
-            <div style={{ fontSize: "12px", color: "#718096", marginBottom: "12px", fontWeight: 600 }}>
-              TRIPS NEARBY READY FOR PICKUP
+            <div style={{ fontSize: "12px", color: "var(--text-secondary, #524B42)", marginBottom: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+              Trips Available for Village Delivery
             </div>
 
             {availableOrders.length === 0 ? (
               <div
+                className="ka-card"
                 style={{
                   backgroundColor: "#FFFFFF",
                   borderRadius: "12px",
                   padding: "48px 20px",
                   textAlign: "center",
-                  border: "1px dashed #CBD5E0",
+                  border: "1px dashed var(--card-border, #E6DEC8)",
                 }}
               >
-                <Bike size={44} style={{ color: "#CBD5E0", margin: "0 auto 12px" }} />
-                <h3 style={{ fontSize: "16px", color: "#2D3748", marginBottom: "4px" }}>Searching for requests...</h3>
-                <p style={{ fontSize: "13px", color: "#718096" }}>
-                  As soon as a store packs an order and marks it ready, it will ping here.
+                <Bike size={44} style={{ color: "var(--card-border, #E6DEC8)", margin: "0 auto 12px" }} />
+                <h3 style={{ fontSize: "16px", color: "var(--soil-dark, #24201D)", marginBottom: "4px", fontWeight: 700 }}>Searching for local requests...</h3>
+                <p style={{ fontSize: "13px", color: "var(--text-secondary, #524B42)", margin: 0 }}>
+                  As soon as a store marks an order ready for pickup, it will appear here immediately.
                 </p>
               </div>
             ) : (
@@ -361,12 +386,13 @@ export default function RiderDashboard({ setCurrentView }) {
                 {availableOrders.map((order) => (
                   <div
                     key={order.order_number}
+                    className="ka-card"
                     style={{
                       backgroundColor: "#FFFFFF",
-                      borderRadius: "14px",
-                      boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-                      border: "2px solid #38A169",
-                      padding: "16px",
+                      borderRadius: "12px",
+                      boxShadow: "0 2px 10px rgba(43, 33, 24, 0.05)",
+                      border: "1px solid var(--card-border, #E6DEC8)",
+                      padding: "18px",
                       position: "relative",
                     }}
                   >
@@ -376,25 +402,26 @@ export default function RiderDashboard({ setCurrentView }) {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        borderBottom: "1px solid #EDF2F7",
-                        paddingBottom: "10px",
-                        marginBottom: "12px",
+                        borderBottom: "1px solid var(--card-border, #E6DEC8)",
+                        paddingBottom: "12px",
+                        marginBottom: "14px",
                       }}
                     >
                       <div>
-                        <span style={{ fontSize: "12px", color: "#718096", fontWeight: 600 }}>ORDER #{order.order_number}</span>
-                        <div style={{ fontSize: "13px", color: "#2D3748", fontWeight: 700 }}>
+                        <span style={{ fontSize: "11px", color: "var(--text-secondary, #524B42)", fontWeight: 700 }}>ORDER #{order.order_number}</span>
+                        <div style={{ fontSize: "14px", color: "var(--soil-dark, #24201D)", fontWeight: 800 }}>
                           {order.items?.length || 1} Item(s) • COD: ₹{(order.total_amount || 0).toLocaleString("en-IN")}
                         </div>
                       </div>
                       <div
                         style={{
-                          backgroundColor: "#C6F6D5",
-                          color: "#22543D",
+                          backgroundColor: "rgba(196, 92, 53, 0.12)",
+                          color: "var(--terracotta, #C1440E)",
+                          border: "1px solid rgba(196, 92, 53, 0.25)",
                           padding: "6px 12px",
                           borderRadius: "16px",
                           fontWeight: "800",
-                          fontSize: "14px",
+                          fontSize: "13.5px",
                         }}
                       >
                         + ₹60 Payout
@@ -402,66 +429,67 @@ export default function RiderDashboard({ setCurrentView }) {
                     </div>
 
                     {/* Rapido style Pickup -> Drop Visual route */}
-                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "16px" }}>
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "18px" }}>
+                      <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
                         <div
                           style={{
-                            width: "24px",
-                            height: "24px",
+                            width: "26px",
+                            height: "26px",
                             borderRadius: "50%",
-                            backgroundColor: "#FEFCBF",
-                            color: "#975A16",
+                            backgroundColor: "var(--marigold-light, #FDF4E7)",
+                            color: "var(--terracotta, #C1440E)",
+                            border: "1px solid var(--marigold)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             fontSize: "12px",
-                            fontWeight: 700,
+                            fontWeight: 800,
                             flexShrink: 0,
                           }}
                         >
                           P
                         </div>
                         <div>
-                          <div style={{ fontSize: "11px", color: "#718096", textTransform: "uppercase", fontWeight: 700 }}>
-                            PICKUP LOCATION
+                          <div style={{ fontSize: "11px", color: "var(--text-secondary, #524B42)", textTransform: "uppercase", fontWeight: 700 }}>
+                            PICKUP STORE
                           </div>
-                          <div style={{ fontSize: "13px", fontWeight: 700, color: "#2D3748" }}>
-                            KhetiTak Central Agro Hub
+                          <div style={{ fontSize: "13.5px", fontWeight: 700, color: "var(--soil-dark, #24201D)" }}>
+                            KhetiTak Mandi AgriHub
                           </div>
-                          <div style={{ fontSize: "12px", color: "#718096" }}>
-                            Ready on merchant counter
+                          <div style={{ fontSize: "12px", color: "var(--text-secondary, #524B42)" }}>
+                            Counter pickup ready
                           </div>
                         </div>
                       </div>
 
-                      <div style={{ marginLeft: "11px", borderLeft: "2px dashed #CBD5E0", height: "16px" }} />
+                      <div style={{ marginLeft: "12px", borderLeft: "2px dashed var(--card-border, #E6DEC8)", height: "18px" }} />
 
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                      <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
                         <div
                           style={{
-                            width: "24px",
-                            height: "24px",
+                            width: "26px",
+                            height: "26px",
                             borderRadius: "50%",
-                            backgroundColor: "#FED7D7",
-                            color: "#9B2C2C",
+                            backgroundColor: "rgba(196, 92, 53, 0.12)",
+                            color: "var(--terracotta, #C1440E)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             fontSize: "12px",
-                            fontWeight: 700,
+                            fontWeight: 800,
                             flexShrink: 0,
                           }}
                         >
                           D
                         </div>
                         <div>
-                          <div style={{ fontSize: "11px", color: "#718096", textTransform: "uppercase", fontWeight: 700 }}>
+                          <div style={{ fontSize: "11px", color: "var(--text-secondary, #524B42)", textTransform: "uppercase", fontWeight: 700 }}>
                             DELIVER TO FARMER
                           </div>
-                           <div style={{ fontSize: "13px", fontWeight: 700, color: "#2D3748" }}>
+                           <div style={{ fontSize: "13.5px", fontWeight: 800, color: "var(--soil-dark, #24201D)" }}>
                              {order.drop_name || order.customer_name}
                            </div>
-                           <div style={{ fontSize: "12px", color: "#4A5568" }}>
+                           <div style={{ fontSize: "12px", color: "var(--text-secondary, #524B42)" }}>
                              {order.drop_address || order.address}
                            </div>
                         </div>
@@ -474,26 +502,27 @@ export default function RiderDashboard({ setCurrentView }) {
                       onClick={() => handleAcceptOrder(order.order_number)}
                       style={{
                         width: "100%",
-                        padding: "14px",
-                        backgroundColor: "#38A169",
+                        padding: "13px",
+                        backgroundColor: "var(--terracotta, #C1440E)",
                         color: "#FFFFFF",
                         border: "none",
-                        borderRadius: "10px",
-                        fontSize: "15px",
+                        borderRadius: "8px",
+                        fontSize: "14px",
                         fontWeight: 800,
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         gap: "8px",
-                        boxShadow: "0 4px 10px rgba(56, 161, 105, 0.3)",
+                        boxShadow: "0 4px 12px rgba(193, 68, 14, 0.25)",
+                        transition: "all 0.15s ease",
                       }}
                     >
                       {actionLoading === order.order_number ? (
-                        "Accepting Trip..."
+                        "Accepting Delivery..."
                       ) : (
                         <>
-                          ACCEPT ORDER <ArrowRight size={18} />
+                          ACCEPT DELIVERY TRIP <ArrowRight size={17} />
                         </>
                       )}
                     </button>
@@ -507,7 +536,7 @@ export default function RiderDashboard({ setCurrentView }) {
         {/* ================= TAB 2: ACTIVE TRIPS (RAPIDO IN-FLIGHT UX) ================= */}
         {activeTab === "active" && (
           <div>
-            <div style={{ fontSize: "12px", color: "#718096", marginBottom: "12px", fontWeight: 600 }}>
+            <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", marginBottom: "12px", fontWeight: 700, letterSpacing: "0.04em" }}>
               YOUR CURRENT DELIVERIES IN PROGRESS
             </div>
 
@@ -515,15 +544,15 @@ export default function RiderDashboard({ setCurrentView }) {
               <div
                 style={{
                   backgroundColor: "#FFFFFF",
-                  borderRadius: "12px",
+                  borderRadius: "14px",
                   padding: "48px 20px",
                   textAlign: "center",
-                  border: "1px dashed #CBD5E0",
+                  border: "1px dashed var(--card-border, #E6DEC8)",
                 }}
               >
-                <Package size={44} style={{ color: "#CBD5E0", margin: "0 auto 12px" }} />
-                <h3 style={{ fontSize: "16px", color: "#2D3748", marginBottom: "4px" }}>No active trips</h3>
-                <p style={{ fontSize: "13px", color: "#718096" }}>
+                <Package size={44} style={{ color: "var(--card-border, #E6DEC8)", margin: "0 auto 12px" }} />
+                <h3 style={{ fontSize: "16px", color: "var(--soil-dark, #24201D)", marginBottom: "4px", fontWeight: 700 }}>No active trips</h3>
+                <p style={{ fontSize: "13px", color: "var(--text-sub, #5C554E)" }}>
                   Switch to the "Available Orders" tab and tap Accept on a delivery request.
                 </p>
               </div>
@@ -541,8 +570,8 @@ export default function RiderDashboard({ setCurrentView }) {
                       style={{
                         backgroundColor: "#FFFFFF",
                         borderRadius: "14px",
-                        boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
-                        border: "2px solid #2B6CB0",
+                        boxShadow: "0 4px 14px rgba(36, 32, 29, 0.06)",
+                        border: "1px solid var(--card-border, #E6DEC8)",
                         padding: "18px",
                       }}
                     >
@@ -551,22 +580,23 @@ export default function RiderDashboard({ setCurrentView }) {
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          borderBottom: "1px solid #EDF2F7",
-                          paddingBottom: "10px",
+                          borderBottom: "1px solid var(--card-border, #E6DEC8)",
+                          paddingBottom: "12px",
                           marginBottom: "14px",
                         }}
                       >
                         <div>
-                          <span style={{ fontSize: "12px", color: "#718096" }}>ACTIVE MISSION</span>
-                          <div style={{ fontSize: "16px", fontWeight: 800, color: "#2D3748" }}>
+                          <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--terracotta, #C1440E)", letterSpacing: "0.05em" }}>ACTIVE MISSION</span>
+                          <div style={{ fontSize: "16px", fontWeight: 800, color: "var(--soil-dark, #24201D)" }}>
                             #{order.order_number}
                           </div>
                         </div>
                         <div style={{ textAlign: "right" }}>
                           <span
                             style={{
-                              backgroundColor: "#EBF8FF",
-                              color: "#2B6CB0",
+                              backgroundColor: "rgba(232, 163, 61, 0.15)",
+                              color: "var(--terracotta, #C1440E)",
+                              border: "1px solid rgba(232, 163, 61, 0.3)",
                               padding: "4px 10px",
                               borderRadius: "12px",
                               fontSize: "12px",
@@ -575,7 +605,7 @@ export default function RiderDashboard({ setCurrentView }) {
                           >
                             {status.replace(/_/g, " ").toUpperCase()}
                           </span>
-                          <div style={{ fontSize: "12px", fontWeight: 700, color: "#38A169", marginTop: "2px" }}>
+                          <div style={{ fontSize: "12px", fontWeight: 800, color: "var(--terracotta, #C1440E)", marginTop: "2px" }}>
                             Payout: ₹60
                           </div>
                         </div>
@@ -584,20 +614,20 @@ export default function RiderDashboard({ setCurrentView }) {
                       {/* Customer Contact Card */}
                       <div
                         style={{
-                          backgroundColor: "#F7FAFC",
-                          border: "1px solid #E2E8F0",
+                          backgroundColor: "var(--bg-cream, #FAF8F5)",
+                          border: "1px solid var(--card-border, #E6DEC8)",
                           borderRadius: "10px",
                           padding: "12px",
                           marginBottom: "16px",
                         }}
                       >
-                        <div style={{ fontSize: "11px", color: "#718096", textTransform: "uppercase", fontWeight: 700 }}>
+                        <div style={{ fontSize: "11px", color: "var(--text-sub, #5C554E)", textTransform: "uppercase", fontWeight: 700 }}>
                           FARMER RECIPIENT
                         </div>
-                        <div style={{ fontSize: "15px", fontWeight: 800, color: "#2D3748", marginTop: "2px" }}>
+                        <div style={{ fontSize: "15px", fontWeight: 800, color: "var(--soil-dark, #24201D)", marginTop: "2px" }}>
                           {order.customer_name || order.drop_name}
                         </div>
-                        <div style={{ fontSize: "13px", color: "#4A5568", marginTop: "2px" }}>
+                        <div style={{ fontSize: "13px", color: "var(--text-sub, #5C554E)", marginTop: "2px" }}>
                           {order.address || order.drop_address}
                         </div>
 
@@ -608,8 +638,8 @@ export default function RiderDashboard({ setCurrentView }) {
                               display: "inline-flex",
                               alignItems: "center",
                               gap: "6px",
-                              backgroundColor: "#C6F6D5",
-                              color: "#22543D",
+                              backgroundColor: "var(--soil-dark, #24201D)",
+                              color: "#FFFFFF",
                               padding: "8px 14px",
                               borderRadius: "8px",
                               textDecoration: "none",
@@ -626,7 +656,7 @@ export default function RiderDashboard({ setCurrentView }) {
                       {/* Progressive 3-Stage Rapido Execution Buttons */}
                       {isAssigned && (
                         <div>
-                          <div style={{ fontSize: "12px", color: "#718096", marginBottom: "8px" }}>
+                          <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", marginBottom: "8px", fontWeight: 600 }}>
                             Step 1: Arrive at Store Counter and pick up the package
                           </div>
                           <button
@@ -635,13 +665,14 @@ export default function RiderDashboard({ setCurrentView }) {
                             style={{
                               width: "100%",
                               padding: "14px",
-                              backgroundColor: "#3182CE",
-                              color: "#FFF",
+                              backgroundColor: "var(--marigold, #E8A33D)",
+                              color: "var(--soil-dark, #24201D)",
                               border: "none",
                               borderRadius: "10px",
                               fontWeight: 800,
                               fontSize: "14px",
                               cursor: "pointer",
+                              boxShadow: "0 4px 12px rgba(232, 163, 61, 0.3)",
                             }}
                           >
                             📦 CONFIRM PACKAGE PICKED UP FROM SHOP
@@ -651,7 +682,7 @@ export default function RiderDashboard({ setCurrentView }) {
 
                       {isPickedUp && (
                         <div>
-                          <div style={{ fontSize: "12px", color: "#718096", marginBottom: "8px" }}>
+                          <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", marginBottom: "8px", fontWeight: 600 }}>
                             Step 2: Start riding toward the farm delivery location
                           </div>
                           <button
@@ -660,13 +691,14 @@ export default function RiderDashboard({ setCurrentView }) {
                             style={{
                               width: "100%",
                               padding: "14px",
-                              backgroundColor: "#DD6B20",
+                              backgroundColor: "var(--terracotta, #C1440E)",
                               color: "#FFF",
                               border: "none",
                               borderRadius: "10px",
                               fontWeight: 800,
                               fontSize: "14px",
                               cursor: "pointer",
+                              boxShadow: "0 4px 12px rgba(193, 68, 14, 0.25)",
                             }}
                           >
                             🛵 START RIDE (OUT FOR DELIVERY)
@@ -676,18 +708,18 @@ export default function RiderDashboard({ setCurrentView }) {
 
                       {isOut && (
                         <div>
-                          <div style={{ fontSize: "12px", color: "#718096", marginBottom: "8px" }}>
+                          <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", marginBottom: "8px", fontWeight: 600 }}>
                             Step 3: Hand over package to farmer & collect payment
                           </div>
                           <div
                             style={{
-                              backgroundColor: "#FEFCBF",
-                              border: "1px solid #FAF089",
+                              backgroundColor: "#FEF9EE",
+                              border: "1px solid #E8A33D",
                               padding: "10px",
                               borderRadius: "8px",
                               marginBottom: "10px",
                               fontSize: "13px",
-                              color: "#744210",
+                              color: "#8C5E00",
                               fontWeight: 700,
                             }}
                           >
@@ -699,14 +731,14 @@ export default function RiderDashboard({ setCurrentView }) {
                             style={{
                               width: "100%",
                               padding: "14px",
-                              backgroundColor: "#38A169",
+                              backgroundColor: "var(--growth-green, #4C7A3A)",
                               color: "#FFF",
                               border: "none",
                               borderRadius: "10px",
                               fontWeight: 800,
                               fontSize: "14px",
                               cursor: "pointer",
-                              boxShadow: "0 4px 12px rgba(56, 161, 105, 0.4)",
+                              boxShadow: "0 4px 12px rgba(76, 122, 58, 0.3)",
                             }}
                           >
                             ✅ CONFIRM DELIVERED & COLLECTED
@@ -729,37 +761,39 @@ export default function RiderDashboard({ setCurrentView }) {
               <div
                 style={{
                   backgroundColor: "#FFFFFF",
-                  borderRadius: "12px",
+                  borderRadius: "14px",
                   padding: "16px",
-                  border: "1px solid #E2E8F0",
+                  border: "1px solid var(--card-border, #E6DEC8)",
                   textAlign: "center",
+                  boxShadow: "0 2px 8px rgba(36, 32, 29, 0.04)",
                 }}
               >
-                <div style={{ fontSize: "12px", color: "#718096", fontWeight: 600 }}>TODAY'S EARNINGS</div>
-                <div style={{ fontSize: "28px", fontWeight: 800, color: "#22543D", margin: "4px 0" }}>
+                <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", fontWeight: 700 }}>TODAY'S EARNINGS</div>
+                <div style={{ fontSize: "28px", fontWeight: 800, color: "var(--terracotta, #C1440E)", margin: "4px 0" }}>
                   ₹{(earnings.today_earnings || 0).toLocaleString("en-IN")}
                 </div>
-                <div style={{ fontSize: "12px", color: "#718096" }}>{earnings.today_deliveries || 0} drops completed</div>
+                <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)" }}>{earnings.today_deliveries || 0} drops completed</div>
               </div>
 
               <div
                 style={{
                   backgroundColor: "#FFFFFF",
-                  borderRadius: "12px",
+                  borderRadius: "14px",
                   padding: "16px",
-                  border: "1px solid #E2E8F0",
+                  border: "1px solid var(--card-border, #E6DEC8)",
                   textAlign: "center",
+                  boxShadow: "0 2px 8px rgba(36, 32, 29, 0.04)",
                 }}
               >
-                <div style={{ fontSize: "12px", color: "#718096", fontWeight: 600 }}>LIFETIME PAYOUT</div>
-                <div style={{ fontSize: "28px", fontWeight: 800, color: "#2B6CB0", margin: "4px 0" }}>
+                <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", fontWeight: 700 }}>LIFETIME PAYOUT</div>
+                <div style={{ fontSize: "28px", fontWeight: 800, color: "var(--soil-dark, #24201D)", margin: "4px 0" }}>
                   ₹{(earnings.total_earnings || 0).toLocaleString("en-IN")}
                 </div>
-                <div style={{ fontSize: "12px", color: "#718096" }}>{earnings.total_deliveries || 0} total trips</div>
+                <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)" }}>{earnings.total_deliveries || 0} total trips</div>
               </div>
             </div>
 
-            <div style={{ fontSize: "12px", color: "#718096", marginBottom: "12px", fontWeight: 600 }}>
+            <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", marginBottom: "12px", fontWeight: 700, letterSpacing: "0.04em" }}>
               COMPLETED TRIPS HISTORY
             </div>
 
@@ -767,14 +801,14 @@ export default function RiderDashboard({ setCurrentView }) {
               <div
                 style={{
                   backgroundColor: "#FFFFFF",
-                  borderRadius: "12px",
+                  borderRadius: "14px",
                   padding: "36px 16px",
                   textAlign: "center",
-                  border: "1px dashed #CBD5E0",
+                  border: "1px dashed var(--card-border, #E6DEC8)",
                 }}
               >
-                <Clock size={36} style={{ color: "#CBD5E0", margin: "0 auto 8px" }} />
-                <p style={{ fontSize: "13px", color: "#718096" }}>Completed trips will appear here for payout record.</p>
+                <Clock size={36} style={{ color: "var(--card-border, #E6DEC8)", margin: "0 auto 8px" }} />
+                <p style={{ fontSize: "13px", color: "var(--text-sub, #5C554E)" }}>Completed trips will appear here for payout record.</p>
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -783,25 +817,26 @@ export default function RiderDashboard({ setCurrentView }) {
                     key={order.order_number}
                     style={{
                       backgroundColor: "#FFFFFF",
-                      borderRadius: "10px",
-                      border: "1px solid #E2E8F0",
+                      borderRadius: "12px",
+                      border: "1px solid var(--card-border, #E6DEC8)",
                       padding: "14px",
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
+                      boxShadow: "0 2px 8px rgba(36, 32, 29, 0.04)",
                     }}
                   >
                     <div>
-                       <div style={{ fontSize: "14px", fontWeight: 700, color: "#2D3748" }}>
+                       <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--soil-dark, #24201D)" }}>
                          #{order.order_number} • {order.customer_name || order.drop_name}
                        </div>
-                       <div style={{ fontSize: "12px", color: "#718096" }}>
+                       <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)" }}>
                          {order.address || order.drop_address || "Delivered"} • {order.delivered_at ? new Date(order.delivered_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Delivered"}
                        </div>
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: "15px", fontWeight: 800, color: "#22543D" }}>+ ₹60</div>
-                      <span style={{ fontSize: "11px", color: "#38A169", fontWeight: 600 }}>Settled</span>
+                      <div style={{ fontSize: "15px", fontWeight: 800, color: "var(--growth-green, #4C7A3A)" }}>+ ₹60</div>
+                      <span style={{ fontSize: "11px", color: "var(--growth-green, #4C7A3A)", backgroundColor: "rgba(76, 122, 58, 0.1)", padding: "2px 8px", borderRadius: "6px", fontWeight: 700 }}>Settled</span>
                     </div>
                   </div>
                 ))}
