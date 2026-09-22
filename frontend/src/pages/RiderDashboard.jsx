@@ -57,11 +57,12 @@ export default function RiderDashboard({ setCurrentView }) {
   const fetchMyDeliveries = useCallback(async () => {
     try {
       const res = await riderApi.getMyDeliveries();
-      if (Array.isArray(res)) {
-        setMyDeliveries(res);
-      } else {
-        setMyDeliveries([]);
-      }
+      // Backend returns { active: [...], completed: [...] }
+      const allOrders = [
+        ...(res?.active ?? []),
+        ...(res?.completed ?? []),
+      ];
+      setMyDeliveries(allOrders.length > 0 ? allOrders : (Array.isArray(res) ? res : []));
     } catch (err) {
       console.error("Failed to fetch rider deliveries:", err);
     }
@@ -439,12 +440,12 @@ export default function RiderDashboard({ setCurrentView }) {
                           <div style={{ fontSize: "11px", color: "#718096", textTransform: "uppercase", fontWeight: 700 }}>
                             DELIVER TO FARMER
                           </div>
-                          <div style={{ fontSize: "13px", fontWeight: 700, color: "#2D3748" }}>
-                            {order.shipping_name}
-                          </div>
-                          <div style={{ fontSize: "12px", color: "#4A5568" }}>
-                            {order.shipping_address}, {order.shipping_city} ({order.shipping_pincode})
-                          </div>
+                           <div style={{ fontSize: "13px", fontWeight: 700, color: "#2D3748" }}>
+                             {order.drop_name || order.customer_name}
+                           </div>
+                           <div style={{ fontSize: "12px", color: "#4A5568" }}>
+                             {order.drop_address || order.address}
+                           </div>
                         </div>
                       </div>
                     </div>
@@ -576,15 +577,15 @@ export default function RiderDashboard({ setCurrentView }) {
                           FARMER RECIPIENT
                         </div>
                         <div style={{ fontSize: "15px", fontWeight: 800, color: "#2D3748", marginTop: "2px" }}>
-                          {order.shipping_name}
+                          {order.customer_name || order.drop_name}
                         </div>
                         <div style={{ fontSize: "13px", color: "#4A5568", marginTop: "2px" }}>
-                          {order.shipping_address}, {order.shipping_city}
+                          {order.address || order.drop_address}
                         </div>
 
-                        {order.shipping_phone && (
+                        {(order.phone || order.drop_phone) && (
                           <a
-                            href={`tel:${order.shipping_phone}`}
+                            href={`tel:${order.phone || order.drop_phone}`}
                             style={{
                               display: "inline-flex",
                               alignItems: "center",
@@ -599,7 +600,7 @@ export default function RiderDashboard({ setCurrentView }) {
                               marginTop: "10px",
                             }}
                           >
-                            <Phone size={14} /> Call Farmer ({order.shipping_phone})
+                            <Phone size={14} /> Call Farmer ({order.phone || order.drop_phone})
                           </a>
                         )}
                       </div>
@@ -773,12 +774,12 @@ export default function RiderDashboard({ setCurrentView }) {
                     }}
                   >
                     <div>
-                      <div style={{ fontSize: "14px", fontWeight: 700, color: "#2D3748" }}>
-                        #{order.order_number} • {order.shipping_name}
-                      </div>
-                      <div style={{ fontSize: "12px", color: "#718096" }}>
-                        {order.shipping_city} • {order.delivered_at ? new Date(order.delivered_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Delivered"}
-                      </div>
+                       <div style={{ fontSize: "14px", fontWeight: 700, color: "#2D3748" }}>
+                         #{order.order_number} • {order.customer_name || order.drop_name}
+                       </div>
+                       <div style={{ fontSize: "12px", color: "#718096" }}>
+                         {order.address || order.drop_address || "Delivered"} • {order.delivered_at ? new Date(order.delivered_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Delivered"}
+                       </div>
                     </div>
                     <div style={{ textAlign: "right" }}>
                       <div style={{ fontSize: "15px", fontWeight: 800, color: "#22543D" }}>+ ₹60</div>

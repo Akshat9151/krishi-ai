@@ -355,9 +355,9 @@ export default function ShopDashboard({ setCurrentView }) {
             <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "12px", marginBottom: "12px" }}>
               {[
                 { key: "all", label: "All Orders" },
-                { key: "confirmed", label: `Incoming (${stats.new_orders || 0})` },
+                { key: "new", label: `Incoming (${stats.new_orders || 0})` },
                 { key: "preparing", label: `Preparing (${stats.preparing || 0})` },
-                { key: "ready_for_pickup", label: `Ready for Pickup (${stats.ready_for_pickup || 0})` },
+                { key: "ready", label: `Ready for Rider (${stats.ready_for_pickup || 0})` },
                 { key: "completed", label: "Completed" },
               ].map((f) => (
                 <button
@@ -406,7 +406,7 @@ export default function ShopDashboard({ setCurrentView }) {
               <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                 {orders.map((order) => {
                   const status = (order.status || "confirmed").toLowerCase();
-                  const isIncoming = status === "confirmed";
+                  const isIncoming = status === "confirmed" || status === "placed";
                   const isPreparing = status === "preparing";
                   const isReady = status === "ready_for_pickup";
                   const isPickedUp = status === "picked_up" || status === "out_for_delivery";
@@ -491,10 +491,10 @@ export default function ShopDashboard({ setCurrentView }) {
                       >
                         <div>
                           <span style={{ color: "#524B42", fontWeight: 600 }}>Farmer / Customer:</span>
-                          <div style={{ fontWeight: 700, color: "#24201D" }}>{order.shipping_name || "Valued Farmer"}</div>
-                          {order.shipping_phone && (
+                          <div style={{ fontWeight: 700, color: "#24201D" }}>{order.customer_name || "Valued Farmer"}</div>
+                          {order.phone && (
                             <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#276749" }}>
-                              <Phone size={12} /> {order.shipping_phone}
+                              <Phone size={12} /> {order.phone}
                             </div>
                           )}
                         </div>
@@ -502,9 +502,7 @@ export default function ShopDashboard({ setCurrentView }) {
                           <span style={{ color: "#524B42", fontWeight: 600 }}>Delivery Address:</span>
                           <div style={{ color: "#24201D", display: "flex", alignItems: "flex-start", gap: "4px" }}>
                             <MapPin size={14} style={{ marginTop: "2px", flexShrink: 0, color: "#C45C35" }} />
-                            <span>
-                              {order.shipping_address}, {order.shipping_city} ({order.shipping_pincode})
-                            </span>
+                            <span>{order.address || "Address not provided"}</span>
                           </div>
                         </div>
                       </div>
@@ -527,7 +525,7 @@ export default function ShopDashboard({ setCurrentView }) {
                               }}
                             >
                               <div>
-                                <span style={{ fontWeight: 600, color: "#24201D" }}>{item.product_name || "Agri Supply Item"}</span>
+                                <span style={{ fontWeight: 600, color: "#24201D" }}>{item.name || item.product_name || "Agri Supply Item"}</span>
                                 <span style={{ color: "#524B42", marginLeft: "6px" }}>x {item.quantity}</span>
                               </div>
                               <div style={{ fontWeight: 600, color: "#24201D" }}>
