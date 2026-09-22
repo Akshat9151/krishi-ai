@@ -13,6 +13,7 @@ import {
   LogOut,
   ChevronRight,
   LogIn,
+  Bike,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
@@ -103,6 +104,66 @@ export default function Sidebar({ currentView, setCurrentView }) {
             </button>
           );
         })}
+
+        {/* Partner Apps Section */}
+        <div style={{ marginTop: "12px", paddingTop: "10px", borderTop: "1px dashed var(--card-border)" }}>
+          <div style={{ padding: "4px 12px 6px 12px", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "var(--text-muted)", letterSpacing: "0.5px" }}>
+            Partner Hubs
+          </div>
+          {[
+            { id: "shop-dashboard", label: "Shop / Agency Hub", icon: Store, color: "var(--terracotta)", badge: "Shop" },
+            { id: "rider-dashboard", label: "Rider Delivery App", icon: Bike, color: "var(--growth-green)", badge: "Rider" },
+          ].map((item) => {
+            const Icon = item.icon;
+            const isActive = currentView === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setCurrentView(item.id)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "9px 12px",
+                  borderRadius: "var(--radius-sm)",
+                  border: "none",
+                  background: isActive ? "var(--marigold-light)" : "transparent",
+                  color: isActive ? item.color : "var(--text-primary)",
+                  fontWeight: isActive ? "700" : "500",
+                  fontSize: "13px",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  width: "100%",
+                  transition: "all 0.15s ease",
+                  borderLeft: isActive ? `3px solid ${item.color}` : "3px solid transparent",
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) e.currentTarget.style.backgroundColor = "var(--bg-cream)";
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) e.currentTarget.style.backgroundColor = "transparent";
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <Icon size={17} color={item.color} />
+                  <span>{item.label}</span>
+                </div>
+                <span
+                  style={{
+                    fontSize: "10px",
+                    fontWeight: "700",
+                    padding: "2px 6px",
+                    borderRadius: "10px",
+                    background: item.id === "rider-dashboard" ? "var(--growth-green-light)" : "rgba(196, 92, 53, 0.12)",
+                    color: item.color,
+                  }}
+                >
+                  {item.badge}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </nav>
 
       {/* User / Profile & Sign In / Logout Footer */}

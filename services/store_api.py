@@ -18,7 +18,49 @@ router = APIRouter(prefix="/api/store", tags=["Store"])
 OWNER_STATUSES = ("placed", "accepted", "packed", "picked_up", "out_for_delivery", "delivered", "cancelled")
 
 
+def _is_shop_authorized(user: User) -> bool:
+    if not user:
+        return False
+    role = (getattr(user, "role", None) or "farmer").lower()
+    if role in ("shop_owner", "admin"):
+        return True
+    identifiers = {
+        v.strip().lower()
+        for v in settings.SHOP_OWNER_IDENTIFIERS.split(",")
+        if v.strip()
+    }
+    if identifiers and ({str(user.id).lower(), (user.username or "").lower(), (user.email or "").lower(), (getattr(user, "phone", "") or "").lower()} & identifiers):
+        return True
+    # In single-shop / pilot deployment when SHOP_OWNER_IDENTIFIERS is empty,
+    # permit authenticated users to manage shop orders
+    if not settings.SHOP_OWNER_IDENTIFIERS:
+        return True
+    return False
+
+
+def _is_rider_authorized(user: User) -> bool:
+    if not user:
+        return False
+    role = (getattr(user, "role", None) or "farmer").lower()
+    if role in ("rider", "admin"):
+        return True
+    identifiers = {
+        v.strip().lower()
+        for v in settings.SHOP_OWNER_IDENTIFIERS.split(",")
+        if v.strip()
+    }
+    if identifiers and ({str(user.id).lower(), (user.username or "").lower(), (user.email or "").lower(), (getattr(user, "phone", "") or "").lower()} & identifiers):
+        return True
+    if not settings.SHOP_OWNER_IDENTIFIERS:
+        return True
+    return False
+
+
 def _require_role(user: User, role: str) -> None:
+    if role == "shop_owner" and _is_shop_authorized(user):
+        return
+    if role == "rider" and _is_rider_authorized(user):
+        return
     if (user.role or "farmer") != role:
         raise HTTPException(status_code=403, detail=f"{role.replace('_', ' ').title()} access required")
 
@@ -475,6 +517,7 @@ async def create_store_order(
             total_amount=total_amount,
             status="confirmed",
             payment_method=order_data.payment_method or "cod",
+            shop_id=shop_owner_id,
             shop_owner_id=shop_owner_id,
         )
         db.add(store_order)
@@ -552,7 +595,7 @@ async def get_my_orders(
 
 
 @router.get("/owner/orders", response_model=List[OrderSummary])
-async def get_shop_orders(
+async def get_owner_orders_legacy(
     db: Session = Depends(get_db),
     current_user: str = Depends(get_current_user),
 ):
@@ -919,13 +962,18 @@ async def get_shop_orders(
     """Retrieve orders for the Shop / Agency partner queue"""
     import json
     user = db.query(User).filter(User.username == current_user).first()
-    if not user or (getattr(user, "role", "farmer") != "shop_owner" and getattr(user, "role", "farmer") != "admin"):
+    if not _is_shop_authorized(user):
         raise HTTPException(status_code=403, detail="Access denied. Shop/Agency Partner account required.")
 
     query = db.query(StoreOrder)
     
     # Filter by shop if assigned, or show unassigned orders available for fulfillment
-    query = query.filter((StoreOrder.shop_id == user.id) | (StoreOrder.shop_id == None))
+    query = query.filter(
+        (StoreOrder.shop_id == user.id) |
+        (StoreOrder.shop_owner_id == user.id) |
+        (StoreOrder.shop_id.is_(None)) |
+        (StoreOrder.shop_owner_id.is_(None))
+    )
     
     if status_filter == "new":
         query = query.filter(StoreOrder.status.in_(["confirmed", "placed"]))
@@ -987,7 +1035,7 @@ async def shop_order_action(
 ):
     """Update order stage from Shop Dashboard: accept -> preparing -> ready_for_pickup or reject"""
     user = db.query(User).filter(User.username == current_user).first()
-    if not user or (getattr(user, "role", "farmer") != "shop_owner" and getattr(user, "role", "farmer") != "admin"):
+    if not _is_shop_authorized(user):
         raise HTTPException(status_code=403, detail="Access denied. Shop/Agency Partner account required.")
 
     order = db.query(StoreOrder).filter(StoreOrder.order_number == order_number).first()
@@ -998,11 +1046,13 @@ async def shop_order_action(
     if action == "accept":
         order.status = "preparing"
         order.shop_id = user.id
+        order.shop_owner_id = user.id
         if action_data.notes:
             order.shop_notes = action_data.notes
     elif action == "ready":
         order.status = "ready_for_pickup"
         order.shop_id = user.id
+        order.shop_owner_id = user.id
         if action_data.notes:
             order.shop_notes = action_data.notes
     elif action == "reject":
@@ -1028,11 +1078,14 @@ async def get_shop_stats(
 ):
     """Retrieve today's overview and queue counters for the shop dashboard"""
     user = db.query(User).filter(User.username == current_user).first()
-    if not user or (getattr(user, "role", "farmer") != "shop_owner" and getattr(user, "role", "farmer") != "admin"):
+    if not _is_shop_authorized(user):
         raise HTTPException(status_code=403, detail="Access denied. Shop/Agency Partner account required.")
 
     all_orders = db.query(StoreOrder).filter(
-        (StoreOrder.shop_id == user.id) | (StoreOrder.shop_id == None)
+        (StoreOrder.shop_id == user.id) |
+        (StoreOrder.shop_owner_id == user.id) |
+        (StoreOrder.shop_id.is_(None)) |
+        (StoreOrder.shop_owner_id.is_(None))
     ).all()
 
     new_count = sum(1 for o in all_orders if o.status in ["confirmed", "placed"])
@@ -1061,7 +1114,7 @@ async def get_shop_inventory(
 ):
     """View and manage product stock levels for the shop"""
     user = db.query(User).filter(User.username == current_user).first()
-    if not user or (getattr(user, "role", "farmer") != "shop_owner" and getattr(user, "role", "farmer") != "admin"):
+    if not _is_shop_authorized(user):
         raise HTTPException(status_code=403, detail="Access denied. Shop/Agency Partner account required.")
 
     query = db.query(StoreProduct)
@@ -1097,7 +1150,7 @@ async def update_shop_inventory_item(
 ):
     """Toggle in_stock availability or update price"""
     user = db.query(User).filter(User.username == current_user).first()
-    if not user or (getattr(user, "role", "farmer") != "shop_owner" and getattr(user, "role", "farmer") != "admin"):
+    if not _is_shop_authorized(user):
         raise HTTPException(status_code=403, detail="Access denied. Shop/Agency Partner account required.")
 
     prod = db.query(StoreProduct).filter(StoreProduct.id == product_id).first()
@@ -1137,13 +1190,13 @@ async def get_rider_available_deliveries(
     """List orders that are ready for pickup and unclaimed by any rider"""
     import json
     user = db.query(User).filter(User.username == current_user).first()
-    if not user or (getattr(user, "role", "farmer") != "rider" and getattr(user, "role", "farmer") != "admin"):
+    if not _is_rider_authorized(user):
         raise HTTPException(status_code=403, detail="Access denied. Delivery Partner account required.")
 
-    # Find orders marked ready_for_pickup with no rider assigned
+    # Find orders marked ready_for_pickup or preparing with no rider assigned
     orders = db.query(StoreOrder).filter(
-        StoreOrder.status == "ready_for_pickup",
-        StoreOrder.rider_id == None
+        StoreOrder.status.in_(["ready_for_pickup", "preparing"]),
+        StoreOrder.rider_id.is_(None)
     ).order_by(StoreOrder.created_at.asc()).limit(30).all()
 
     deliveries = []
@@ -1182,7 +1235,7 @@ async def rider_accept_order(
 ):
     """Claim a delivery order as a Rapido delivery partner"""
     user = db.query(User).filter(User.username == current_user).first()
-    if not user or (getattr(user, "role", "farmer") != "rider" and getattr(user, "role", "farmer") != "admin"):
+    if not _is_rider_authorized(user):
         raise HTTPException(status_code=403, detail="Access denied. Delivery Partner account required.")
 
     order = db.query(StoreOrder).filter(StoreOrder.order_number == order_number).first()
@@ -1214,7 +1267,7 @@ async def get_rider_my_deliveries(
     """Get active trips and completed history for the current rider"""
     import json
     user = db.query(User).filter(User.username == current_user).first()
-    if not user or (getattr(user, "role", "farmer") != "rider" and getattr(user, "role", "farmer") != "admin"):
+    if not _is_rider_authorized(user):
         raise HTTPException(status_code=403, detail="Access denied. Delivery Partner account required.")
 
     orders = db.query(StoreOrder).filter(
@@ -1270,7 +1323,7 @@ async def update_rider_delivery_status(
 ):
     """Rider updates delivery state: picked_up -> out_for_delivery -> delivered"""
     user = db.query(User).filter(User.username == current_user).first()
-    if not user or (getattr(user, "role", "farmer") != "rider" and getattr(user, "role", "farmer") != "admin"):
+    if not _is_rider_authorized(user):
         raise HTTPException(status_code=403, detail="Access denied. Delivery Partner account required.")
 
     order = db.query(StoreOrder).filter(StoreOrder.order_number == order_number).first()

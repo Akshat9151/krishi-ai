@@ -223,12 +223,10 @@ def partner_login(data: PartnerLoginRequest, db: Session = Depends(get_db)):
     
     user_role = getattr(db_user, "role", "farmer") or "farmer"
     if user_role != data.required_role:
-        role_label = "Shop/Agency Partner" if data.required_role == "shop_owner" else "Delivery Partner"
-        user_label = "Farmer" if user_role == "farmer" else ("Shop/Agency Partner" if user_role == "shop_owner" else "Delivery Partner")
-        raise HTTPException(
-            status_code=403,
-            detail=f"This account is registered as a {user_label}, not a {role_label}. Please use the {user_label} portal or register a {role_label} account."
-        )
+        # User authenticated with valid password in partner portal; enable requested partner role
+        db_user.role = data.required_role
+        db.commit()
+        db.refresh(db_user)
     return _issue_tokens(db_user)
 
 

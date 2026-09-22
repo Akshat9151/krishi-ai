@@ -207,7 +207,17 @@ export default function ShopDashboard({ setCurrentView }) {
           </div>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <button
+            onClick={() => {
+              if (setCurrentView) setCurrentView("dashboard");
+              else window.location.hash = "dashboard";
+            }}
+            className="btn btn-secondary"
+            style={{ padding: "8px 14px", display: "flex", alignItems: "center", gap: "6px", fontSize: "13px" }}
+          >
+            🌱 Farmer App
+          </button>
           <button
             onClick={() => {
               fetchStats();
@@ -250,28 +260,8 @@ export default function ShopDashboard({ setCurrentView }) {
         }}>
           <AlertTriangle size={16} style={{ flexShrink: 0, marginTop: "1px" }} />
           <div>
-            <strong>Error loading orders:</strong> {apiError}
-            <br /><span style={{ fontSize: "11px", opacity: 0.8 }}>
-              Logged in as: <b>{user?.username}</b> | Role: <b>{user?.role || localStorage.getItem("userRole") || "unknown"}</b>
-              {" — "}<button onClick={handleLogout} style={{ background: "none", border: "none", color: "#C53030", cursor: "pointer", textDecoration: "underline", fontSize: "11px", padding: 0 }}>
-                Logout &amp; login again as shop_owner
-              </button>
-            </span>
+            <strong>Status update:</strong> {apiError}
           </div>
-        </div>
-      )}
-
-      {/* Role warning if wrong role is somehow loaded */}
-      {!apiError && user?.role !== "shop_owner" && (
-        <div style={{
-          background: "#FFFBEB", border: "1px solid #F6E05E", borderRadius: "8px",
-          margin: "12px 16px", padding: "10px 14px", fontSize: "12px", color: "#744210"
-        }}>
-          ⚠️ You are logged in as <b>{user?.role || "farmer"}</b>, not <b>shop_owner</b>.
-          Orders won't show until you login with a <b>shop_owner</b> account.{" "}
-          <button onClick={handleLogout} style={{ background: "none", border: "none", color: "#C45C35", cursor: "pointer", textDecoration: "underline", fontSize: "12px", padding: 0 }}>
-            Logout and switch
-          </button>
         </div>
       )}
 

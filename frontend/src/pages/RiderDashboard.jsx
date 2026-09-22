@@ -190,6 +190,24 @@ export default function RiderDashboard({ setCurrentView }) {
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <button
             onClick={() => {
+              if (setCurrentView) setCurrentView("dashboard");
+              else window.location.hash = "dashboard";
+            }}
+            style={{
+              background: "#2D3748",
+              border: "1px solid #4A5568",
+              color: "#FFF",
+              padding: "8px 12px",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontSize: "12px",
+              fontWeight: 600,
+            }}
+          >
+            🌱 Farmer App
+          </button>
+          <button
+            onClick={() => {
               refreshAll();
               showToast("Synced live requests");
             }}

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { User, MapPin, Globe, Bell, Volume2, BotMessageSquare, LogOut, Save, Check } from "lucide-react";
+import { User, MapPin, Globe, Bell, Volume2, BotMessageSquare, LogOut, Save, Check, Store, Bike, ArrowRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "../context/LanguageContext";
-import { storeApi } from "../services/api";
+import { storeApi, shopApi } from "../services/api";
 
 export default function Profile({ setCurrentView }) {
   const { user, preferences, updatePreferences, logout } = useAuth();
@@ -19,14 +19,24 @@ export default function Profile({ setCurrentView }) {
 
   useEffect(() => {
     if (!user) return;
-    storeApi.getShopOrders().then(setShopOrders).catch(() => setShopOrders(null));
+    shopApi.getOrders("all")
+      .then((res) => {
+        if (Array.isArray(res)) setShopOrders(res);
+        else if (res?.orders) setShopOrders(res.orders);
+        else setShopOrders([]);
+      })
+      .catch(() => setShopOrders([]));
   }, [user]);
 
-  const updateShopStatus = async (orderNumber, status) => {
-    const updated = await storeApi.updateShopOrderStatus(orderNumber, status);
-    setShopOrders((orders) => orders.map((order) => (
-      order.order_number === updated.order_number ? updated : order
-    )));
+  const updateShopStatus = async (orderNumber, action) => {
+    try {
+      await shopApi.updateOrderAction(orderNumber, action);
+      const res = await shopApi.getOrders("all");
+      if (Array.isArray(res)) setShopOrders(res);
+      else if (res?.orders) setShopOrders(res.orders);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleSave = (e) => {
@@ -106,6 +116,90 @@ export default function Profile({ setCurrentView }) {
           <BotMessageSquare size={17} color="var(--terracotta)" />
           <span>Ask AI Assistant</span>
         </button>
+      </div>
+
+      {/* Partner Portals Quick Access */}
+      <div className="ka-card" style={{ borderLeft: "4px solid var(--terracotta)", background: "#FFFFFF" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "8px" }}>
+          <div>
+            <h3 style={{ fontSize: "16px", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
+              Partner Operations & Fulfilment Hubs
+            </h3>
+            <p style={{ fontSize: "12.5px", color: "var(--text-secondary)", margin: "2px 0 0 0" }}>
+              Switch directly to store order fulfillment or delivery rider operations.
+            </p>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "12px" }}>
+          <button
+            type="button"
+            onClick={() => setCurrentView("shop-dashboard")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "14px",
+              borderRadius: "10px",
+              border: "1px solid var(--card-border)",
+              backgroundColor: "var(--bg-cream)",
+              cursor: "pointer",
+              textAlign: "left",
+              transition: "all 0.15s ease",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--terracotta)")}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--card-border)")}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div style={{ width: "38px", height: "38px", borderRadius: "8px", backgroundColor: "rgba(196, 92, 53, 0.12)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--terracotta)" }}>
+                <Store size={20} />
+              </div>
+              <div>
+                <div style={{ fontSize: "14px", fontWeight: "700", color: "var(--text-primary)" }}>
+                  Shop & Agency Hub
+                </div>
+                <div style={{ fontSize: "11.5px", color: "var(--text-secondary)" }}>
+                  Incoming orders, prep queue, stock
+                </div>
+              </div>
+            </div>
+            <ArrowRight size={16} color="var(--terracotta)" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setCurrentView("rider-dashboard")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "14px",
+              borderRadius: "10px",
+              border: "1px solid var(--card-border)",
+              backgroundColor: "var(--bg-cream)",
+              cursor: "pointer",
+              textAlign: "left",
+              transition: "all 0.15s ease",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--growth-green)")}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--card-border)")}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div style={{ width: "38px", height: "38px", borderRadius: "8px", backgroundColor: "var(--growth-green-light)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--growth-green)" }}>
+                <Bike size={20} />
+              </div>
+              <div>
+                <div style={{ fontSize: "14px", fontWeight: "700", color: "var(--text-primary)" }}>
+                  Delivery Rider App
+                </div>
+                <div style={{ fontSize: "11.5px", color: "var(--text-secondary)" }}>
+                  Trip feed, pickups & ₹60 earnings
+                </div>
+              </div>
+            </div>
+            <ArrowRight size={16} color="var(--growth-green)" />
+          </button>
+        </div>
       </div>
 
       {/* Settings Form */}

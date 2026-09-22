@@ -40,15 +40,14 @@ export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateSh
       const res = await login(username.trim(), password.trim());
       setSuccess(true);
       setTimeout(() => {
-        if (res?.role === "shop_owner") {
-          if (onNavigateShopLogin) onNavigateShopLogin();
-          else window.location.hash = "shop-dashboard";
+        if (onLoginSuccess) {
+          onLoginSuccess(res?.role);
+        } else if (res?.role === "shop_owner") {
+          window.location.hash = "shop-dashboard";
         } else if (res?.role === "rider") {
-          if (onNavigateRiderLogin) onNavigateRiderLogin();
-          else window.location.hash = "rider-dashboard";
+          window.location.hash = "rider-dashboard";
         } else {
-          if (onLoginSuccess) onLoginSuccess();
-          else window.location.hash = "dashboard";
+          window.location.hash = "dashboard";
         }
       }, 500);
     } catch (err) {
