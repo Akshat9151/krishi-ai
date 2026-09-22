@@ -11,6 +11,7 @@ from services.rate_limiter import limiter, custom_rate_limit_exceeded_handler, R
 from services.monitoring import router as monitoring_router, metrics_middleware
 from services import store_api
 
+from sqlalchemy import text
 from backend.database import engine, SessionLocal
 from backend.models import Base
 import backend.models_store  # Register store models with Base
@@ -33,6 +34,38 @@ app = FastAPI(
 # Set up rate limiting
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, custom_rate_limit_exceeded_handler)
+
+# ---------------------------------------------------------------------------
+# Idempotent column patches – ensure Neon PostgreSQL is up-to-date even when
+# Alembic migrations were already marked as applied before new columns existed.
+# ALTER TABLE … ADD COLUMN IF NOT EXISTS is safe to run repeatedly.
+# ---------------------------------------------------------------------------
+_COLUMN_PATCHES = [
+    "ALTER TABLE store_products ADD COLUMN IF NOT EXISTS stock_quantity INTEGER NOT NULL DEFAULT 50",
+    "ALTER TABLE store_products ADD COLUMN IF NOT EXISTS shop_owner_id INTEGER REFERENCES users(id)",
+    "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS shop_id INTEGER REFERENCES users(id)",
+    "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS shop_owner_id INTEGER REFERENCES users(id)",
+    "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS rider_id INTEGER REFERENCES users(id)",
+    "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS shop_notes VARCHAR",
+    "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS cancellation_reason VARCHAR",
+    "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS rejection_reason TEXT",
+    "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS delivered_at TIMESTAMP",
+    "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR NOT NULL DEFAULT 'farmer'",
+]
+
+if not settings.DATABASE_URL.startswith("sqlite"):
+    try:
+        with engine.connect() as _conn:
+            for _sql in _COLUMN_PATCHES:
+                try:
+                    _conn.execute(text(_sql))
+                except Exception:
+                    pass  # column already exists or table doesn't exist yet — ignore
+            _conn.commit()
+        print("[INFO] Column patches applied successfully.")
+    except Exception as _e:
+        print(f"[WARN] Column patch step failed: {_e}")
 
 # Create database tables for local fallback and ensure the idempotent catalog
 # exists after production migrations.
