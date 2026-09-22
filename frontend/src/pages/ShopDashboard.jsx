@@ -28,7 +28,7 @@ import { shopApi } from "../services/api";
 export default function ShopDashboard({ setCurrentView }) {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("orders"); // "orders" | "inventory"
-  const [orderFilter, setOrderFilter] = useState("all"); // "all" | "confirmed" | "preparing" | "ready_for_pickup" | "completed"
+  const [orderFilter, setOrderFilter] = useState("all"); // "all" | "new" | "preparing" | "ready" | "completed"
   
   const [stats, setStats] = useState({
     total_orders: 0,
@@ -46,6 +46,7 @@ export default function ShopDashboard({ setCurrentView }) {
   const [loadingInventory, setLoadingInventory] = useState(false);
   const [actionLoading, setActionLoading] = useState(null); // orderNumber currently being updated
   const [toastMessage, setToastMessage] = useState("");
+  const [apiError, setApiError] = useState(""); // surface backend errors visibly
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -55,11 +56,16 @@ export default function ShopDashboard({ setCurrentView }) {
   const fetchStats = useCallback(async () => {
     try {
       const res = await shopApi.getStats();
+      console.log("[ShopDashboard] stats response:", res);
       if (res && !res.detail) {
         setStats(res);
+        setApiError("");
+      } else if (res?.detail) {
+        setApiError(`Stats error: ${res.detail}`);
       }
     } catch (err) {
       console.error("Failed to fetch shop stats:", err);
+      setApiError(`Stats fetch failed: ${err.message}`);
     }
   }, []);
 
@@ -67,15 +73,22 @@ export default function ShopDashboard({ setCurrentView }) {
     setLoadingOrders(true);
     try {
       const res = await shopApi.getOrders(status || orderFilter);
+      console.log("[ShopDashboard] orders response:", res);
       if (Array.isArray(res)) {
         setOrders(res);
+        setApiError("");
       } else if (res?.orders) {
         setOrders(res.orders);
+        setApiError("");
+      } else if (res?.detail) {
+        setApiError(`Orders error: ${res.detail}`);
+        setOrders([]);
       } else {
         setOrders([]);
       }
     } catch (err) {
       console.error("Failed to fetch shop orders:", err);
+      setApiError(`Orders fetch failed: ${err.message}`);
     } finally {
       setLoadingOrders(false);
     }
@@ -227,6 +240,40 @@ export default function ShopDashboard({ setCurrentView }) {
           </button>
         </div>
       </header>
+
+      {/* Auth debug / error banner */}
+      {apiError && (
+        <div style={{
+          background: "#FFF5F5", border: "1px solid #FC8181", borderRadius: "8px",
+          margin: "12px 16px", padding: "12px 16px", fontSize: "13px", color: "#C53030",
+          display: "flex", alignItems: "flex-start", gap: "8px"
+        }}>
+          <AlertTriangle size={16} style={{ flexShrink: 0, marginTop: "1px" }} />
+          <div>
+            <strong>Error loading orders:</strong> {apiError}
+            <br /><span style={{ fontSize: "11px", opacity: 0.8 }}>
+              Logged in as: <b>{user?.username}</b> | Role: <b>{user?.role || localStorage.getItem("userRole") || "unknown"}</b>
+              {" — "}<button onClick={handleLogout} style={{ background: "none", border: "none", color: "#C53030", cursor: "pointer", textDecoration: "underline", fontSize: "11px", padding: 0 }}>
+                Logout &amp; login again as shop_owner
+              </button>
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Role warning if wrong role is somehow loaded */}
+      {!apiError && user?.role !== "shop_owner" && (
+        <div style={{
+          background: "#FFFBEB", border: "1px solid #F6E05E", borderRadius: "8px",
+          margin: "12px 16px", padding: "10px 14px", fontSize: "12px", color: "#744210"
+        }}>
+          ⚠️ You are logged in as <b>{user?.role || "farmer"}</b>, not <b>shop_owner</b>.
+          Orders won't show until you login with a <b>shop_owner</b> account.{" "}
+          <button onClick={handleLogout} style={{ background: "none", border: "none", color: "#C45C35", cursor: "pointer", textDecoration: "underline", fontSize: "12px", padding: 0 }}>
+            Logout and switch
+          </button>
+        </div>
+      )}
 
       {/* Toast alert */}
       {toastMessage && (
