@@ -4,7 +4,7 @@
  */
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '' : 'https://krishi-ai-j359.onrender.com');
-const REQUEST_TIMEOUT_MS = 20000;
+const REQUEST_TIMEOUT_MS = 60000; // 60s — allows for Render free-tier cold starts
 
 export const getApiBaseUrl = () => API_BASE_URL;
 
@@ -443,3 +443,16 @@ export const riderApi = {
     return request('/api/store/rider/earnings');
   },
 };
+
+// ---------------------------------------------------------------------------
+// 🏓 KEEPALIVE — Ping /health every 9 min to prevent Render cold-starts
+// Render free tier spins down after 15 min inactivity; this keeps it warm.
+// ---------------------------------------------------------------------------
+(function startKeepalive() {
+  const ping = () => {
+    fetch(`${API_BASE_URL}/health`, { method: 'GET' }).catch(() => {});
+  };
+  // First ping on load, then every 9 minutes
+  ping();
+  setInterval(ping, 9 * 60 * 1000);
+})();

@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Request
+from contextlib import asynccontextmanager
 import time
 import os
+import asyncio
 
 from routes import router, legacy_router
 from services import auth
@@ -24,17 +26,6 @@ if os.getenv("RENDER") and settings.DATABASE_URL.startswith("sqlite"):
         "Refusing to start with temporary SQLite storage."
     )
 
-# Create FastAPI app
-app = FastAPI(
-    title="KhetiTak",
-    description="Smart Agriculture & Village AgriStore Platform",
-    version="2.0"
-)
-
-# Set up rate limiting
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, custom_rate_limit_exceeded_handler)
-
 # ---------------------------------------------------------------------------
 # Idempotent column patches – ensure Neon PostgreSQL is up-to-date even when
 # Alembic migrations were already marked as applied before new columns existed.
@@ -54,28 +45,51 @@ _COLUMN_PATCHES = [
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR NOT NULL DEFAULT 'farmer'",
 ]
 
-if not settings.DATABASE_URL.startswith("sqlite"):
-    try:
-        with engine.connect() as _conn:
-            for _sql in _COLUMN_PATCHES:
-                try:
-                    _conn.execute(text(_sql))
-                except Exception:
-                    pass  # column already exists or table doesn't exist yet — ignore
-            _conn.commit()
-        print("[INFO] Column patches applied successfully.")
-    except Exception as _e:
-        print(f"[WARN] Column patch step failed: {_e}")
 
-# Create database tables for local fallback and ensure the idempotent catalog
-# exists after production migrations.
-try:
-    Base.metadata.create_all(bind=engine)
-    with SessionLocal() as db:
-        seed_database(db)
-    print("[INFO] Database tables and store catalog verified.")
-except Exception as e:
-    print(f"[ERROR] Error creating database tables or store catalog: {e}")
+def _run_startup_db():
+    """Run DB patches + create_all + seed synchronously (called inside lifespan)."""
+    if not settings.DATABASE_URL.startswith("sqlite"):
+        try:
+            with engine.connect() as conn:
+                for sql in _COLUMN_PATCHES:
+                    try:
+                        conn.execute(text(sql))
+                    except Exception:
+                        pass  # column already exists — ignore
+                conn.commit()
+            print("[INFO] Column patches applied successfully.")
+        except Exception as e:
+            print(f"[WARN] Column patch step failed: {e}")
+
+    try:
+        Base.metadata.create_all(bind=engine)
+        with SessionLocal() as db:
+            seed_database(db)
+        print("[INFO] Database tables and store catalog verified.")
+    except Exception as e:
+        print(f"[ERROR] Error creating database tables or store catalog: {e}")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Run heavy DB work in a thread so the event loop isn't blocked
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, _run_startup_db)
+    yield
+    # Shutdown: nothing to clean up
+
+
+# Create FastAPI app
+app = FastAPI(
+    title="KhetiTak",
+    description="Smart Agriculture & Village AgriStore Platform",
+    version="2.0",
+    lifespan=lifespan,
+)
+
+# Set up rate limiting
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, custom_rate_limit_exceeded_handler)
 
 # CORS middleware - Allow deployed frontend origins and local development
 app.add_middleware(
@@ -96,8 +110,8 @@ app.add_middleware(
     ],
     allow_origin_regex=r"https://krishi-[a-z0-9-]+-akshat9151s-projects\.vercel\.app",
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Logging middleware
@@ -114,7 +128,14 @@ app.include_router(store_api.router)
 # legacy endpoint at /predict/crop
 app.include_router(legacy_router)
 
+
 # Root API
 @app.get("/")
 def home():
     return {"message": "🚀 Welcome to KhetiTak API – Smart Agriculture & AgriStore Platform"}
+
+
+# Lightweight health check – used by frontend keepalive ping
+@app.get("/health")
+def health():
+    return {"status": "ok", "ts": int(time.time())}
