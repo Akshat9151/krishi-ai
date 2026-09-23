@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "npm --prefix frontend run dev",
     "build": "npm --prefix frontend run build",
-    "preview": "npm --prefix frontend run preview"
+    "preview": "npm --prefix frontend run preview",
+    "cap:sync": "npm --prefix frontend run build && cd frontend && npx cap sync",
+    "cap:open:android": "npm --prefix frontend exec cap open android"
   }
 }

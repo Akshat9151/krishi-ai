@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920">
+  <rect width="1080" height="1920" fill="#FBF8F2"/>
+  <g transform="translate(390 790) scale(3)">
+    <path d="M28 8c0 0-5 10 0 18 5-8 0-18 0-18zM17 18c-5 6-2 17 8 15-1-8-5-13-8-15zM39 18c3 2-1 10-8 15 6 2 13-9 8-15zM15 35c-5 7-1 18 9 15-1-8-6-13-9-15zM41 35c3 2-2 10-10 15 7 3 15-8 10-15z" fill="#E8A33D"/>
+    <path d="M52 50 80 18l14 12-26 20zM52 50h16l15 22-11 10z" fill="#C1440E"/>
+    <path d="M85 54c-5.5 0-10 4.5-10 10 0 7.5 10 18 10 18s10-10.5 10-18c0-5.5-4.5-10-10-10z" fill="#C1440E"/>
+    <circle cx="85" cy="63.5" r="3.5" fill="#FBF8F2"/>
+  </g>
+  <text x="540" y="1100" text-anchor="middle" fill="#2B2118" font-family="sans-serif" font-size="92" font-weight="800">Kheti<tspan fill="#E8A33D">Tak</tspan></text>
+  <text x="540" y="1190" text-anchor="middle" fill="#C1440E" font-family="sans-serif" font-size="38">खेती का भरोसा, आपके पास</text>
+</svg>
