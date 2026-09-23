@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import Footer from "../components/Footer";
-import { Lock, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Globe, Store, Bike } from "lucide-react";
+import { Lock, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Globe } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { authApi } from "../services/api";
 import { useTranslation } from "../context/LanguageContext";
 import { KhetiTakMark, KhetiTakLogo } from "../components/KhetiTakBranding";
 import GoogleSignInButton from "../components/GoogleSignInButton";
 
-export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateShopLogin, onNavigateRiderLogin, onStaffLogin }) {
+export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateShopLogin, onNavigateRiderLogin }) {
   const { login, loginWithToken } = useAuth();
   const { language, setLanguage, languages, t } = useTranslation();
 
@@ -361,80 +361,9 @@ export default function Login({ onSwitchToRegister, onLoginSuccess, onNavigateSh
         </>)}
 
         {/* Dedicated Partner Access Section */}
-        <div
-          style={{
-            marginTop: "24px",
-            paddingTop: "16px",
-            borderTop: "1px dashed var(--card-border)",
-            textAlign: "center",
-          }}
-        >
-          <p style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "10px" }}>
-            KhetiTak Partner Portals
-          </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
-            <button
-              type="button"
-              onClick={() => {
-                if (onNavigateShopLogin) onNavigateShopLogin();
-                else window.location.hash = "shop-login";
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                padding: "8px 10px",
-                borderRadius: "var(--radius-sm)",
-                border: "1px solid var(--card-border)",
-                background: "var(--bg-cream)",
-                color: "var(--text-primary)",
-                fontSize: "12px",
-                fontWeight: "600",
-                cursor: "pointer",
-                transition: "all 0.15s ease",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--marigold)")}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--card-border)")}
-            >
-              <Store size={14} color="var(--terracotta)" />
-              <span>Shop / Agency</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                if (onNavigateRiderLogin) onNavigateRiderLogin();
-                else window.location.hash = "rider-login";
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                padding: "8px 10px",
-                borderRadius: "var(--radius-sm)",
-                border: "1px solid var(--card-border)",
-                background: "var(--bg-cream)",
-                color: "var(--text-primary)",
-                fontSize: "12px",
-                fontWeight: "600",
-                cursor: "pointer",
-                transition: "all 0.15s ease",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--marigold)")}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--card-border)")}
-            >
-              <Bike size={14} color="var(--growth-green)" />
-              <span>Delivery Rider</span>
-            </button>
-          </div>
-        </div>
-
       </div>
     </div>
     <Footer />
     </>
   );
 }
-

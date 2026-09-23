@@ -52,6 +52,11 @@ export default function Footer({ setCurrentView }) {
             ))}
           </div>
           <div>
+            <h3 style={{ fontSize: "15px", marginBottom: "10px" }}>Partner Login</h3>
+            <a href="#shop-login" style={linkStyle}>Shop/Agency Login</a>
+            <a href="#rider-login" style={linkStyle}>Delivery Partner Login</a>
+          </div>
+          <div>
             <h3 style={{ fontSize: "15px", marginBottom: "10px" }}>Contact</h3>
             <p style={contactStyle}><MapPin size={15} /> Bakshi Khad Beej Bhandar, Harsana, Laxmangarh, Alwar, Rajasthan, 321607</p>
             <a href="mailto:support@khetitak.in" style={contactStyle}><Mail size={15} /> support@khetitak.in</a>
