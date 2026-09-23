@@ -223,7 +223,7 @@ function MainApp() {
     const handleRouteChange = () => {
       const path = window.location.pathname.toLowerCase();
       const hash = window.location.hash.toLowerCase().replace("#", "");
-      const routeView = pathToView[path] || hash;
+      const routeView = hash && pathToView[`/${hash}`] ? hash : pathToView[path] || hash;
       if (routeView && [...publicViews, ...protectedViews].includes(routeView)) {
         setCurrentViewState(routeView);
       }

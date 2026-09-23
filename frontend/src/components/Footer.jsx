@@ -53,8 +53,8 @@ export default function Footer({ setCurrentView }) {
           </div>
           <div>
             <h3 style={{ fontSize: "15px", marginBottom: "10px" }}>Partner Login</h3>
-            <a href="#shop-login" style={linkStyle}>Shop/Agency Login</a>
-            <a href="#rider-login" style={linkStyle}>Delivery Partner Login</a>
+            <button type="button" onClick={() => navigate("shop-login")} style={linkStyle}>Shop/Agency Login</button>
+            <button type="button" onClick={() => navigate("rider-login")} style={linkStyle}>Delivery Partner Login</button>
           </div>
           <div>
             <h3 style={{ fontSize: "15px", marginBottom: "10px" }}>Contact</h3>
