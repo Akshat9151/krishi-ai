@@ -176,7 +176,7 @@ export default function MyOrders({ setCurrentView }) {
                   <p style={{ fontSize: "20px", fontWeight: "800", color: "var(--terracotta)", margin: 0 }}>
                     ₹{order.total_amount}
                   </p>
-                  <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>Payment: Cash on Delivery</span>
+                  <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>Payment: {order.payment_method === "online" ? "Online payment via Razorpay" : "Cash on Delivery"}</span>
                 </div>
               </div>
 

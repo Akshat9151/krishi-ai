@@ -238,7 +238,7 @@ export default function CartDrawer({ onNavigateOrders }) {
               {!checkoutOpen ? (
                 <div className="ka-card" style={{ marginTop: "12px", textAlign: "center" }}>
                   <h4 style={{ fontSize: "15px", fontWeight: "700" }}>Ready to checkout?</h4>
-                  <p style={{ color: "var(--text-secondary)", fontSize: "12.5px", marginTop: "6px" }}>Review delivery details and choose COD or online test payment.</p>
+                  <p style={{ color: "var(--text-secondary)", fontSize: "12.5px", marginTop: "6px" }}>Review delivery details and choose Cash on Delivery or secure online payment.</p>
                   <button className="btn-primary" style={{ width: "100%", marginTop: "14px" }} onClick={() => setCheckoutOpen(true)}><ArrowRight size={16} /><span>Proceed to Checkout</span></button>
                 </div>
               ) : (
@@ -252,10 +252,10 @@ export default function CartDrawer({ onNavigateOrders }) {
                     <div>
                       <label className="input-label">Payment Method</label>
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
-                        <label style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px", border: `1px solid ${paymentMethod === "cod" ? "var(--terracotta)" : "var(--card-border)"}`, borderRadius: "var(--radius-sm)", background: paymentMethod === "cod" ? "var(--terracotta-light)" : "#FFFFFF" }}><input type="radio" name="payment-method" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} /><span style={{ fontSize: "12px", fontWeight: "600" }}>Cash on Delivery</span></label>
-                        <label style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px", border: `1px solid ${paymentMethod === "online" ? "var(--terracotta)" : "var(--card-border)"}`, borderRadius: "var(--radius-sm)", background: paymentMethod === "online" ? "var(--terracotta-light)" : "#FFFFFF" }}><input type="radio" name="payment-method" checked={paymentMethod === "online"} onChange={() => setPaymentMethod("online")} /><span style={{ fontSize: "12px", fontWeight: "600" }}>Online (Test)</span></label>
+                        <label style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px", border: `1px solid ${paymentMethod === "cod" ? "var(--terracotta)" : "var(--card-border)"}`, borderRadius: "var(--radius-sm)", background: paymentMethod === "cod" ? "var(--terracotta-light)" : "#FFFFFF" }}><input type="radio" name="payment-method" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} /><span style={{ fontSize: "12px", fontWeight: "600" }}>Cash on Delivery / Pay on Delivery</span></label>
+                        <label style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px", border: `1px solid ${paymentMethod === "online" ? "var(--terracotta)" : "var(--card-border)"}`, borderRadius: "var(--radius-sm)", background: paymentMethod === "online" ? "var(--terracotta-light)" : "#FFFFFF" }}><input type="radio" name="payment-method" checked={paymentMethod === "online"} onChange={() => setPaymentMethod("online")} /><span style={{ fontSize: "12px", fontWeight: "600" }}>Pay Online</span></label>
                       </div>
-                      {paymentMethod === "online" && <p style={{ color: "var(--text-muted)", fontSize: "11.5px", marginTop: "6px" }}>You will be redirected to secure Razorpay Checkout.</p>}
+                      {paymentMethod === "online" && <p style={{ color: "var(--text-muted)", fontSize: "11.5px", lineHeight: 1.5, marginTop: "6px" }}>UPI, credit/debit cards and net banking accepted securely via Razorpay.</p>}
                     </div>
                   </div>
                   <button type="button" className="btn-outline" style={{ width: "100%", marginTop: "14px" }} onClick={() => setCheckoutOpen(false)}>Back to Cart</button>
@@ -269,8 +269,8 @@ export default function CartDrawer({ onNavigateOrders }) {
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "13px", color: "var(--text-secondary)" }}><span>Subtotal:</span><span>₹{totalAmount}</span></div>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", fontSize: "13px", color: "var(--growth-green)" }}><span>Village Delivery:</span><span style={{ fontWeight: "700" }}>FREE</span></div>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "14px", fontSize: "16px", fontWeight: "800" }}><span>{t("total", "Total Payable")}:</span><span style={{ color: "var(--terracotta)" }}>₹{totalAmount}</span></div>
-          {checkoutOpen ? <button className="btn-primary" style={{ width: "100%", padding: "12px" }} onClick={handleCheckout} disabled={loading}>{loading ? "Placing Order..." : `Place Order (${paymentMethod === "online" ? "Online Test Payment" : "Cash on Delivery"}) • ₹${totalAmount}`}</button> : <button className="btn-primary" style={{ width: "100%", padding: "12px" }} onClick={() => setCheckoutOpen(true)}><ArrowRight size={16} /><span>Proceed to Checkout • ₹{totalAmount}</span></button>}
-          <p style={{ textAlign: "center", fontSize: "11px", color: "var(--text-muted)", marginTop: "8px" }}>{checkoutOpen ? (paymentMethod === "online" ? "Secure payment powered by Razorpay." : "Pay by cash when delivered at your doorstep.") : "Review your order before confirming delivery details."}</p>
+          {checkoutOpen ? <button className="btn-primary" style={{ width: "100%", padding: "12px" }} onClick={handleCheckout} disabled={loading}>{loading ? "Placing Order..." : `Place Order (${paymentMethod === "online" ? "Pay Online" : "Cash on Delivery"}) • ₹${totalAmount}`}</button> : <button className="btn-primary" style={{ width: "100%", padding: "12px" }} onClick={() => setCheckoutOpen(true)}><ArrowRight size={16} /><span>Proceed to Checkout • ₹{totalAmount}</span></button>}
+          <p style={{ textAlign: "center", fontSize: "11px", color: "var(--text-muted)", marginTop: "8px" }}>{checkoutOpen ? (paymentMethod === "online" ? "Secure UPI, card and net banking payment powered by Razorpay." : "Pay by cash when your order is delivered to your doorstep.") : "Review your order before confirming delivery details."}</p>
         </div>}
       </div>
     </div>
