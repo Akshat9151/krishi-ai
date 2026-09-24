@@ -13,7 +13,8 @@ const quickLinks = [
 const legalLinks = [
   ["terms", "Terms & Conditions"],
   ["privacy", "Privacy Policy"],
-  ["refund-policy", "Refund & Cancellation Policy"],
+  ["refund-policy", "Refund Policy"],
+  ["cancellation-policy", "Cancellation Policy"],
   ["shipping-policy", "Shipping & Delivery Policy"],
 ];
 

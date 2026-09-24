@@ -53,6 +53,7 @@ const viewPaths = {
   terms: "/terms",
   privacy: "/privacy",
   "refund-policy": "/refund-policy",
+  "cancellation-policy": "/cancellation-policy",
   "shipping-policy": "/shipping-policy",
 };
 
@@ -84,6 +85,7 @@ const publicViews = new Set([
   "terms",
   "privacy",
   "refund-policy",
+  "cancellation-policy",
   "shipping-policy",
 ]);
 
@@ -145,8 +147,13 @@ function updatePageMetadata(view) {
       robots: "index,follow",
     },
     "refund-policy": {
-      title: "Refund & Cancellation Policy | KhetiTak",
-      description: "KhetiTak policy for COD order cancellations, damaged items and wrong-item resolutions.",
+      title: "Refund Policy | KhetiTak",
+      description: "KhetiTak policy for refunds, damaged items and wrong-item resolutions.",
+      robots: "index,follow",
+    },
+    "cancellation-policy": {
+      title: "Cancellation Policy | KhetiTak",
+      description: "KhetiTak policy for cancelling orders before dispatch.",
       robots: "index,follow",
     },
     "shipping-policy": {
@@ -275,7 +282,7 @@ function MainApp() {
   }
 
   // Legal Pages
-  if (["terms", "privacy", "refund-policy", "shipping-policy"].includes(currentView)) {
+  if (["terms", "privacy", "refund-policy", "cancellation-policy", "shipping-policy"].includes(currentView)) {
     return <LegalPage page={currentView} setCurrentView={setCurrentView} />;
   }
 

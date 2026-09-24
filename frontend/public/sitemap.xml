@@ -71,6 +71,11 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://khetitak.in/cancellation-policy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://khetitak.in/shipping-policy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>

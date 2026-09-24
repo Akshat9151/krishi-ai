@@ -27,13 +27,22 @@ const content = {
     ],
   },
   "refund-policy": {
-    title: "Refund & Cancellation Policy",
+    title: "Refund Policy",
     sections: [
       ["Cash-on-delivery orders", "KhetiTak currently accepts cash on delivery, so no online payment refund is normally involved. If you cancel before dispatch, there is no payment to refund."],
-      ["Cancellation", "Request cancellation as soon as possible through the support contact. We can generally cancel an order before it is dispatched; once dispatched, cancellation may not be possible."],
       ["Wrong or damaged items", "If an item is wrong, damaged or materially different from the confirmed order, contact us promptly with the order number and clear photographs. We will coordinate with the partner dealer for replacement, return or another fair resolution."],
       ["Timeline and resolution", "We aim to acknowledge a complaint within 2 working days and coordinate a resolution within a reasonable period depending on dealer pickup and product verification. For COD orders, an approved refund will be arranged through a mutually agreed method."],
       ["Support", "Contact support@khetitak.in with your order number, issue details and preferred resolution. Keep the item and packaging available until the case is reviewed."],
+    ],
+  },
+  "cancellation-policy": {
+    title: "Cancellation Policy",
+    sections: [
+      ["When cancellation is allowed", "You can request cancellation as soon as possible after placing an order. We can generally cancel an order before the partner dealer dispatches it."],
+      ["How to request cancellation", "Contact support@khetitak.in with your order number and the phone number used for the order. We will confirm whether the order has already been dispatched and share the outcome."],
+      ["After dispatch", "Once an order has been dispatched or handed to a delivery partner, cancellation may not be possible. Please do not refuse a delivery without contacting support, as the order may already be in transit."],
+      ["Cancellation and refunds", "KhetiTak currently accepts cash on delivery. If a COD order is cancelled before dispatch, there is no payment to refund. If an eligible prepaid or approved return case applies in the future, any refund will be handled under our Refund Policy."],
+      ["Support", "For cancellation help, email support@khetitak.in with your order number, cancellation reason and preferred resolution."],
     ],
   },
   "shipping-policy": {
