@@ -1,12 +1,19 @@
-from fastapi import APIRouter, HTTPException, Query, Depends
+from fastapi import APIRouter, HTTPException, Query, Depends, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from typing import List, Optional, Any, Union
 import json
+import hashlib
+import hmac
+import secrets
+import razorpay
 from datetime import datetime, timedelta
 
 from backend.database import get_db
-from backend.models_store import StoreProduct, ProductCategory, FertilizerRecommendation, StoreOrder, StoreOrderEvent
+from backend.models_store import (
+    StoreProduct, ProductCategory, FertilizerRecommendation, StoreOrder,
+    StoreOrderEvent, RazorpayWebhookEvent,
+)
 from backend.models import FarmActivity, User
 from services.auth import get_current_user
 from services.logger import logger
@@ -73,6 +80,33 @@ def _load_order_items(items_json: Optional[str]) -> list:
     except json.JSONDecodeError:
         return []
     return items if isinstance(items, list) else []
+
+
+def _razorpay_client():
+    if not settings.RAZORPAY_KEY_ID or not settings.RAZORPAY_KEY_SECRET:
+        raise HTTPException(status_code=503, detail="Online payments are not configured yet.")
+    return razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+
+def _verify_signature(order_id: str, payment_id: str, signature: str) -> bool:
+    if not settings.RAZORPAY_KEY_SECRET:
+        return False
+    digest = hmac.new(
+        settings.RAZORPAY_KEY_SECRET.encode(),
+        f"{order_id}|{payment_id}".encode(),
+        hashlib.sha256,
+    ).hexdigest()
+    return hmac.compare_digest(digest, signature)
+
+
+def _release_reserved_stock(db: Session, order: StoreOrder) -> None:
+    for item in _load_order_items(order.items_json):
+        product = db.query(StoreProduct).filter(
+            StoreProduct.id == item.get("product_id")
+        ).with_for_update().first()
+        if product:
+            product.stock_quantity += int(item.get("quantity", 0))
+            product.in_stock = product.stock_quantity > 0
 
 # Pydantic Models
 class ProductResponse(BaseModel):
@@ -397,6 +431,9 @@ class CreateOrderResponse(BaseModel):
     total_amount: float
     created_at: datetime
     items: List[Any] = Field(default_factory=list)
+    payment_status: str = "unpaid"
+    razorpay_order_id: Optional[str] = None
+    razorpay_key_id: Optional[str] = None
 
 
 class OrderEventResponse(BaseModel):
@@ -415,6 +452,8 @@ class OrderSummary(BaseModel):
     status: str
     total_amount: float
     payment_method: str
+    payment_status: str = "unpaid"
+    razorpay_order_id: Optional[str] = None
     rejection_reason: Optional[str] = None
     rider_id: Optional[int] = None
     created_at: datetime
@@ -433,6 +472,12 @@ class ProductUpdateRequest(BaseModel):
     stock_quantity: Optional[int] = Field(None, ge=0)
 
 
+class PaymentVerificationRequest(BaseModel):
+    razorpay_payment_id: str = Field(..., min_length=5)
+    razorpay_order_id: str = Field(..., min_length=5)
+    razorpay_signature: str = Field(..., min_length=10)
+
+
 def _order_summary(db: Session, order: StoreOrder) -> dict:
     events = db.query(StoreOrderEvent).filter(
         StoreOrderEvent.order_id == order.id
@@ -446,6 +491,8 @@ def _order_summary(db: Session, order: StoreOrder) -> dict:
         "status": order.status,
         "total_amount": order.total_amount,
         "payment_method": order.payment_method,
+        "payment_status": order.payment_status,
+        "razorpay_order_id": order.razorpay_order_id,
         "rejection_reason": order.rejection_reason,
         "rider_id": order.rider_id,
         "created_at": order.created_at,
@@ -468,13 +515,17 @@ async def create_store_order(
 ):
     """Create an authenticated order using server-side price snapshots."""
     try:
-        import time, json, secrets
+        import time
         user = db.query(User).filter(User.username == current_user).first()
         if not user:
             raise HTTPException(status_code=401, detail="Sign in again to place an order")
 
         if not order_data.items:
             raise HTTPException(status_code=422, detail="Your cart must contain at least one item")
+
+        payment_method = (order_data.payment_method or "cod").strip().lower()
+        if payment_method not in {"cod", "online"}:
+            raise HTTPException(status_code=422, detail="Unsupported payment method")
 
         product_ids = [item.product_id for item in order_data.items]
         products = db.query(StoreProduct).filter(StoreProduct.id.in_(product_ids)).with_for_update().all()
@@ -515,19 +566,36 @@ async def create_store_order(
             address=order_data.address,
             items_json=json.dumps(snapshot_items, ensure_ascii=False),
             total_amount=total_amount,
-            status="confirmed",
-            payment_method=order_data.payment_method or "cod",
+            status="payment_pending" if payment_method == "online" else "confirmed",
+            payment_method=payment_method,
+            payment_status="created" if payment_method == "online" else "unpaid",
             shop_id=shop_owner_id,
             shop_owner_id=shop_owner_id,
         )
         db.add(store_order)
         db.flush()
         db.refresh(store_order)
+        razorpay_order_id = None
+        if payment_method == "online":
+            try:
+                gateway_order = _razorpay_client().order.create({
+                    "amount": int(round(total_amount * 100)),
+                    "currency": "INR",
+                    "receipt": order_num,
+                    "notes": {"khetitak_order": order_num},
+                })
+                razorpay_order_id = gateway_order["id"]
+                store_order.razorpay_order_id = razorpay_order_id
+            except HTTPException:
+                raise
+            except Exception as exc:
+                logger.log_error(exc, "Razorpay order creation")
+                raise HTTPException(status_code=502, detail="Unable to start online payment. Please try again.")
         db.add(StoreOrderEvent(
             order_id=store_order.id,
             event_type="order_created",
             status=store_order.status,
-            message="Order placed successfully",
+            message="Order created; awaiting online payment" if payment_method == "online" else "Order placed successfully",
         ))
         db.add(FarmActivity(
             username=current_user,
@@ -544,6 +612,9 @@ async def create_store_order(
             total_amount=store_order.total_amount,
             created_at=store_order.created_at,
             items=snapshot_items,
+            payment_status=store_order.payment_status,
+            razorpay_order_id=razorpay_order_id,
+            razorpay_key_id=settings.RAZORPAY_KEY_ID if payment_method == "online" else None,
         )
     except HTTPException:
         db.rollback()
@@ -552,6 +623,107 @@ async def create_store_order(
         db.rollback()
         logger.log_error(e, "Store API - Create Order")
         raise HTTPException(status_code=500, detail=f"Failed to place order: {str(e)}")
+
+
+@router.post("/orders/{order_number}/payment/verify")
+async def verify_order_payment(
+    order_number: str,
+    payment_data: PaymentVerificationRequest,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    """Verify Razorpay's signature before confirming an online order."""
+    user = db.query(User).filter(User.username == current_user).first()
+    order = db.query(StoreOrder).filter(
+        StoreOrder.order_number == order_number,
+        StoreOrder.user_id == (user.id if user else -1),
+    ).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    if order.payment_method != "online":
+        raise HTTPException(status_code=400, detail="This order does not use online payment")
+    if order.razorpay_order_id != payment_data.razorpay_order_id:
+        raise HTTPException(status_code=400, detail="Payment order does not match this order")
+    if not _verify_signature(
+        payment_data.razorpay_order_id,
+        payment_data.razorpay_payment_id,
+        payment_data.razorpay_signature,
+    ):
+        logger.log_api_request(None, user="razorpay_signature_invalid")
+        raise HTTPException(status_code=400, detail="Payment verification failed")
+
+    if order.payment_status == "paid":
+        return {"verified": True, "order_number": order.order_number, "payment_status": "paid"}
+
+    order.razorpay_payment_id = payment_data.razorpay_payment_id
+    order.razorpay_signature = payment_data.razorpay_signature
+    order.payment_status = "paid"
+    order.status = "confirmed"
+    db.add(StoreOrderEvent(
+        order_id=order.id,
+        event_type="payment_verified",
+        status=order.status,
+        message="Online payment verified successfully",
+    ))
+    db.commit()
+    return {"verified": True, "order_number": order.order_number, "payment_status": order.payment_status}
+
+
+@router.post("/webhooks/razorpay")
+async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
+    """Handle signed, idempotent Razorpay payment events."""
+    if not settings.RAZORPAY_WEBHOOK_SECRET:
+        raise HTTPException(status_code=503, detail="Payment webhook is not configured")
+    body = await request.body()
+    signature = request.headers.get("X-Razorpay-Signature", "")
+    expected = hmac.new(
+        settings.RAZORPAY_WEBHOOK_SECRET.encode(),
+        body,
+        hashlib.sha256,
+    ).hexdigest()
+    if not signature or not hmac.compare_digest(expected, signature):
+        raise HTTPException(status_code=400, detail="Invalid webhook signature")
+
+    try:
+        payload = json.loads(body)
+        event_type = str(payload.get("event", "unknown"))
+        event_id = request.headers.get("X-Razorpay-Event-Id") or hashlib.sha256(body).hexdigest()
+        if db.query(RazorpayWebhookEvent).filter(RazorpayWebhookEvent.event_id == event_id).first():
+            return {"received": True, "duplicate": True}
+
+        payment_entity = ((payload.get("payload") or {}).get("payment") or {}).get("entity") or {}
+        razorpay_order_id = payment_entity.get("order_id")
+        order = db.query(StoreOrder).filter(
+            StoreOrder.razorpay_order_id == razorpay_order_id
+        ).first() if razorpay_order_id else None
+        db.add(RazorpayWebhookEvent(event_id=event_id, event_type=event_type))
+
+        if order:
+            if event_type in {"payment.captured", "order.paid"}:
+                order.payment_status = "paid"
+                order.status = "confirmed"
+                if payment_entity.get("id") and not order.razorpay_payment_id:
+                    order.razorpay_payment_id = payment_entity["id"]
+            elif event_type in {"payment.failed", "payment.cancelled"} and order.payment_status != "paid":
+                if order.payment_status not in {"failed", "cancelled"}:
+                    _release_reserved_stock(db, order)
+                    order.payment_status = "failed" if event_type == "payment.failed" else "cancelled"
+                    order.status = "payment_failed" if event_type == "payment.failed" else "cancelled"
+            db.add(StoreOrderEvent(
+                order_id=order.id,
+                event_type=f"webhook:{event_type}",
+                status=order.status,
+                message=f"Razorpay event received: {event_type}",
+            ))
+        db.commit()
+        return {"received": True}
+    except HTTPException:
+        db.rollback()
+        raise
+    except Exception as exc:
+        db.rollback()
+        logger.log_error(exc, "Razorpay webhook")
+        raise HTTPException(status_code=500, detail="Webhook processing failed")
 
 
 @router.get("/orders", response_model=List[OrderSummary])
@@ -816,7 +988,7 @@ async def cancel_order(
     db: Session = Depends(get_db),
     current_user: str = Depends(get_current_user),
 ):
-    """Cancel an owned COD order before dealer dispatch."""
+    """Cancel an owned order before dealer dispatch."""
     user = db.query(User).filter(User.username == current_user).first()
     if not user:
         raise HTTPException(status_code=404, detail="Order not found")
@@ -826,9 +998,9 @@ async def cancel_order(
     ).first()
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    if order.payment_method.lower() != "cod":
-        raise HTTPException(status_code=409, detail="Only cash-on-delivery orders can be cancelled here")
-    if order.status.lower() not in {"confirmed", "processing", "placed"}:
+    if order.payment_status == "paid":
+        raise HTTPException(status_code=409, detail="A paid order cannot be cancelled here")
+    if order.status.lower() not in {"confirmed", "processing", "placed", "payment_pending"}:
         raise HTTPException(status_code=409, detail="This order can no longer be cancelled")
 
     for item in _load_order_items(order.items_json):
@@ -837,6 +1009,8 @@ async def cancel_order(
             product.stock_quantity += int(item["quantity"])
             product.in_stock = product.stock_quantity > 0
     order.status = "cancelled"
+    if order.payment_method.lower() == "online":
+        order.payment_status = "cancelled"
     db.add(StoreOrderEvent(
         order_id=order.id,
         event_type="order_cancelled",

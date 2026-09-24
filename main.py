@@ -43,6 +43,10 @@ _COLUMN_PATCHES = [
     "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS delivered_at TIMESTAMP",
     "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP",
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR NOT NULL DEFAULT 'farmer'",
+    "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS payment_status VARCHAR NOT NULL DEFAULT 'unpaid'",
+    "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS razorpay_order_id VARCHAR",
+    "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS razorpay_payment_id VARCHAR",
+    "ALTER TABLE store_orders ADD COLUMN IF NOT EXISTS razorpay_signature VARCHAR",
 ]
 
 

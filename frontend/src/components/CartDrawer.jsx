@@ -23,6 +23,25 @@ export default function CartDrawer({ onNavigateOrders }) {
   const previouslyFocusedRef = useRef(null);
   const closeButtonRef = useRef(null);
 
+  const loadRazorpay = () => new Promise((resolve, reject) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+    const existing = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+    if (existing) {
+      existing.addEventListener("load", () => resolve(true), { once: true });
+      existing.addEventListener("error", () => reject(new Error("Unable to load Razorpay Checkout.")), { once: true });
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => reject(new Error("Unable to load Razorpay Checkout."));
+    document.body.appendChild(script);
+  });
+
   useEffect(() => {
     if (!isCartOpen) return undefined;
 
@@ -92,12 +111,54 @@ export default function CartDrawer({ onNavigateOrders }) {
         })),
       };
       const response = await storeApi.createOrder(orderPayload);
+      if (paymentMethod === "online") {
+        await loadRazorpay();
+        await new Promise((resolve, reject) => {
+          const checkout = new window.Razorpay({
+            key: response.razorpay_key_id,
+            amount: Math.round(response.total_amount * 100),
+            currency: "INR",
+            name: "KhetiTak",
+            description: `KhetiTak order ${response.order_number}`,
+            order_id: response.razorpay_order_id,
+            prefill: { name: customerName, contact: phone },
+            notes: { order_number: response.order_number },
+            handler: async (payment) => {
+              try {
+                await storeApi.verifyOrderPayment(response.order_number, payment);
+                resolve();
+              } catch (verificationError) {
+                reject(verificationError);
+              }
+            },
+            modal: {
+              ondismiss: async () => {
+                try {
+                  await storeApi.cancelOrder(response.order_number);
+                } catch (cancelError) {
+                  console.error("Unable to release cancelled payment order:", cancelError);
+                }
+                reject(new Error("Payment was cancelled."));
+              },
+            },
+          });
+          checkout.on("payment.failed", async () => {
+            try {
+              await storeApi.cancelOrder(response.order_number);
+            } catch (cancelError) {
+              console.error("Unable to release failed payment order:", cancelError);
+            }
+            reject(new Error("Payment failed. Please try again."));
+          });
+          checkout.open();
+        });
+      }
       confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 }, colors: ["#E8A33D", "#C1440E", "#4C7A3A"] });
 
       const newOrder = {
         order_number: response.order_number || `ORD${Date.now()}`,
         total_amount: response.total_amount || totalAmount,
-        status: response.status || "confirmed",
+        status: paymentMethod === "online" ? "confirmed" : (response.status || "confirmed"),
         payment_method: paymentMethod,
         created_at: response.created_at || new Date().toISOString(),
         customer_name: customerName,
@@ -142,7 +203,7 @@ export default function CartDrawer({ onNavigateOrders }) {
               <p style={{ color: "var(--text-secondary)", fontSize: "13.5px" }}>Order #{orderSuccess.order_number}</p>
               <div className="ka-card" style={{ textAlign: "left", margin: "18px 0", padding: "14px" }}>
                 <p style={{ fontSize: "13px", color: "var(--text-secondary)" }}>Delivery to: <strong>{orderSuccess.address}</strong></p>
-                <p style={{ fontSize: "13px", color: "var(--text-secondary)", marginTop: "6px" }}>Payment: <strong>{orderSuccess.payment_method === "online" ? "Online test payment successful" : "Cash on Delivery"}</strong></p>
+                <p style={{ fontSize: "13px", color: "var(--text-secondary)", marginTop: "6px" }}>Payment: <strong>{orderSuccess.payment_method === "online" ? "Razorpay payment successful" : "Cash on Delivery"}</strong></p>
                 <p style={{ fontSize: "14px", fontWeight: "700", marginTop: "6px" }}>Total: ₹{orderSuccess.total_amount}</p>
               </div>
               <button className="btn-primary" style={{ width: "100%" }} onClick={() => { closeDrawer(); if (onNavigateOrders) onNavigateOrders(); }}><span>Track Order</span><ArrowRight size={16} /></button>
@@ -194,7 +255,7 @@ export default function CartDrawer({ onNavigateOrders }) {
                         <label style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px", border: `1px solid ${paymentMethod === "cod" ? "var(--terracotta)" : "var(--card-border)"}`, borderRadius: "var(--radius-sm)", background: paymentMethod === "cod" ? "var(--terracotta-light)" : "#FFFFFF" }}><input type="radio" name="payment-method" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} /><span style={{ fontSize: "12px", fontWeight: "600" }}>Cash on Delivery</span></label>
                         <label style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px", border: `1px solid ${paymentMethod === "online" ? "var(--terracotta)" : "var(--card-border)"}`, borderRadius: "var(--radius-sm)", background: paymentMethod === "online" ? "var(--terracotta-light)" : "#FFFFFF" }}><input type="radio" name="payment-method" checked={paymentMethod === "online"} onChange={() => setPaymentMethod("online")} /><span style={{ fontSize: "12px", fontWeight: "600" }}>Online (Test)</span></label>
                       </div>
-                      {paymentMethod === "online" && <p style={{ color: "var(--text-muted)", fontSize: "11.5px", marginTop: "6px" }}>Test mode only: payment is simulated and no gateway is connected.</p>}
+                      {paymentMethod === "online" && <p style={{ color: "var(--text-muted)", fontSize: "11.5px", marginTop: "6px" }}>You will be redirected to secure Razorpay Checkout.</p>}
                     </div>
                   </div>
                   <button type="button" className="btn-outline" style={{ width: "100%", marginTop: "14px" }} onClick={() => setCheckoutOpen(false)}>Back to Cart</button>
@@ -209,7 +270,7 @@ export default function CartDrawer({ onNavigateOrders }) {
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", fontSize: "13px", color: "var(--growth-green)" }}><span>Village Delivery:</span><span style={{ fontWeight: "700" }}>FREE</span></div>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "14px", fontSize: "16px", fontWeight: "800" }}><span>{t("total", "Total Payable")}:</span><span style={{ color: "var(--terracotta)" }}>₹{totalAmount}</span></div>
           {checkoutOpen ? <button className="btn-primary" style={{ width: "100%", padding: "12px" }} onClick={handleCheckout} disabled={loading}>{loading ? "Placing Order..." : `Place Order (${paymentMethod === "online" ? "Online Test Payment" : "Cash on Delivery"}) • ₹${totalAmount}`}</button> : <button className="btn-primary" style={{ width: "100%", padding: "12px" }} onClick={() => setCheckoutOpen(true)}><ArrowRight size={16} /><span>Proceed to Checkout • ₹{totalAmount}</span></button>}
-          <p style={{ textAlign: "center", fontSize: "11px", color: "var(--text-muted)", marginTop: "8px" }}>{checkoutOpen ? (paymentMethod === "online" ? "Online payment is a simulated test-mode step." : "Pay by cash when delivered at your doorstep.") : "Review your order before confirming delivery details."}</p>
+          <p style={{ textAlign: "center", fontSize: "11px", color: "var(--text-muted)", marginTop: "8px" }}>{checkoutOpen ? (paymentMethod === "online" ? "Secure payment powered by Razorpay." : "Pay by cash when delivered at your doorstep.") : "Review your order before confirming delivery details."}</p>
         </div>}
       </div>
     </div>

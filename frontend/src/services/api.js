@@ -257,6 +257,10 @@ export const storeApi = {
       body: JSON.stringify(orderPayload),
     });
   },
+  verifyOrderPayment: async (orderNumber, paymentPayload) => request(
+    `/api/store/orders/${encodeURIComponent(orderNumber)}/payment/verify`,
+    { method: 'POST', body: JSON.stringify(paymentPayload) }
+  ),
 
   getOrder: async (orderNumber) => {
     return request(`/api/store/orders/${orderNumber}`);

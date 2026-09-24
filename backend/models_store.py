@@ -94,6 +94,10 @@ class StoreOrder(Base):
     status = Column(String, default="confirmed", index=True)   # confirmed, preparing, ready_for_pickup, picked_up, out_for_delivery, delivered, cancelled
     rejection_reason = Column(Text, nullable=True)
     payment_method = Column(String, default="cod")
+    payment_status = Column(String, default="unpaid", nullable=False, index=True)
+    razorpay_order_id = Column(String, unique=True, nullable=True, index=True)
+    razorpay_payment_id = Column(String, unique=True, nullable=True, index=True)
+    razorpay_signature = Column(String, nullable=True)
     shop_notes = Column(String, nullable=True)
     cancellation_reason = Column(String, nullable=True)
     delivered_at = Column(DateTime, nullable=True)
@@ -105,6 +109,15 @@ class StoreOrder(Base):
         Index('idx_store_order_shop', 'shop_id'),
         Index('idx_store_order_rider', 'rider_id'),
     )
+
+
+class RazorpayWebhookEvent(Base):
+    __tablename__ = "razorpay_webhook_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String, unique=True, nullable=False, index=True)
+    event_type = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
 
 

@@ -58,6 +58,11 @@ class Settings(BaseSettings):
     # External APIs
     WEATHER_API_BASE_URL: str = "https://api.open-meteo.com/v1"
     WEATHER_API_TIMEOUT: int = 10
+
+    # Razorpay (server-side only)
+    RAZORPAY_KEY_ID: Optional[str] = None
+    RAZORPAY_KEY_SECRET: Optional[str] = None
+    RAZORPAY_WEBHOOK_SECRET: Optional[str] = None
     
     # ML Models
     MODEL_PATH: str = "services/crop_model.pkl"
