@@ -28,3 +28,5 @@ httpx
 razorpay
 python-dateutil
 streamlit
+-r backend/requirements.txt
+greenlet
