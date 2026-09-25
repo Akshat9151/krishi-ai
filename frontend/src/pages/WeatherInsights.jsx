@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { CloudSun, Droplets, Wind, Thermometer, Compass, AlertCircle, Search, MapPin } from "lucide-react";
 import { coreApi } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "../context/LanguageContext";
 
 export default function WeatherInsights() {
   const { preferences } = useAuth();
+  const { t } = useTranslation();
   const [city, setCity] = useState(preferences?.farmLocation?.split(",")[0]?.trim() || "Jaipur");
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -44,10 +46,10 @@ export default function WeatherInsights() {
       {/* Title */}
       <div>
         <h2 style={{ fontSize: "22px", fontWeight: "800", color: "var(--text-primary)" }}>
-          Agri-Weather Forecast & Advisory (कृषि मौसम सलाह)
+          {t("weatherTitle", "Agri-Weather Forecast & Advisory")}
         </h2>
         <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginTop: "4px" }}>
-          Live meteorological alerts and tailored irrigation/spraying guidance for Indian crop cycles.
+          {t("weatherSubtitle", "Live meteorological alerts and tailored irrigation/spraying guidance for Indian crop cycles.")}
         </p>
       </div>
 
@@ -59,7 +61,7 @@ export default function WeatherInsights() {
             <input
               type="text"
               className="input-field"
-              placeholder="Enter district or city name (e.g. Jaipur, Ludhiana)"
+              placeholder={t("weatherCityPlaceholder", "Enter district or city name (e.g. Jaipur, Ludhiana)")}
               value={city}
               onChange={(e) => setCity(e.target.value)}
               style={{ paddingLeft: "38px" }}
@@ -67,13 +69,13 @@ export default function WeatherInsights() {
           </div>
           <button type="submit" className="btn-primary" disabled={loading}>
             <Search size={16} />
-            <span>Check Weather</span>
+            <span>{t("checkWeather", "Check Weather")}</span>
           </button>
         </form>
 
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px" }}>
           <span style={{ fontSize: "12px", color: "var(--text-secondary)", fontWeight: "600", marginRight: "4px" }}>
-            Popular Districts:
+            {t("popularDistricts", "Popular Districts:")}
           </span>
           {quickCities.map((c) => (
             <button
@@ -101,7 +103,7 @@ export default function WeatherInsights() {
       {loading ? (
         <div className="ka-card" style={{ textAlign: "center", padding: "50px" }}>
           <span style={{ fontSize: "36px" }}>🌦️</span>
-          <h3 style={{ fontSize: "16px", marginTop: "12px" }}>Fetching live atmospheric readings...</h3>
+          <h3 style={{ fontSize: "16px", marginTop: "12px" }}>{t("fetchingReadings", "Fetching live atmospheric readings...")}</h3>
           <div className="growing-bar" style={{ maxWidth: "200px", margin: "14px auto 0 auto" }}></div>
         </div>
       ) : weather ? (
@@ -117,12 +119,12 @@ export default function WeatherInsights() {
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
               <div>
-                <span className="badge-marigold">CURRENT CONDITIONS</span>
+                <span className="badge-marigold">{t("currentConditions", "CURRENT CONDITIONS")}</span>
                 <h3 style={{ fontSize: "28px", fontWeight: "800", color: "var(--text-primary)", marginTop: "4px" }}>
                   {weather.location}
                 </h3>
                 <p style={{ color: "var(--text-secondary)", fontSize: "13.5px", margin: 0 }}>
-                  Updated real-time for field agricultural planning
+                  {t("weatherUpdatedRealtime", "Updated real-time for field agricultural planning")}
                 </p>
               </div>
 
@@ -138,7 +140,7 @@ export default function WeatherInsights() {
               <div style={{ padding: "14px", backgroundColor: "#FFFFFF", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "12.5px" }}>
                   <Thermometer size={16} color="var(--terracotta)" />
-                  <span>Temperature</span>
+                  <span>{t("temperature", "Temperature")}</span>
                 </div>
                 <p style={{ fontSize: "18px", fontWeight: "700", color: "var(--text-primary)", marginTop: "4px", margin: 0 }}>
                   {weather.temperature}°C
@@ -148,7 +150,7 @@ export default function WeatherInsights() {
               <div style={{ padding: "14px", backgroundColor: "#FFFFFF", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "12.5px" }}>
                   <Droplets size={16} color="var(--growth-green)" />
-                  <span>Humidity</span>
+                  <span>{t("humidity", "Humidity")}</span>
                 </div>
                 <p style={{ fontSize: "18px", fontWeight: "700", color: "var(--text-primary)", marginTop: "4px", margin: 0 }}>
                   {weather.humidity}%
@@ -158,7 +160,7 @@ export default function WeatherInsights() {
               <div style={{ padding: "14px", backgroundColor: "#FFFFFF", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "12.5px" }}>
                   <CloudSun size={16} color="var(--marigold)" />
-                  <span>Rainfall</span>
+                  <span>{t("rainfall", "Rainfall")}</span>
                 </div>
                 <p style={{ fontSize: "18px", fontWeight: "700", color: "var(--text-primary)", marginTop: "4px", margin: 0 }}>
                   {weather.rainfall} mm
@@ -168,7 +170,7 @@ export default function WeatherInsights() {
               <div style={{ padding: "14px", backgroundColor: "#FFFFFF", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "12.5px" }}>
                   <Wind size={16} color="var(--terracotta)" />
-                  <span>Wind Speed</span>
+                  <span>{t("windSpeed", "Wind Speed")}</span>
                 </div>
                 <p style={{ fontSize: "18px", fontWeight: "700", color: "var(--text-primary)", marginTop: "4px", margin: 0 }}>
                   {weather.wind_speed} km/h
@@ -183,7 +185,7 @@ export default function WeatherInsights() {
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
                 <AlertCircle size={20} color="var(--growth-green)" />
                 <h3 style={{ fontSize: "16px", fontWeight: "700", margin: 0 }}>
-                  Official Agricultural Field Advisory (कृषि परामर्श)
+                  {t("officialAdvisory", "Official Agricultural Field Advisory")}
                 </h3>
               </div>
               <div style={{ fontSize: "14px", color: "var(--text-primary)", lineHeight: "1.6", whiteSpace: "pre-line", padding: "10px 14px", backgroundColor: "var(--bg-cream)", borderRadius: "var(--radius-sm)" }}>
@@ -196,23 +198,23 @@ export default function WeatherInsights() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
             <div className="ka-card">
               <h4 style={{ fontSize: "14px", fontWeight: "700", marginBottom: "6px", color: "var(--terracotta)" }}>
-                💧 Irrigation Guidance
+                💧 {t("irrigationGuidance", "Irrigation Guidance")}
               </h4>
               <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0 }}>
                 {weather.rainfall > 10
-                  ? "Significant rainfall predicted. Postpone field irrigation and inspect drainage to avoid waterlogging."
-                  : "Dry weather observed. Light morning or evening furrow irrigation is advised for standing winter/monsoon crops."}
+                  ? t("rainfallPostponeIrrigation", "Significant rainfall predicted. Postpone field irrigation and inspect drainage to avoid waterlogging.")
+                  : t("dryWeatherIrrigation", "Dry weather observed. Light morning or evening furrow irrigation is advised for standing winter/monsoon crops.")}
               </p>
             </div>
 
             <div className="ka-card">
               <h4 style={{ fontSize: "14px", fontWeight: "700", marginBottom: "6px", color: "var(--marigold-hover)" }}>
-                💨 Spraying Safety Window
+                💨 {t("sprayingSafetyWindow", "Spraying Safety Window")}
               </h4>
               <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0 }}>
                 {weather.wind_speed > 15
-                  ? "High wind speeds detected (>15 km/h). Avoid pesticide or herbicide spraying today to prevent chemical drift."
-                  : "Calm wind speeds. Safe window for foliar fertilizer and pesticide application during early morning."}
+                  ? t("highWindSprayWarning", "High wind speeds detected (>15 km/h). Avoid pesticide or herbicide spraying today to prevent chemical drift.")
+                  : t("calmWindSprayAdvice", "Calm wind speeds. Safe window for foliar fertilizer and pesticide application during early morning.")}
               </p>
             </div>
           </div>

@@ -50,7 +50,7 @@ export default function GoogleSignInButton({ onSuccess, variant = "login" }) {
           {
             theme: "outline",
             size: "large",
-            width: "300",
+            width: 300,
             type: "standard",
             text: variant === "login" ? "signin_with" : "signup_with",
           }

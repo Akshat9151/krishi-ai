@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { TrendingUp, TrendingDown, Search, Filter, Calendar, MapPin, RefreshCw, AlertCircle } from "lucide-react";
 import { mandiApi } from "../services/api";
+import { useTranslation } from "../context/LanguageContext";
 
 export default function MandiBhav() {
+  const { t } = useTranslation();
   const [commodity, setCommodity] = useState("all");
   const [stateFilter, setStateFilter] = useState("all");
   const [search, setSearch] = useState("");
@@ -10,20 +12,20 @@ export default function MandiBhav() {
   const [loading, setLoading] = useState(true);
 
   const commodities = [
-    { value: "all", label: "All Commodities (सभी फसलें)" },
-    { value: "wheat", label: "Wheat (गेहूं)" },
-    { value: "mustard", label: "Mustard (सरसों)" },
-    { value: "soybean", label: "Soybean (सोयाबीन)" },
-    { value: "cotton", label: "Cotton (कपास)" },
-    { value: "rice", label: "Rice / Paddy (धान)" },
-    { value: "onion", label: "Onion (प्याज)" },
-    { value: "potato", label: "Potato (आलू)" },
-    { value: "gram", label: "Gram / Chana (चना)" },
-    { value: "maize", label: "Maize (मक्का)" },
+    { value: "all", label: t("allCommodities", "All Commodities") },
+    { value: "wheat", label: t("commodityWheat", "Wheat") },
+    { value: "mustard", label: t("commodityMustard", "Mustard") },
+    { value: "soybean", label: t("commoditySoybean", "Soybean") },
+    { value: "cotton", label: t("commodityCotton", "Cotton") },
+    { value: "rice", label: t("commodityRice", "Rice / Paddy") },
+    { value: "onion", label: t("commodityOnion", "Onion") },
+    { value: "potato", label: t("commodityPotato", "Potato") },
+    { value: "gram", label: t("commodityGram", "Gram / Chana") },
+    { value: "maize", label: t("commodityMaize", "Maize") },
   ];
 
   const states = [
-    "All States",
+    t("allStates", "All States"),
     "Punjab",
     "Haryana",
     "Rajasthan",
@@ -66,12 +68,12 @@ export default function MandiBhav() {
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <h2 style={{ fontSize: "22px", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
-              Mandi Bhav / Market Price Tracker (दैनिक मंडी भाव)
+              {t("mandiTitle", "Mandi Bhav / Market Price Tracker")}
             </h2>
-            <span className="badge-green">● LIVE APMC RATES</span>
+            <span className="badge-green">● {t("liveApmcRates", "LIVE APMC RATES")}</span>
           </div>
           <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginTop: "4px" }}>
-            Real-time daily modal commodity prices reported across Indian regulated agricultural mandis.
+            {t("mandiSubtitle", "Real-time daily modal commodity prices reported across Indian regulated agricultural mandis.")}
           </p>
         </div>
 
@@ -81,7 +83,7 @@ export default function MandiBhav() {
           style={{ fontSize: "13px", padding: "7px 14px" }}
         >
           <RefreshCw size={14} />
-          <span>Refresh Rates</span>
+          <span>{t("refreshRates", "Refresh Rates")}</span>
         </button>
       </div>
 
@@ -90,10 +92,10 @@ export default function MandiBhav() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
           {/* Commodity Dropdown */}
           <div>
-            <label htmlFor="mandi-commodity-select" className="input-label">Filter by Crop / Commodity</label>
+            <label htmlFor="mandi-commodity-select" className="input-label">{t("filterByCrop", "Filter by Crop / Commodity")}</label>
             <select
               id="mandi-commodity-select"
-              aria-label="Filter by Crop or Commodity"
+              aria-label={t("filterByCrop", "Filter by Crop or Commodity")}
               className="input-field"
               value={commodity}
               onChange={(e) => setCommodity(e.target.value)}
@@ -108,10 +110,10 @@ export default function MandiBhav() {
 
           {/* State Dropdown */}
           <div>
-            <label htmlFor="mandi-state-select" className="input-label">Filter by State (राज्य)</label>
+            <label htmlFor="mandi-state-select" className="input-label">{t("filterByState", "Filter by State")}</label>
             <select
               id="mandi-state-select"
-              aria-label="Filter by State"
+              aria-label={t("filterByState", "Filter by State")}
               className="input-field"
               value={stateFilter}
               onChange={(e) => setStateFilter(e.target.value)}
@@ -126,17 +128,17 @@ export default function MandiBhav() {
 
           {/* Search Box */}
           <div>
-            <label htmlFor="mandi-search-input" className="input-label">Search Mandi or District</label>
+            <label htmlFor="mandi-search-input" className="input-label">{t("searchMandiDistrict", "Search Mandi or District")}</label>
             <form onSubmit={handleSearchSubmit} style={{ display: "flex", gap: "6px" }}>
               <input
                 id="mandi-search-input"
                 type="text"
                 className="input-field"
-                placeholder="e.g. Neemuch, Khanna, Lasalgaon"
+                placeholder={t("searchMandiPlaceholder", "e.g. Neemuch, Khanna, Lasalgaon")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <button type="submit" aria-label="Search Mandis" className="btn-primary" style={{ padding: "0 14px" }}>
+              <button type="submit" aria-label={t("searchMandis", "Search Mandis")} className="btn-primary" style={{ padding: "0 14px" }}>
                 <Search size={15} />
               </button>
             </form>
@@ -148,13 +150,13 @@ export default function MandiBhav() {
       {loading ? (
         <div className="ka-card" style={{ textAlign: "center", padding: "50px" }}>
           <span style={{ fontSize: "36px" }}>📊</span>
-          <h4 style={{ fontSize: "16px", marginTop: "12px" }}>Loading latest APMC arrivals and bid quotes...</h4>
+          <h4 style={{ fontSize: "16px", marginTop: "12px" }}>{t("loadingMandiRates", "Loading latest APMC arrivals and bid quotes...")}</h4>
           <div className="growing-bar" style={{ maxWidth: "200px", margin: "14px auto 0 auto" }}></div>
         </div>
       ) : prices.length === 0 ? (
         <div className="ka-card" style={{ textAlign: "center", padding: "50px" }}>
           <p style={{ color: "var(--text-secondary)", fontSize: "14px" }}>
-            No mandi quotes found matching the selected filters.
+            {t("noMandiQuotes", "No mandi quotes found matching the selected filters.")}
           </p>
         </div>
       ) : (
