@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query, Depends, Request
 from pydantic import BaseModel, Field
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from typing import List, Optional, Any, Union
 import json
@@ -7,11 +8,11 @@ import hashlib
 import hmac
 import secrets
 import razorpay
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from backend.database import get_db
 from backend.models_store import (
-    StoreProduct, ProductCategory, FertilizerRecommendation, StoreOrder,
+    StoreProduct, ProductCategory, FertilizerRecommendation, StoreOrder, Coupon,
     StoreOrderEvent, RazorpayWebhookEvent,
 )
 from backend.models import FarmActivity, User
@@ -70,6 +71,25 @@ def _require_role(user: User, role: str) -> None:
         return
     if (user.role or "farmer") != role:
         raise HTTPException(status_code=403, detail=f"{role.replace('_', ' ').title()} access required")
+
+
+def _require_coupon_admin(user: User) -> None:
+    if (getattr(user, "role", None) or "").lower() == "admin":
+        return
+    identifiers = {
+        value.strip().lower()
+        for value in settings.SHOP_OWNER_IDENTIFIERS.split(",")
+        if value.strip()
+    }
+    account_identifiers = {
+        str(user.id).lower(),
+        (user.username or "").lower(),
+        (user.email or "").lower(),
+        (getattr(user, "phone", "") or "").lower(),
+    }
+    if identifiers and identifiers.intersection(account_identifiers):
+        return
+    raise HTTPException(status_code=403, detail="Coupon administration is restricted to configured owners")
 
 
 def _load_order_items(items_json: Optional[str]) -> list:
@@ -423,12 +443,21 @@ class CreateOrderRequest(BaseModel):
     address: str
     items: List[OrderItem]
     payment_method: Optional[str] = "cod"
+    coupon_code: Optional[str] = Field(None, max_length=64)
 
 class CreateOrderResponse(BaseModel):
     order_number: str
     status: str
     message: str
     total_amount: float
+    subtotal_amount: float
+    discount_amount: float
+    discount_type: Optional[str] = None
+    discount_label: Optional[str] = None
+    coupon_code: Optional[str] = None
+    commission_amount: float
+    dealer_payout_amount: float
+    platform_net_amount: float
     created_at: datetime
     items: List[Any] = Field(default_factory=list)
     payment_status: str = "unpaid"
@@ -451,6 +480,14 @@ class OrderSummary(BaseModel):
     items: List[Any] = Field(default_factory=list)
     status: str
     total_amount: float
+    subtotal_amount: float = 0
+    discount_amount: float = 0
+    discount_type: Optional[str] = None
+    discount_label: Optional[str] = None
+    coupon_code: Optional[str] = None
+    commission_amount: float = 0
+    dealer_payout_amount: float = 0
+    platform_net_amount: float = 0
     payment_method: str
     payment_status: str = "unpaid"
     razorpay_order_id: Optional[str] = None
@@ -471,6 +508,219 @@ class ProductUpdateRequest(BaseModel):
     category: Optional[str] = Field(None, min_length=2)
     stock_quantity: Optional[int] = Field(None, ge=0)
 
+class CouponPreviewRequest(BaseModel):
+    items: List[OrderItem]
+    coupon_code: Optional[str] = Field(None, max_length=64)
+
+
+class CouponCreateRequest(BaseModel):
+    code: str = Field(..., min_length=3, max_length=64)
+    discount_type: str
+    discount_value: float = Field(..., gt=0)
+    max_discount_amount: Optional[float] = Field(None, gt=0)
+    min_order_value: Optional[float] = Field(None, ge=0)
+    valid_from: Optional[date] = None
+    valid_until: Optional[date] = None
+    usage_limit_per_user: int = Field(1, ge=1)
+    total_usage_limit: Optional[int] = Field(None, ge=1)
+    applies_to: str = Field("all", min_length=1, max_length=100)
+    new_users_only: bool = False
+
+
+def _first_order_discount(db: Session, user_id: int, subtotal: float) -> Optional[dict]:
+    prior_order_count = db.query(StoreOrder.id).filter(StoreOrder.user_id == user_id).count()
+    discount_percent = float(settings.FIRST_ORDER_DISCOUNT_PERCENT)
+    if prior_order_count or discount_percent <= 0:
+        return None
+    amount = round(subtotal * discount_percent / 100, 2)
+    return {
+        "discount_amount": min(amount, subtotal),
+        "discount_type": "first_order",
+        "discount_label": f"First order discount ({discount_percent:g}%)",
+        "coupon_id": None,
+        "coupon_code": None,
+    }
+
+
+def _calculate_coupon_discount(
+    db: Session,
+    user: User,
+    subtotal: float,
+    items: list[dict],
+    coupon_code: Optional[str],
+    *,
+    lock_coupon: bool = False,
+) -> dict:
+    automatic_discount = _first_order_discount(db, user.id, subtotal)
+    if automatic_discount and not (coupon_code and coupon_code.strip()):
+        return automatic_discount
+    if not coupon_code or not coupon_code.strip():
+        return {
+            "discount_amount": 0.0,
+            "discount_type": None,
+            "discount_label": None,
+            "coupon_id": None,
+            "coupon_code": None,
+        }
+
+    normalized_code = coupon_code.strip().upper()
+    coupon_query = db.query(Coupon).filter(func.lower(Coupon.code) == normalized_code.lower())
+    if lock_coupon:
+        coupon_query = coupon_query.with_for_update()
+    coupon = coupon_query.first()
+    if not coupon or not coupon.is_active:
+        raise HTTPException(status_code=400, detail="This coupon is no longer valid")
+
+    today = datetime.utcnow().date()
+    if coupon.valid_from and today < coupon.valid_from:
+        raise HTTPException(status_code=400, detail="This coupon is not valid yet")
+    if coupon.valid_until and today > coupon.valid_until:
+        raise HTTPException(status_code=400, detail="This coupon has expired")
+    if coupon.min_order_value is not None and subtotal < float(coupon.min_order_value):
+        raise HTTPException(status_code=400, detail=f"Minimum order value of ₹{coupon.min_order_value:g} not met")
+
+    user_order_count = db.query(StoreOrder.id).filter(StoreOrder.user_id == user.id).count()
+    if coupon.new_users_only and user_order_count:
+        raise HTTPException(status_code=400, detail="This coupon is only for new users with no previous orders")
+
+    active_redemptions = db.query(StoreOrder.id).filter(
+        StoreOrder.coupon_id == coupon.id,
+        StoreOrder.status.notin_(("cancelled", "payment_failed")),
+    )
+    user_redemption_count = active_redemptions.filter(StoreOrder.user_id == user.id).count()
+    if user_redemption_count >= coupon.usage_limit_per_user:
+        raise HTTPException(status_code=400, detail="You've already used this coupon")
+
+    total_redemption_count = active_redemptions.count()
+    if coupon.total_usage_limit is not None and total_redemption_count >= coupon.total_usage_limit:
+        raise HTTPException(status_code=400, detail="This coupon has reached its usage limit")
+
+    applies_to = (coupon.applies_to or "all").strip().lower()
+    eligible_subtotal = subtotal if applies_to == "all" else round(sum(
+        float(item["line_total"])
+        for item in items
+        if str(item.get("category", "")).strip().lower() == applies_to
+    ), 2)
+    if eligible_subtotal <= 0:
+        raise HTTPException(status_code=400, detail="This coupon does not apply to items in your cart")
+
+    if coupon.discount_type == "percentage":
+        amount = eligible_subtotal * float(coupon.discount_value) / 100
+        if coupon.max_discount_amount is not None:
+            amount = min(amount, float(coupon.max_discount_amount))
+    else:
+        amount = min(eligible_subtotal, float(coupon.discount_value))
+    amount = round(min(amount, eligible_subtotal), 2)
+    return {
+        "discount_amount": amount,
+        "discount_type": coupon.discount_type,
+        "discount_label": f"Coupon {coupon.code}",
+        "coupon_id": coupon.id,
+        "coupon_code": coupon.code,
+    }
+
+
+def _coupon_preview_data(db: Session, user: User, requested_items: List[OrderItem], coupon_code: Optional[str]) -> dict:
+    if not requested_items:
+        raise HTTPException(status_code=422, detail="Your cart must contain at least one item")
+    product_ids = list({item.product_id for item in requested_items})
+    products = db.query(StoreProduct).filter(StoreProduct.id.in_(product_ids)).all()
+    products_by_id = {product.id: product for product in products}
+    if len(products_by_id) != len(product_ids):
+        raise HTTPException(status_code=422, detail="One or more products are no longer available")
+
+    subtotal = 0.0
+    preview_items = []
+    for item in requested_items:
+        product = products_by_id[item.product_id]
+        line_total = round(float(product.price) * item.quantity, 2)
+        subtotal = round(subtotal + line_total, 2)
+        preview_items.append({"line_total": line_total, "category": product.category})
+    discount = _calculate_coupon_discount(db, user, subtotal, preview_items, coupon_code)
+    discount_amount = discount["discount_amount"]
+    commission = round(subtotal * float(settings.COMMISSION_PERCENT) / 100, 2)
+    return {
+        "subtotal_amount": subtotal,
+        **discount,
+        "total_amount": round(subtotal - discount_amount, 2),
+        "commission_amount": commission,
+        "dealer_payout_amount": round(subtotal - commission, 2),
+        "platform_net_amount": round(commission - discount_amount, 2),
+    }
+
+
+@router.post("/coupons/preview")
+async def preview_coupon(
+    preview: CouponPreviewRequest,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    user = db.query(User).filter(User.username == current_user).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Sign in again to use coupons")
+    return _coupon_preview_data(db, user, preview.items, preview.coupon_code)
+
+
+@router.get("/owner/coupons")
+async def get_owner_coupons(
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    user = db.query(User).filter(User.username == current_user).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Sign in again to manage coupons")
+    _require_coupon_admin(user)
+    return db.query(Coupon).order_by(Coupon.created_at.desc()).all()
+
+
+@router.post("/owner/coupons")
+async def create_owner_coupon(
+    coupon_data: CouponCreateRequest,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
+):
+    user = db.query(User).filter(User.username == current_user).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Sign in again to manage coupons")
+    _require_coupon_admin(user)
+    normalized_code = coupon_data.code.strip().upper()
+    if not normalized_code:
+        raise HTTPException(status_code=422, detail="Coupon code cannot be empty")
+    discount_type = coupon_data.discount_type.strip().lower()
+    if discount_type not in {"percentage", "flat_amount"}:
+        raise HTTPException(status_code=422, detail="Discount type must be percentage or flat_amount")
+    if discount_type == "percentage" and coupon_data.discount_value > 100:
+        raise HTTPException(status_code=422, detail="Percentage discount cannot exceed 100")
+    if coupon_data.valid_from and coupon_data.valid_until and coupon_data.valid_until < coupon_data.valid_from:
+        raise HTTPException(status_code=422, detail="Coupon end date must be on or after its start date")
+    existing = db.query(Coupon.id).filter(func.lower(Coupon.code) == normalized_code.lower()).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="A coupon with this code already exists")
+
+    coupon = Coupon(
+        code=normalized_code,
+        discount_type=discount_type,
+        discount_value=coupon_data.discount_value,
+        max_discount_amount=coupon_data.max_discount_amount,
+        min_order_value=coupon_data.min_order_value,
+        valid_from=coupon_data.valid_from,
+        valid_until=coupon_data.valid_until,
+        usage_limit_per_user=coupon_data.usage_limit_per_user,
+        total_usage_limit=coupon_data.total_usage_limit,
+        applies_to=coupon_data.applies_to.strip() or "all",
+        new_users_only=coupon_data.new_users_only,
+        is_active=True,
+    )
+    db.add(coupon)
+    try:
+        db.commit()
+    except Exception as exc:
+        db.rollback()
+        logger.log_error(exc, "Store API - Create Coupon")
+        raise HTTPException(status_code=409, detail="Could not create coupon; the code may already exist")
+    db.refresh(coupon)
+    return coupon
+
 
 class PaymentVerificationRequest(BaseModel):
     razorpay_payment_id: str = Field(..., min_length=5)
@@ -490,6 +740,14 @@ def _order_summary(db: Session, order: StoreOrder) -> dict:
         "items": _load_order_items(order.items_json),
         "status": order.status,
         "total_amount": order.total_amount,
+        "subtotal_amount": order.subtotal_amount,
+        "discount_amount": order.discount_amount,
+        "discount_type": order.discount_type,
+        "discount_label": order.discount_label,
+        "coupon_code": order.coupon_code,
+        "commission_amount": order.commission_amount,
+        "dealer_payout_amount": order.dealer_payout_amount,
+        "platform_net_amount": order.platform_net_amount,
         "payment_method": order.payment_method,
         "payment_status": order.payment_status,
         "razorpay_order_id": order.razorpay_order_id,
@@ -516,7 +774,7 @@ async def create_store_order(
     """Create an authenticated order using server-side price snapshots."""
     try:
         import time
-        user = db.query(User).filter(User.username == current_user).first()
+        user = db.query(User).filter(User.username == current_user).with_for_update().first()
         if not user:
             raise HTTPException(status_code=401, detail="Sign in again to place an order")
 
@@ -534,7 +792,7 @@ async def create_store_order(
             raise HTTPException(status_code=422, detail="One or more products are no longer available")
 
         snapshot_items = []
-        total_amount = 0.0
+        subtotal_amount = 0.0
         for item in order_data.items:
             product = products_by_id[item.product_id]
             if product.stock_quantity <= 0:
@@ -543,17 +801,32 @@ async def create_store_order(
                 raise HTTPException(status_code=409, detail=f"Only {product.stock_quantity} units of {product.name} are available")
             unit_price = round(float(product.price), 2)
             line_total = round(unit_price * item.quantity, 2)
-            total_amount = round(total_amount + line_total, 2)
+            subtotal_amount = round(subtotal_amount + line_total, 2)
             snapshot_items.append({
                 "product_id": product.id,
                 "sku": product.sku,
                 "name": product.name,
+                "category": product.category,
                 "price": unit_price,
                 "quantity": item.quantity,
                 "line_total": line_total,
             })
             product.stock_quantity -= item.quantity
             product.in_stock = product.stock_quantity > 0
+
+        discount = _calculate_coupon_discount(
+            db,
+            user,
+            subtotal_amount,
+            snapshot_items,
+            order_data.coupon_code,
+            lock_coupon=True,
+        )
+        discount_amount = discount["discount_amount"]
+        total_amount = round(subtotal_amount - discount_amount, 2)
+        commission_amount = round(subtotal_amount * float(settings.COMMISSION_PERCENT) / 100, 2)
+        dealer_payout_amount = round(subtotal_amount - commission_amount, 2)
+        platform_net_amount = round(commission_amount - discount_amount, 2)
 
         order_num = f"ORD{int(time.time() * 1000)}{secrets.token_hex(2).upper()}"
         shop_owner_ids = {product.shop_owner_id for product in products if product.shop_owner_id}
@@ -566,6 +839,15 @@ async def create_store_order(
             address=order_data.address,
             items_json=json.dumps(snapshot_items, ensure_ascii=False),
             total_amount=total_amount,
+            subtotal_amount=subtotal_amount,
+            discount_amount=discount_amount,
+            discount_type=discount["discount_type"],
+            discount_label=discount["discount_label"],
+            coupon_id=discount["coupon_id"],
+            coupon_code=discount["coupon_code"],
+            commission_amount=commission_amount,
+            dealer_payout_amount=dealer_payout_amount,
+            platform_net_amount=platform_net_amount,
             status="payment_pending" if payment_method == "online" else "confirmed",
             payment_method=payment_method,
             payment_status="created" if payment_method == "online" else "unpaid",
@@ -610,6 +892,14 @@ async def create_store_order(
             status=store_order.status,
             message="Order placed successfully! ✅",
             total_amount=store_order.total_amount,
+            subtotal_amount=store_order.subtotal_amount,
+            discount_amount=store_order.discount_amount,
+            discount_type=store_order.discount_type,
+            discount_label=store_order.discount_label,
+            coupon_code=store_order.coupon_code,
+            commission_amount=store_order.commission_amount,
+            dealer_payout_amount=store_order.dealer_payout_amount,
+            platform_net_amount=store_order.platform_net_amount,
             created_at=store_order.created_at,
             items=snapshot_items,
             payment_status=store_order.payment_status,
@@ -751,6 +1041,14 @@ async def get_my_orders(
             "items": _load_order_items(order.items_json),
             "status": order.status,
             "total_amount": order.total_amount,
+            "subtotal_amount": order.subtotal_amount,
+            "discount_amount": order.discount_amount,
+            "discount_type": order.discount_type,
+            "discount_label": order.discount_label,
+            "coupon_code": order.coupon_code,
+            "commission_amount": order.commission_amount,
+            "dealer_payout_amount": order.dealer_payout_amount,
+            "platform_net_amount": order.platform_net_amount,
             "payment_method": order.payment_method,
             "created_at": order.created_at,
             "events": [
@@ -886,7 +1184,10 @@ async def get_shop_earnings(
         StoreOrder.created_at >= month_start,
         StoreOrder.status != "cancelled",
     ).all()
-    return {"order_count": len(orders), "order_value": round(sum(order.total_amount or 0 for order in orders), 2)}
+    return {
+        "order_count": len(orders),
+        "order_value": round(sum(order.dealer_payout_amount or 0 for order in orders), 2),
+    }
 
 
 @router.get("/rider/orders", response_model=List[OrderSummary])
@@ -1187,6 +1488,12 @@ async def get_shop_orders(
             "items": items,
             "items_count": sum(it.get("quantity", 1) for it in items),
             "total_amount": o.total_amount,
+            "subtotal_amount": o.subtotal_amount,
+            "discount_amount": o.discount_amount,
+            "discount_label": o.discount_label,
+            "dealer_payout_amount": o.dealer_payout_amount,
+            "commission_amount": o.commission_amount,
+            "platform_net_amount": o.platform_net_amount,
             "status": o.status,
             "payment_method": o.payment_method,
             "shop_id": o.shop_id,
@@ -1266,7 +1573,7 @@ async def get_shop_stats(
     preparing_count = sum(1 for o in all_orders if o.status == "preparing")
     ready_count = sum(1 for o in all_orders if o.status in ["ready_for_pickup", "picked_up", "out_for_delivery"])
     completed_count = sum(1 for o in all_orders if o.status == "delivered")
-    total_revenue = sum(o.total_amount for o in all_orders if o.status == "delivered")
+    total_revenue = sum(o.dealer_payout_amount or 0 for o in all_orders if o.status == "delivered")
 
     return {
         "new_orders": new_count,

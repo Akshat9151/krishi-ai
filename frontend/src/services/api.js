@@ -257,6 +257,13 @@ export const storeApi = {
       body: JSON.stringify(orderPayload),
     });
   },
+  previewCoupon: async (items, coupon_code = null) => request('/api/store/coupons/preview', {
+    method: 'POST',
+    body: JSON.stringify({
+      items: items.map((item) => ({ product_id: item.id, quantity: item.quantity })),
+      coupon_code,
+    }),
+  }),
   verifyOrderPayment: async (orderNumber, paymentPayload) => request(
     `/api/store/orders/${encodeURIComponent(orderNumber)}/payment/verify`,
     { method: 'POST', body: JSON.stringify(paymentPayload) }
@@ -388,6 +395,12 @@ export const partnerAuthApi = {
 // 🏪 SHOP / AGENCY APIS (Zomato/Swiggy UX)
 // ==========================================
 export const shopApi = {
+  getCoupons: async () => request('/api/store/owner/coupons'),
+  createCoupon: async (payload) => request('/api/store/owner/coupons', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }),
+
   getOrders: async (status = 'all') => {
     return request(`/api/store/shop/orders?status=${status}`);
   },

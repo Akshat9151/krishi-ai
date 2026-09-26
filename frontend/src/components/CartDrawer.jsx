@@ -19,6 +19,11 @@ export default function CartDrawer({ onNavigateOrders }) {
   const [loading, setLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(null);
   const [error, setError] = useState("");
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCouponCode, setAppliedCouponCode] = useState("");
+  const [discountPreview, setDiscountPreview] = useState(null);
+  const [couponMessage, setCouponMessage] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
   const drawerRef = useRef(null);
   const previouslyFocusedRef = useRef(null);
   const closeButtonRef = useRef(null);
@@ -78,12 +83,53 @@ export default function CartDrawer({ onNavigateOrders }) {
     };
   }, [isCartOpen]);
 
+  useEffect(() => {
+    if (!checkoutOpen || items.length === 0) return undefined;
+    let active = true;
+    storeApi.previewCoupon(items, appliedCouponCode || null)
+      .then((preview) => {
+        if (active) setDiscountPreview(preview);
+      })
+      .catch((previewError) => {
+        if (active) {
+          setDiscountPreview(null);
+          setCouponMessage(previewError.message || "Could not check available discounts.");
+        }
+      });
+    return () => { active = false; };
+  }, [checkoutOpen, items, appliedCouponCode]);
+
   if (!isCartOpen) return null;
 
   const closeDrawer = () => {
     setIsCartOpen(false);
     setOrderSuccess(null);
     setCheckoutOpen(false);
+  };
+
+  const applyCoupon = async () => {
+    setCouponLoading(true);
+    setCouponMessage("");
+    try {
+      const preview = await storeApi.previewCoupon(items, couponInput.trim() || null);
+      setDiscountPreview(preview);
+      setAppliedCouponCode(preview.coupon_code || "");
+      setCouponMessage(
+        preview.discount_amount > 0
+          ? `${preview.discount_label} applied: -₹${preview.discount_amount.toFixed(2)}`
+          : "No coupon discount applies to this order."
+      );
+    } catch (couponError) {
+      setAppliedCouponCode("");
+      setCouponMessage(couponError.message || "Could not apply this coupon.");
+      try {
+        setDiscountPreview(await storeApi.previewCoupon(items));
+      } catch {
+        setDiscountPreview(null);
+      }
+    } finally {
+      setCouponLoading(false);
+    }
   };
 
   const handleCheckout = async (event) => {
@@ -100,11 +146,14 @@ export default function CartDrawer({ onNavigateOrders }) {
     setLoading(true);
     setError("");
     try {
+      const currentPreview = await storeApi.previewCoupon(items, appliedCouponCode || null);
+      setDiscountPreview(currentPreview);
       const orderPayload = {
         customer_name: customerName,
         phone,
         address,
         payment_method: paymentMethod,
+        coupon_code: appliedCouponCode || null,
         items: items.map((item) => ({
           product_id: item.id,
           quantity: item.quantity,
@@ -158,6 +207,13 @@ export default function CartDrawer({ onNavigateOrders }) {
       const newOrder = {
         order_number: response.order_number || `ORD${Date.now()}`,
         total_amount: response.total_amount || totalAmount,
+        subtotal_amount: response.subtotal_amount ?? totalAmount,
+        discount_amount: response.discount_amount ?? 0,
+        discount_label: response.discount_label || "",
+        coupon_code: response.coupon_code || "",
+        commission_amount: response.commission_amount ?? 0,
+        dealer_payout_amount: response.dealer_payout_amount ?? 0,
+        platform_net_amount: response.platform_net_amount ?? 0,
         status: paymentMethod === "online" ? "confirmed" : (response.status || "confirmed"),
         payment_method: paymentMethod,
         created_at: response.created_at || new Date().toISOString(),
@@ -169,6 +225,8 @@ export default function CartDrawer({ onNavigateOrders }) {
       recordOrder(newOrder);
       setOrderSuccess(newOrder);
       clearCart();
+      setAppliedCouponCode("");
+      setCouponInput("");
     } catch (err) {
       console.error(err);
       setError(err.message || "Failed to place order. Please try again.");
@@ -204,6 +262,7 @@ export default function CartDrawer({ onNavigateOrders }) {
               <div className="ka-card" style={{ textAlign: "left", margin: "18px 0", padding: "14px" }}>
                 <p style={{ fontSize: "13px", color: "var(--text-secondary)" }}>Delivery to: <strong>{orderSuccess.address}</strong></p>
                 <p style={{ fontSize: "13px", color: "var(--text-secondary)", marginTop: "6px" }}>Payment: <strong>{orderSuccess.payment_method === "online" ? "Razorpay payment successful" : "Cash on Delivery"}</strong></p>
+                {orderSuccess.discount_amount > 0 && <p style={{ fontSize: "13px", color: "var(--growth-green)", marginTop: "6px" }}>{orderSuccess.discount_label}: -₹{orderSuccess.discount_amount.toFixed(2)}</p>}
                 <p style={{ fontSize: "14px", fontWeight: "700", marginTop: "6px" }}>Total: ₹{orderSuccess.total_amount}</p>
               </div>
               <button className="btn-primary" style={{ width: "100%" }} onClick={() => { closeDrawer(); if (onNavigateOrders) onNavigateOrders(); }}><span>Track Order</span><ArrowRight size={16} /></button>
@@ -245,6 +304,14 @@ export default function CartDrawer({ onNavigateOrders }) {
                 <form className="ka-card" style={{ marginTop: "12px" }} onSubmit={handleCheckout}>
                   <h4 style={{ fontSize: "15px", fontWeight: "700", marginBottom: "12px" }}>Checkout & Delivery Details</h4>
                   {error && <div role="alert" aria-live="assertive" style={{ padding: "8px 12px", background: "var(--terracotta-light)", color: "var(--terracotta)", borderRadius: "6px", fontSize: "12.5px", marginBottom: "10px" }}>{error}</div>}
+                  <div style={{ marginBottom: "12px" }}>
+                    <label className="input-label" htmlFor="checkout-coupon">Have a coupon code?</label>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <input id="checkout-coupon" className="input-field" value={couponInput} onChange={(event) => setCouponInput(event.target.value)} placeholder="Enter coupon code" style={{ flex: 1, minWidth: 0 }} />
+                      <button type="button" className="btn-outline" onClick={applyCoupon} disabled={couponLoading || loading}>{couponLoading ? "Checking..." : "Apply"}</button>
+                    </div>
+                    {couponMessage && <p role="status" style={{ color: couponMessage.includes("applied") ? "var(--growth-green)" : "var(--terracotta)", fontSize: "12px", marginTop: "6px" }}>{couponMessage}</p>}
+                  </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     <div><label className="input-label" htmlFor="checkout-customer-name">Farmer Name</label><input id="checkout-customer-name" className="input-field" value={customerName} onChange={(event) => setCustomerName(event.target.value)} required /></div>
                     <div><label className="input-label" htmlFor="checkout-phone">Mobile Number</label><input id="checkout-phone" type="tel" className="input-field" placeholder="10-digit mobile number" value={phone} onChange={(event) => setPhone(event.target.value)} required /></div>
@@ -270,10 +337,11 @@ export default function CartDrawer({ onNavigateOrders }) {
         </div>
 
         {!orderSuccess && items.length > 0 && <div style={{ padding: "16px 20px", borderTop: "1px solid var(--card-border)", backgroundColor: "#FFFFFF" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "13px", color: "var(--text-secondary)" }}><span>Subtotal:</span><span>₹{totalAmount}</span></div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "13px", color: "var(--text-secondary)" }}><span>Subtotal:</span><span>₹{discountPreview?.subtotal_amount ?? totalAmount}</span></div>
+          {discountPreview?.discount_amount > 0 && <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "13px", color: "var(--growth-green)" }}><span>{discountPreview.discount_label}:</span><span>-₹{discountPreview.discount_amount.toFixed(2)}</span></div>}
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", fontSize: "13px", color: "var(--growth-green)" }}><span>Village Delivery:</span><span style={{ fontWeight: "700" }}>FREE</span></div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "14px", fontSize: "16px", fontWeight: "800" }}><span>{t("total", "Total Payable")}:</span><span style={{ color: "var(--terracotta)" }}>₹{totalAmount}</span></div>
-          {checkoutOpen ? <button className="btn-primary" style={{ width: "100%", padding: "12px" }} onClick={handleCheckout} disabled={loading}>{loading ? "Placing Order..." : `Place Order (${paymentMethod === "online" ? "Scan & Pay" : "Cash on Delivery"}) • ₹${totalAmount}`}</button> : <button className="btn-primary" style={{ width: "100%", padding: "12px" }} onClick={() => setCheckoutOpen(true)}><ArrowRight size={16} /><span>Proceed to Checkout • ₹{totalAmount}</span></button>}
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "14px", fontSize: "16px", fontWeight: "800" }}><span>{t("total", "Total Payable")}:</span><span style={{ color: "var(--terracotta)" }}>₹{discountPreview?.total_amount ?? totalAmount}</span></div>
+          {checkoutOpen ? <button className="btn-primary" style={{ width: "100%", padding: "12px" }} onClick={handleCheckout} disabled={loading}>{loading ? "Placing Order..." : `Place Order (${paymentMethod === "online" ? "Scan & Pay" : "Cash on Delivery"}) • ₹${discountPreview?.total_amount ?? totalAmount}`}</button> : <button className="btn-primary" style={{ width: "100%", padding: "12px" }} onClick={() => setCheckoutOpen(true)}><ArrowRight size={16} /><span>Proceed to Checkout • ₹{totalAmount}</span></button>}
           <p style={{ textAlign: "center", fontSize: "11px", color: "var(--text-muted)", marginTop: "8px" }}>{checkoutOpen ? (paymentMethod === "online" ? "Secure payment via UPI, cards, or net banking powered by Razorpay." : "Pay by cash when your order is delivered to your doorstep.") : "Review your order before confirming delivery details."}</p>
         </div>}
       </div>

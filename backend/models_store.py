@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, Text, DateTime, Index, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Boolean, Text, DateTime, Date, Index, ForeignKey, func
 from datetime import datetime
 from backend.database import Base
 
@@ -77,6 +77,29 @@ class FertilizerRecommendation(Base):
         Index('idx_recommendation_score', 'recommendation_score'),
     )
 
+class Coupon(Base):
+    __tablename__ = "coupons"
+
+    id = Column(Integer, primary_key=True, index=True)
+    code = Column(String, nullable=False)
+    discount_type = Column(String, nullable=False)
+    discount_value = Column(Float, nullable=False)
+    max_discount_amount = Column(Float, nullable=True)
+    min_order_value = Column(Float, nullable=True)
+    valid_from = Column(Date, nullable=True)
+    valid_until = Column(Date, nullable=True)
+    usage_limit_per_user = Column(Integer, nullable=False, default=1)
+    total_usage_limit = Column(Integer, nullable=True)
+    is_active = Column(Boolean, nullable=False, default=True)
+    applies_to = Column(String, nullable=False, default="all")
+    new_users_only = Column(Boolean, nullable=False, default=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    __table_args__ = (
+        Index("uq_coupons_code_lower", func.lower(code), unique=True),
+    )
+
+
 class StoreOrder(Base):
     __tablename__ = "store_orders"
 
@@ -91,6 +114,15 @@ class StoreOrder(Base):
     address = Column(Text)
     items_json = Column(Text)
     total_amount = Column(Float)
+    subtotal_amount = Column(Float, nullable=False, default=0)
+    discount_amount = Column(Float, nullable=False, default=0)
+    discount_type = Column(String, nullable=True)
+    discount_label = Column(String, nullable=True)
+    coupon_id = Column(Integer, ForeignKey("coupons.id"), nullable=True, index=True)
+    coupon_code = Column(String, nullable=True)
+    commission_amount = Column(Float, nullable=False, default=0)
+    dealer_payout_amount = Column(Float, nullable=False, default=0)
+    platform_net_amount = Column(Float, nullable=False, default=0)
     status = Column(String, default="confirmed", index=True)   # confirmed, preparing, ready_for_pickup, picked_up, out_for_delivery, delivered, cancelled
     rejection_reason = Column(Text, nullable=True)
     payment_method = Column(String, default="cod")

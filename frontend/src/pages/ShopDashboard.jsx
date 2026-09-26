@@ -19,6 +19,7 @@ import {
   MapPin,
   Calendar,
   IndianRupee,
+  Tag,
   ToggleLeft,
   ToggleRight
 } from "lucide-react";
@@ -27,7 +28,7 @@ import { shopApi } from "../services/api";
 
 export default function ShopDashboard({ setCurrentView }) {
   const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState("orders"); // "orders" | "inventory"
+  const [activeTab, setActiveTab] = useState("orders"); // "orders" | "inventory" | "coupons"
   const [orderFilter, setOrderFilter] = useState("all"); // "all" | "new" | "preparing" | "ready" | "completed"
   
   const [stats, setStats] = useState({
@@ -47,6 +48,22 @@ export default function ShopDashboard({ setCurrentView }) {
   const [actionLoading, setActionLoading] = useState(null); // orderNumber currently being updated
   const [toastMessage, setToastMessage] = useState("");
   const [apiError, setApiError] = useState(""); // surface backend errors visibly
+  const [coupons, setCoupons] = useState([]);
+  const [loadingCoupons, setLoadingCoupons] = useState(false);
+  const [couponError, setCouponError] = useState("");
+  const [couponForm, setCouponForm] = useState({
+    code: "",
+    discount_type: "percentage",
+    discount_value: "",
+    max_discount_amount: "",
+    min_order_value: "",
+    valid_from: "",
+    valid_until: "",
+    usage_limit_per_user: 1,
+    total_usage_limit: "",
+    applies_to: "all",
+    new_users_only: false,
+  });
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -110,6 +127,42 @@ export default function ShopDashboard({ setCurrentView }) {
     }
   }, [inventorySearch]);
 
+  const fetchCoupons = useCallback(async () => {
+    setLoadingCoupons(true);
+    setCouponError("");
+    try {
+      const result = await shopApi.getCoupons();
+      setCoupons(Array.isArray(result) ? result : []);
+    } catch (err) {
+      setCouponError(err.message || "Could not load coupons.");
+    } finally {
+      setLoadingCoupons(false);
+    }
+  }, []);
+
+  const handleCreateCoupon = async (event) => {
+    event.preventDefault();
+    setCouponError("");
+    try {
+      await shopApi.createCoupon({
+        ...couponForm,
+        code: couponForm.code.trim().toUpperCase(),
+        discount_value: Number(couponForm.discount_value),
+        max_discount_amount: couponForm.max_discount_amount ? Number(couponForm.max_discount_amount) : null,
+        min_order_value: couponForm.min_order_value ? Number(couponForm.min_order_value) : null,
+        valid_from: couponForm.valid_from || null,
+        valid_until: couponForm.valid_until || null,
+        usage_limit_per_user: Number(couponForm.usage_limit_per_user),
+        total_usage_limit: couponForm.total_usage_limit ? Number(couponForm.total_usage_limit) : null,
+      });
+      setCouponForm((form) => ({ ...form, code: "", discount_value: "" }));
+      showToast("Coupon created.");
+      await fetchCoupons();
+    } catch (err) {
+      setCouponError(err.message || "Could not create coupon.");
+    }
+  };
+
   useEffect(() => {
     fetchStats();
     fetchOrders(orderFilter);
@@ -125,6 +178,10 @@ export default function ShopDashboard({ setCurrentView }) {
       fetchInventory();
     }
   }, [activeTab, fetchInventory]);
+
+  useEffect(() => {
+    if (activeTab === "coupons") fetchCoupons();
+  }, [activeTab, fetchCoupons]);
 
   const handleOrderAction = async (orderNumber, action, notes = "") => {
     setActionLoading(orderNumber);
@@ -330,7 +387,7 @@ export default function ShopDashboard({ setCurrentView }) {
           </div>
 
           <div style={{ background: "#FFFFFF", padding: "16px", borderRadius: "14px", border: "1px solid var(--card-border, #E6DEC8)", borderLeft: "4px solid var(--terracotta, #C1440E)", boxShadow: "0 2px 8px rgba(36, 32, 29, 0.04)" }}>
-            <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", fontWeight: 700 }}>TOTAL REVENUE</div>
+            <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", fontWeight: 700 }}>DEALER PAYOUT</div>
             <div style={{ fontSize: "24px", fontWeight: "800", color: "var(--soil-dark, #24201D)", marginTop: "4px" }}>
               ₹{(stats.total_revenue || 0).toLocaleString("en-IN")}
             </div>
@@ -382,6 +439,24 @@ export default function ShopDashboard({ setCurrentView }) {
             }}
           >
             <Boxes size={16} /> Inventory & Stock
+          </button>
+          <button
+            onClick={() => setActiveTab("coupons")}
+            style={{
+              padding: "10px 18px",
+              background: "none",
+              border: "none",
+              borderBottom: activeTab === "coupons" ? "3px solid var(--terracotta, #C1440E)" : "3px solid transparent",
+              fontWeight: 700,
+              fontSize: "14px",
+              color: activeTab === "coupons" ? "var(--terracotta, #C1440E)" : "var(--text-sub, #5C554E)",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <Tag size={16} /> Coupons
           </button>
         </div>
 
@@ -508,8 +583,10 @@ export default function ShopDashboard({ setCurrentView }) {
                             ₹{(order.total_amount || 0).toLocaleString("en-IN")}
                           </div>
                           <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)" }}>
-                            {order.items?.length || 1} item(s)
+                            Farmer pays • {order.items?.length || 1} item(s)
                           </div>
+                          {order.discount_amount > 0 && <div style={{ fontSize: "12px", color: "var(--growth-green, #4C7A3A)" }}>{order.discount_label}: -₹{Number(order.discount_amount).toFixed(2)}</div>}
+                          <div style={{ fontSize: "12px", color: "var(--text-sub, #5C554E)", marginTop: "3px" }}>Dealer payout: ₹{Number(order.dealer_payout_amount ?? order.total_amount ?? 0).toLocaleString("en-IN")}</div>
                         </div>
                       </div>
 
@@ -790,6 +867,58 @@ export default function ShopDashboard({ setCurrentView }) {
             )}
           </div>
         )}
+
+        {activeTab === "coupons" && (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))", gap: "16px" }}>
+                <form className="ka-card" onSubmit={handleCreateCoupon} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <h2 style={{ margin: 0, fontSize: "17px" }}>Create Coupon</h2>
+                  {couponError && <p role="alert" style={{ color: "#C53030", fontSize: "13px", margin: 0 }}>{couponError}</p>}
+                  <label className="input-label">Coupon code<input className="input-field" required minLength={3} maxLength={64} value={couponForm.code} onChange={(e) => setCouponForm({ ...couponForm, code: e.target.value })} placeholder="WELCOME15" /></label>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                    <label className="input-label">Discount type<select className="input-field" value={couponForm.discount_type} onChange={(e) => setCouponForm({ ...couponForm, discount_type: e.target.value })}><option value="percentage">Percentage</option><option value="flat_amount">Flat amount (₹)</option></select></label>
+                    <label className="input-label">Discount value<input className="input-field" type="number" required min="0.01" step="0.01" max={couponForm.discount_type === "percentage" ? "100" : undefined} value={couponForm.discount_value} onChange={(e) => setCouponForm({ ...couponForm, discount_value: e.target.value })} /></label>
+                  </div>
+                  {couponForm.discount_type === "percentage" && <label className="input-label">Maximum discount (₹, optional)<input className="input-field" type="number" min="0.01" step="0.01" value={couponForm.max_discount_amount} onChange={(e) => setCouponForm({ ...couponForm, max_discount_amount: e.target.value })} /></label>}
+                  <label className="input-label">Minimum order value (₹, optional)<input className="input-field" type="number" min="0" step="0.01" value={couponForm.min_order_value} onChange={(e) => setCouponForm({ ...couponForm, min_order_value: e.target.value })} /></label>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                    <label className="input-label">Valid from<input className="input-field" type="date" value={couponForm.valid_from} onChange={(e) => setCouponForm({ ...couponForm, valid_from: e.target.value })} /></label>
+                    <label className="input-label">Valid until<input className="input-field" type="date" value={couponForm.valid_until} onChange={(e) => setCouponForm({ ...couponForm, valid_until: e.target.value })} /></label>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                    <label className="input-label">Uses per farmer<input className="input-field" type="number" required min="1" step="1" value={couponForm.usage_limit_per_user} onChange={(e) => setCouponForm({ ...couponForm, usage_limit_per_user: e.target.value })} /></label>
+                    <label className="input-label">Total uses (optional)<input className="input-field" type="number" min="1" step="1" value={couponForm.total_usage_limit} onChange={(e) => setCouponForm({ ...couponForm, total_usage_limit: e.target.value })} /></label>
+                  </div>
+                  <label className="input-label">Applies to category (or all)<input className="input-field" value={couponForm.applies_to} onChange={(e) => setCouponForm({ ...couponForm, applies_to: e.target.value || "all" })} placeholder="all" /></label>
+                  <label style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px" }}><input type="checkbox" checked={couponForm.new_users_only} onChange={(e) => setCouponForm({ ...couponForm, new_users_only: e.target.checked })} /> New users only (no prior orders)</label>
+                  <button className="btn-primary" type="submit">Create Coupon</button>
+                </form>
+
+                <div className="ka-card">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
+                    <h2 style={{ margin: 0, fontSize: "17px" }}>Coupons</h2>
+                    <button type="button" className="btn-outline" onClick={fetchCoupons}>Refresh</button>
+                  </div>
+                  {loadingCoupons ? <p>Loading coupons...</p> : coupons.length === 0 ? <p style={{ color: "var(--text-secondary)" }}>No coupons created yet.</p> : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "14px" }}>
+                      {coupons.map((coupon) => (
+                        <div key={coupon.id} style={{ padding: "12px", border: "1px solid var(--card-border)", borderRadius: "8px" }}>
+                          <strong>{coupon.code}</strong>
+                          <div style={{ fontSize: "13px", color: "var(--text-secondary)", marginTop: "4px" }}>
+                            {coupon.discount_type === "percentage" ? `${coupon.discount_value}% off` : `₹${coupon.discount_value} off`}
+                            {coupon.max_discount_amount ? ` (max ₹${coupon.max_discount_amount})` : ""}
+                            {coupon.min_order_value ? ` • min order ₹${coupon.min_order_value}` : ""}
+                            {coupon.new_users_only ? " • new users only" : ""}
+                          </div>
+                          <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "4px" }}>
+                            {coupon.valid_from || "Now"} – {coupon.valid_until || "No end date"} • {coupon.is_active ? "Active" : "Inactive"}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
       </div>
     </div>
   );

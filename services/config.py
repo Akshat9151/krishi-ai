@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     DB_POOL_SIZE: int = 5
     DB_MAX_OVERFLOW: int = 10
     DB_POOL_TIMEOUT: int = 30
+    FIRST_ORDER_DISCOUNT_PERCENT: float = Field(default=10, ge=0, le=100)
+    COMMISSION_PERCENT: float = Field(default=10, ge=0, le=100)
     DB_HOST: str = "localhost"
     DB_PORT: int = 5432
     DB_NAME: str = "krishi_ai"
