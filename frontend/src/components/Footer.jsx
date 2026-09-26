@@ -44,7 +44,7 @@ export default function Footer({ setCurrentView }) {
             {quickLinks.map(([view, label]) => (
               <button key={view} type="button" onClick={() => navigate(view)} style={linkStyle}>{label}</button>
             ))}
-            <a href="mailto:support@khetitak.in" style={linkStyle}>Contact</a>
+            <a href="khetitak2026@gmail.com" style={linkStyle}>Contact</a>
           </div>
           <div>
             <h3 style={{ fontSize: "15px", marginBottom: "10px" }}>Legal</h3>
@@ -59,9 +59,9 @@ export default function Footer({ setCurrentView }) {
           </div>
           <div>
             <h3 style={{ fontSize: "15px", marginBottom: "10px" }}>Contact</h3>
-            <p style={contactStyle}><MapPin size={15} /> Bakshi Khad Beej Bhandar, Harsana, Laxmangarh, Alwar, Rajasthan, 321607</p>
-            <a href="mailto:support@khetitak.in" style={contactStyle}><Mail size={15} /> support@khetitak.in</a>
-            <p style={contactStyle}><Phone size={15} /> Phone number to be updated</p>
+            <p style={contactStyle}><MapPin size={15} /> Alwar, Rajasthan</p>
+            <a href="mailto:khetitak2026@gmail.com" style={contactStyle}><Mail size={15} /> khetitak2026@gmail.com</a>
+            
           </div>
         </div>
         <div style={{ borderTop: "1px solid var(--card-border)", marginTop: "28px", paddingTop: "14px", color: "var(--text-muted)", fontSize: "12px", textAlign: "center" }}>
