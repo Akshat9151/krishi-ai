@@ -195,3 +195,27 @@ def test_order_creation_persists_server_calculated_discount_and_settlement(db, m
     assert order.dealer_payout_amount == 90
     assert order.platform_net_amount == 5
     assert order.coupon_code == "WELCOME"
+
+
+def test_first_order_discount_is_applied_to_new_order(db, monkeypatch):
+    monkeypatch.setattr(store_api.settings, "FIRST_ORDER_DISCOUNT_PERCENT", 10)
+    monkeypatch.setattr(store_api.settings, "COMMISSION_PERCENT", 10)
+    order_request = store_api.CreateOrderRequest(
+        customer_name="Farmer",
+        phone="9999999999",
+        address="Village",
+        items=[store_api.OrderItem(product_id=1, quantity=1)],
+    )
+
+    result = asyncio.run(store_api.create_store_order(
+        order_request,
+        db=db,
+        current_user="farmer",
+    ))
+    order = db.query(StoreOrder).filter_by(order_number=result.order_number).one()
+
+    assert order.discount_type == "first_order"
+    assert order.total_amount == 90
+    assert order.discount_amount == 10
+    assert order.dealer_payout_amount == 90
+    assert order.platform_net_amount == 0
