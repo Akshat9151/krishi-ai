@@ -12,6 +12,7 @@ passlib[bcrypt]
 slowapi
 sqlalchemy
 asyncpg
+psycopg[binary]
 psycopg2-binary
 aiosqlite
 alembic
